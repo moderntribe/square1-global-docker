@@ -1,6 +1,6 @@
 # Square One Global Docker
 
-Status: *Alpha*
+Status: **Alpha**
 
 ### Requirements
 
