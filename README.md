@@ -5,6 +5,7 @@ Status: **Alpha**
 ### Requirements
 
 1. PHP 7.2+
+1. composer
 1. docker
 1. docker-compose
 
