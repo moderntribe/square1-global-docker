@@ -1,0 +1,6 @@
+# Sq1 CONSTANTS
+#
+---
+
+# Docker
+SQ1_DOCKER_WORKDIR: '/application/www'
