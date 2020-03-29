@@ -13,7 +13,7 @@ class GlobalDockerCommand extends Sq1Command {
 	 */
 	public function globalStart() {
 		$this->taskDockerComposeUp()
-		     ->file( self::COMPOSE_CONFIG )
+		     ->files( $this->global_compose_files() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->detachedMode()
 		     ->run();
@@ -26,7 +26,7 @@ class GlobalDockerCommand extends Sq1Command {
 	 */
 	public function globalStop() {
 		$this->taskDockerComposeDown()
-		     ->file( self::COMPOSE_CONFIG )
+		     ->files( $this->global_compose_files() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->run();
 	}
@@ -38,7 +38,7 @@ class GlobalDockerCommand extends Sq1Command {
 	 */
 	public function globalRestart() {
 		$this->taskDockerComposeRestart()
-		     ->file( self::COMPOSE_CONFIG )
+		     ->files( $this->global_compose_files() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->run();
 	}

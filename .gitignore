@@ -21,3 +21,4 @@ pimple.json
 
 # Docker
 global/.env
+docker-compose.override.yml

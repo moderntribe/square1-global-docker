@@ -20,12 +20,16 @@ abstract class Sq1Command extends \Robo\Tasks {
 	/**
 	 * The root path of the script
 	 */
-	CONST SCRIPT_PATH = __DIR__ . '/../../';
+	const SCRIPT_PATH = __DIR__ . '/../../';
 
 	/**
 	 * The path to the docker-compose.yml file
 	 */
-	CONST COMPOSE_CONFIG = self::SCRIPT_PATH . 'global/docker-compose.yml';
+	const COMPOSE_CONFIG = self::SCRIPT_PATH . 'global/docker-compose.yml';
+	/**
+	 * The path to the docker-compose.override.yml file
+	 */
+	const COMPOSE_OVERRIDE = self::SCRIPT_PATH . 'global/docker-compose.override.yml';
 
 	/**
 	 * The docker working directory, e.g. /application/www
@@ -63,11 +67,18 @@ abstract class Sq1Command extends \Robo\Tasks {
 		$config = $this->getLocalDockerConfig();
 
 		$this->taskDockerComposeExecute()
-		     ->file( $config['compose'] )
+		     ->files( $config['compose'] )
 		     ->projectName( $config['name'] )
 		     ->setContainer( 'php-fpm' )
 		     ->exec( sprintf( 'composer %s -d %s', trim( $composerCommand ), $this->dockerWorkdir ) )
 		     ->run();
+	}
+
+	protected function global_compose_files(): array {
+		return array_filter( [
+			self::COMPOSE_CONFIG,
+			file_exists( self::COMPOSE_OVERRIDE ) ? self::COMPOSE_OVERRIDE: ''
+		] );
 	}
 
 }
