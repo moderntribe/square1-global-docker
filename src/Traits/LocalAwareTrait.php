@@ -35,7 +35,7 @@ trait LocalAwareTrait {
 
 				if ( is_file( dirname( getcwd(), $count ) . '/build-process.php' ) ) {
 					$docker_dir     = dirname( getcwd(), $count ) . '/dev/docker';
-					$compose_config = realpath( $docker_dir . '/docker-compose.yml' );
+					$compose_config = [ realpath( $docker_dir . '/docker-compose.yml' ), realpath( $docker_dir . '/docker-compose.override.yml' ) ];
 					$project_name   = realpath( $docker_dir . '/.projectID' );
 
 					return $this->getConfig( $docker_dir, $compose_config, $project_name );
@@ -44,7 +44,7 @@ trait LocalAwareTrait {
 
 		} else {
 			$docker_dir     = dirname( $file ) . '/dev/docker';
-			$compose_config = realpath( $docker_dir . '/docker-compose.yml' );
+			$compose_config = [ realpath( $docker_dir . '/docker-compose.yml' ), realpath( $docker_dir . '/docker-compose.override.yml' ) ];
 			$project_name   = realpath( $docker_dir . '/.projectID' );
 
 			return $this->getConfig( $docker_dir, $compose_config, $project_name );
@@ -56,17 +56,17 @@ trait LocalAwareTrait {
 	/**
 	 * Returns the current project's sq1 config.
 	 *
-	 * @param  string  $docker_dir The path to the docker directory
-	 * @param  string  $compose_config The path to the docker-compose.yml file
-	 * @param  string  $project_name The project's name, as used by docker-compose
+	 * @param  string    $docker_dir The path to the docker directory
+	 * @param  string[]  $compose_config The path to the docker-compose.yml docker-compose.override.yml files
+	 * @param  string    $project_name The project's name, as used by docker-compose
 	 *
 	 * @return array
 	 */
-	private function getConfig( string $docker_dir, string $compose_config, string $project_name ): array {
+	private function getConfig( string $docker_dir, array $compose_config, string $project_name ): array {
 		return [
 			'name'       => trim( file_get_contents( $project_name ) ),
 			'docker_dir' => $docker_dir,
-			'compose'    => $compose_config,
+			'compose'    => array_filter( $compose_config, 'file_exists' ),
 		];
 	}
 

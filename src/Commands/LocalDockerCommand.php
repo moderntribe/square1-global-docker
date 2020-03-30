@@ -43,7 +43,7 @@ class LocalDockerCommand extends GlobalDockerCommand {
 
 		// Start the local project
 		$this->taskDockerComposeUp()
-		     ->file( $config['compose'] )
+		     ->files( $config['compose'] )
 		     ->projectName( $config['name'] )
 		     ->detachedMode()
 		     ->forceRecreate()
@@ -63,7 +63,7 @@ class LocalDockerCommand extends GlobalDockerCommand {
 		$config = $this->getLocalDockerConfig();
 
 		$this->taskDockerComposeDown()
-		     ->file( $config['compose'] )
+		     ->files( $config['compose'] )
 		     ->projectName( $config['name'] )
 		     ->run();
 	}
