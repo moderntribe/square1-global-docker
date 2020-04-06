@@ -38,11 +38,19 @@ abstract class Sq1Task extends Tasks {
 	protected $dockerWorkdir;
 
 	/**
+	 * The Robo Container. This isn't available in the constructor yet for some reason.
+	 *
+	 * @var \League\Container\ContainerInterface
+	 */
+	protected $roboContainer;
+
+	/**
 	 * Sq1Task constructor.
 	 *
 	 */
 	public function __construct() {
 		$this->dockerWorkdir = Robo::config()->get( 'SQ1_DOCKER_WORKDIR' );
+		$this->container     = Robo::getContainer();
 	}
 
 	/**
