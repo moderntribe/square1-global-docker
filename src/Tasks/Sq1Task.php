@@ -48,6 +48,8 @@ abstract class Sq1Task extends Tasks {
 	/**
 	 * Clones square-one src and creates a new sq1 project
 	 *
+	 * @TODO move this out and finish later.
+	 *
 	 * @command create
 	 *
 	 * @usage <project_name>
