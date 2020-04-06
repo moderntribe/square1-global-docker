@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
 use Tribe\Sq1\Exceptions\Sq1Exception;
@@ -12,7 +12,7 @@ use Droath\RoboDockerCompose\Task\loadTasks;
  *
  * @package Tribe\Sq1
  */
-abstract class Sq1Command extends \Robo\Tasks {
+abstract class Sq1Task extends \Robo\Tasks {
 
 	use loadTasks;
 	use LocalAwareTrait;
@@ -38,6 +38,9 @@ abstract class Sq1Command extends \Robo\Tasks {
 	 */
 	protected $dockerWorkdir;
 
+	/**
+	 * Sq1Task constructor.
+	 */
 	public function __construct() {
 		$this->dockerWorkdir = Robo::config()->get( 'SQ1_DOCKER_WORKDIR' );
 	}

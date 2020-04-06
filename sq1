@@ -19,15 +19,15 @@ $classLoader = require $autoloaderPath;
 // Customization variables
 $appName               = "Sq1";
 $appVersion            = trim( file_get_contents( __DIR__ . '/VERSION' ) );
-$commandClasses        = [
-	\Tribe\Sq1\Commands\GlobalDockerCommand::class,
-	\Tribe\Sq1\Commands\LocalDockerCommand::class,
+$tasks        = [
+	\Tribe\Sq1\Tasks\GlobalDockerTask::class,
+	\Tribe\Sq1\Tasks\LocalDockerTask::class,
 ];
 $selfUpdateRepository  = 'moderntribe/square1-global-docker';
 $configurationFilename = __DIR__ . '/config/constants.yml';
 
 // Define our Runner, and pass it the command classes we provide.
-$runner = new \Robo\Runner( $commandClasses );
+$runner = new \Robo\Runner( $tasks );
 $runner
 	->setSelfUpdateRepository( $selfUpdateRepository )
 	->setConfigurationFilename( $configurationFilename )

@@ -1,10 +1,15 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\Sq1\Tasks;
 
 use Tribe\Sq1\Exceptions\Sq1Exception;
 
-class LocalDockerCommand extends GlobalDockerCommand {
+/**
+ * Local Docker/Project Commands
+ *
+ * @package Tribe\Sq1\Tasks
+ */
+class LocalDockerTask extends GlobalDockerTask {
 
 	/**
 	 * Starts your local sq1 project, run anywhere in a sq1 project.
@@ -13,7 +18,7 @@ class LocalDockerCommand extends GlobalDockerCommand {
 	 *
 	 * @throws Sq1Exception
 	 */
-	public function start() {
+	public function start(): self {
 		$config = $this->getLocalDockerConfig();
 
 		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', $config['name'] ) );
@@ -50,6 +55,8 @@ class LocalDockerCommand extends GlobalDockerCommand {
 		     ->run();
 
 		$this->composer( 'install' );
+
+		return $this;
 	}
 
 	/**
@@ -59,13 +66,26 @@ class LocalDockerCommand extends GlobalDockerCommand {
 	 *
 	 * @throws Sq1Exception
 	 */
-	public function stop() {
+	public function stop(): self {
 		$config = $this->getLocalDockerConfig();
 
 		$this->taskDockerComposeDown()
 		     ->files( $config['compose'] )
 		     ->projectName( $config['name'] )
 		     ->run();
+
+		return $this;
+	}
+
+	/**
+	 * Restarts your local sq1 project.
+	 *
+	 * @command restart
+	 *
+	 * @throws Sq1Exception
+	 */
+	public function restart() {
+		$this->stop()->start();
 	}
 
 	/**

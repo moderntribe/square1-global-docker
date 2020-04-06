@@ -1,8 +1,13 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\Sq1\Tasks;
 
-class GlobalDockerCommand extends Sq1Command {
+/**
+ * Global Docker Commands
+ *
+ * @package Tribe\Sq1\Tasks
+ */
+class GlobalDockerTask extends Sq1Task {
 
 	const PROJECT_NAME = 'global';
 
