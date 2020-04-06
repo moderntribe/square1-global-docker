@@ -34,7 +34,7 @@ class LocalDockerTask extends Sq1Task {
 		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) ) );
 
 		/** @var \Tribe\Sq1\Tasks\GlobalDockerTask $globalDocker */
-		$globalDocker = $this->container->get( 'Tribe\Sq1\Tasks\GlobalDockerTaskCommands' );
+		$globalDocker = $this->container->get( GlobalDockerTask::class . 'Commands' );
 
 		// Generate a certificate for this project if it doesn't exist
 		if ( false === $cert || ! is_file( $cert ) ) {
@@ -67,7 +67,7 @@ class LocalDockerTask extends Sq1Task {
 		     ->forceRecreate()
 		     ->run();
 
-		$this->container->get( 'Tribe\Sq1\Tasks\ComposerTaskCommands' )->composer( 'install' );
+		$this->container->get( ComposerTask::class . 'Commands' )->composer( 'install' );
 
 		return $this;
 	}
