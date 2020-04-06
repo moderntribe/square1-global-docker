@@ -10,6 +10,9 @@ use League\Container\ContainerAwareTrait;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tribe\Sq1\Tasks\ComposerTask;
+use Tribe\Sq1\Tasks\GlobalDockerTask;
+use Tribe\Sq1\Tasks\LocalDockerTask;
 
 /**
  * The Square One Global Docker Application
@@ -68,6 +71,12 @@ class SquareOne {
 
 		// Create and configure container.
 		$container = Robo::createDefaultContainer( $input, $output, $this->app, $config );
+
+		// Build inflections for the InflectionAwareTrait.
+		$container->inflector( LocalDockerTask::class )
+		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
+		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
+
 		$this->setContainer( $container );
 
 		// Instantiate Robo Runner.
@@ -96,8 +105,8 @@ class SquareOne {
 	private function getTasks(): array {
 		return [
 			\Tribe\Sq1\Tasks\GlobalDockerTask::class,
-			\Tribe\Sq1\Tasks\LocalDockerTask::class,
 			\Tribe\Sq1\Tasks\ComposerTask::class,
+			\Tribe\Sq1\Tasks\LocalDockerTask::class,
 			\Tribe\Sq1\Tasks\WpCliTask::class,
 			\Tribe\Sq1\Tasks\ShellTask::class,
 		];
