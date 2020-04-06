@@ -15,16 +15,6 @@ class LocalDockerTask extends Sq1Task {
 	use LocalAwareTrait;
 
 	/**
-	 * @var \Tribe\Sq1\Tasks\GlobalDockerTask
-	 */
-	protected $globalDockerTask;
-
-	/**
-	 * @var \Tribe\Sq1\Tasks\ComposerTask
-	 */
-	protected $composerTask;
-
-	/**
 	 * LocalDockerTask constructor.
 	 *
 	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
@@ -33,8 +23,6 @@ class LocalDockerTask extends Sq1Task {
 		parent::__construct();
 		// Set configuration variables.
 		$this->getLocalDockerConfig( $this );
-		$this->globalDockerTask = $this->roboContainer->get( 'Tribe\Sq1\Tasks\GlobalDockerTaskCommands' );
-		$this->composerTask     = $this->roboContainer->get( 'Tribe\Sq1\Tasks\ComposerTaskCommands' );
 	}
 
 	/**
@@ -45,14 +33,17 @@ class LocalDockerTask extends Sq1Task {
 	public function start(): self {
 		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) ) );
 
+		/** @var \Tribe\Sq1\Tasks\GlobalDockerTask $globalDocker */
+		$globalDocker = $this->container->get( 'Tribe\Sq1\Tasks\GlobalDockerTaskCommands' );
+
 		// Generate a certificate for this project if it doesn't exist
 		if ( false === $cert || ! is_file( $cert ) ) {
-			$this->globalDockerTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
-			$this->globalDockerTask->globalRestart();
+			$globalDocker->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
+			$globalDocker->globalRestart();
 		}
 
 		// Start global containers
-		$this->globalDockerTask->globalStart();
+		$globalDocker->globalStart();
 
 		$composer_cache = Robo::config()->get( 'docker_dir' ) . '/composer-cache';
 
@@ -76,7 +67,7 @@ class LocalDockerTask extends Sq1Task {
 		     ->forceRecreate()
 		     ->run();
 
-		$this->composerTask->composer( 'install' );
+		$this->container->get( 'Tribe\Sq1\Tasks\ComposerTaskCommands' )->composer( 'install' );
 
 		return $this;
 	}
