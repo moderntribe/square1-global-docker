@@ -12,7 +12,7 @@ Status: **Alpha**
 ### Development installation
 
 1. Clone this repo.
-1. Symlink the `sq1` binary to a directory in your path, e.g. `ln -s sq1 /usr/local/bin/sq1`.
+1. Symlink the `sq1` binary to a directory in your path, e.g. `ln -s /path/to/this/repo/sq1 /usr/local/bin/sq1`.
 1. If you already have cloned a square-one repo, copy the `global/certs` folder to the `global/certs` folder in this repo.
 1. Stop all your existing containers `docker stop $(docker ps -aq)`.
 1. Run `composer install`.
