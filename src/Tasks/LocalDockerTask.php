@@ -3,6 +3,7 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
+use Tribe\Sq1\Traits\InflectionAwareTrait;
 use Tribe\Sq1\Traits\LocalAwareTrait;
 
 /**
@@ -13,6 +14,7 @@ use Tribe\Sq1\Traits\LocalAwareTrait;
 class LocalDockerTask extends Sq1Task {
 
 	use LocalAwareTrait;
+	use InflectionAwareTrait;
 
 	/**
 	 * LocalDockerTask constructor.
@@ -33,17 +35,14 @@ class LocalDockerTask extends Sq1Task {
 	public function start(): self {
 		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) ) );
 
-		/** @var \Tribe\Sq1\Tasks\GlobalDockerTask $globalDocker */
-		$globalDocker = $this->container->get( GlobalDockerTask::class . 'Commands' );
-
 		// Generate a certificate for this project if it doesn't exist
 		if ( false === $cert || ! is_file( $cert ) ) {
-			$globalDocker->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
-			$globalDocker->globalRestart();
+			$this->globalTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
+			$this->globalTask->globalRestart();
 		}
 
 		// Start global containers
-		$globalDocker->globalStart();
+		$this->globalTask->globalStart();
 
 		$composer_cache = Robo::config()->get( 'docker_dir' ) . '/composer-cache';
 
@@ -67,7 +66,7 @@ class LocalDockerTask extends Sq1Task {
 		     ->forceRecreate()
 		     ->run();
 
-		$this->container->get( ComposerTask::class . 'Commands' )->composer( 'install' );
+		$this->composerTask->composer( [ 'install' ] );
 
 		return $this;
 	}
