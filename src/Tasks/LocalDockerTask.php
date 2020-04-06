@@ -2,59 +2,72 @@
 
 namespace Tribe\Sq1\Tasks;
 
-use Tribe\Sq1\Exceptions\Sq1Exception;
+use Robo\Robo;
+use Tribe\Sq1\Traits\LocalAwareTrait;
 
 /**
  * Local Docker/Project Commands
  *
  * @package Tribe\Sq1\Tasks
  */
-class LocalDockerTask extends GlobalDockerTask {
+class LocalDockerTask extends Sq1Task {
+
+	use LocalAwareTrait;
+
+	/**
+	 * LocalDockerTask constructor.
+	 *
+	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 */
+	public function __construct() {
+		parent::__construct();
+		// Set configuration variables.
+		$this->getLocalDockerConfig( $this );
+	}
 
 	/**
 	 * Starts your local sq1 project, run anywhere in a sq1 project.
 	 *
 	 * @command start
-	 *
-	 * @throws Sq1Exception
 	 */
 	public function start(): self {
-		$config = $this->getLocalDockerConfig();
+		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) ) );
 
-		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', $config['name'] ) );
+		/** @var \Tribe\Sq1\Tasks\GlobalDockerTask $globalDocker */
+		$globalDocker = $this->container->get( 'Tribe\Sq1\Tasks\GlobalDockerTaskCommands' );
 
 		// Generate a certificate for this project if it doesn't exist
 		if ( false === $cert || ! is_file( $cert ) ) {
-			$this->globalCert( sprintf( '%s.tribe', $config['name'] ) );
-			$this->globalRestart();
+			$globalDocker->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
+			$globalDocker->globalRestart();
 		}
 
 		// Start global containers
-		$this->globalStart();
+		$globalDocker->globalStart();
 
-		$composer_cache = $config['docker_dir'] . '/composer-cache';
+		$composer_cache = Robo::config()->get( 'docker_dir' ) . '/composer-cache';
 
 		if ( ! is_dir( $composer_cache ) ) {
 			mkdir( $composer_cache );
 		}
 
-		$composer_config = $config['docker_dir'] . '/composer/auth.json';
+		$composer_config = Robo::config()->get( 'docker_dir' ) . '/composer/auth.json';
 
 		if ( ! is_file( $composer_config ) ) {
 			$this->runComposerConfig();
 		}
 
-		$this->say( sprintf( 'Starting docker-compose project: %s', $config['name'] ) );
+		$this->say( sprintf( 'Starting docker-compose project: %s', Robo::config()->get( 'name' ) ) );
 
 		// Start the local project
 		$this->taskDockerComposeUp()
-		     ->files( $config['compose'] )
-		     ->projectName( $config['name'] )
+		     ->files( Robo::config()->get( 'compose' ) )
+		     ->projectName( Robo::config()->get( 'name' ) )
 		     ->detachedMode()
 		     ->forceRecreate()
 		     ->run();
 
-		$this->composer( 'install' );
+		$this->container->get( 'Tribe\Sq1\Tasks\ComposerTaskCommands' )->composer( 'install' );
 
 		return $this;
 	}
@@ -63,15 +76,11 @@ class LocalDockerTask extends GlobalDockerTask {
 	 * Stops your local sq1 project, run anywhere in a sq1 project.
 	 *
 	 * @command stop
-	 *
-	 * @throws Sq1Exception
 	 */
 	public function stop(): self {
-		$config = $this->getLocalDockerConfig();
-
 		$this->taskDockerComposeDown()
-		     ->files( $config['compose'] )
-		     ->projectName( $config['name'] )
+		     ->files( Robo::config()->get( 'compose' ) )
+		     ->projectName( Robo::config()->get( 'name' ) )
 		     ->run();
 
 		return $this;
@@ -81,8 +90,6 @@ class LocalDockerTask extends GlobalDockerTask {
 	 * Restarts your local sq1 project.
 	 *
 	 * @command restart
-	 *
-	 * @throws Sq1Exception
 	 */
 	public function restart() {
 		$this->stop()->start();
@@ -90,15 +97,12 @@ class LocalDockerTask extends GlobalDockerTask {
 
 	/**
 	 * Writes a user supplied GitHub token to the composer-config.json
-	 *
-	 * @throws Sq1Exception
 	 */
-	protected function runComposerConfig() {
-		$config = $this->getLocalDockerConfig();
+	protected function runComposerConfig(): void {
+		$token =
+			$this->ask( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one. Paste the token here:' );
 
-		$token = $this->ask( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one. Paste the token here:' );
-
-		$this->taskWriteToFile( $config['docker_dir'] . '/composer/auth.json' )
+		$this->taskWriteToFile( Robo::config()->get( 'docker_dir' ) . '/composer/auth.json' )
 		     ->line( sprintf( '{ "github-oauth": { "github.com": "%s" } }', trim( $token ) ) )
 		     ->run();
 	}

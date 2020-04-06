@@ -102,4 +102,16 @@ class GlobalDockerTask extends Sq1Task {
 
 		}
 	}
+
+	/**
+	 * Get the available global docker compose files.
+	 *
+	 * @return array
+	 */
+	protected function global_compose_files(): array {
+		return array_filter( [
+			self::COMPOSE_CONFIG,
+			file_exists( self::COMPOSE_OVERRIDE ) ? self::COMPOSE_OVERRIDE : '',
+		] );
+	}
 }

@@ -16,24 +16,16 @@ if ( $pharPath ) {
 }
 $classLoader = require $autoloaderPath;
 
-// Customization variables
-$appName               = "Sq1";
-$appVersion            = trim( file_get_contents( __DIR__ . '/VERSION' ) );
-$tasks        = [
-	\Tribe\Sq1\Tasks\GlobalDockerTask::class,
-	\Tribe\Sq1\Tasks\LocalDockerTask::class,
-];
-$selfUpdateRepository  = 'moderntribe/square1-global-docker';
+use Robo\Robo;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Tribe\Sq1\SquareOne;
+
+$input                 = new ArgvInput( $argv );
+$output                = new ConsoleOutput();
 $configurationFilename = __DIR__ . '/config/constants.yml';
-
-// Define our Runner, and pass it the command classes we provide.
-$runner = new \Robo\Runner( $tasks );
-$runner
-	->setSelfUpdateRepository( $selfUpdateRepository )
-	->setConfigurationFilename( $configurationFilename )
-	->setClassLoader( $classLoader );
-
-// Execute the command and return the result.
-$output     = new \Symfony\Component\Console\Output\ConsoleOutput();
-$statusCode = $runner->execute( $argv, $appName, $appVersion, $output );
-exit( $statusCode );
+$config                = Robo::createConfiguration( [ $configurationFilename ] );
+$version               = trim( file_get_contents( __DIR__ . '/VERSION' ) );
+$sq1                   = new SquareOne( $version, $config, $input, $output );
+$status_code           = $sq1->run( $input, $output );
+exit( $status_code );

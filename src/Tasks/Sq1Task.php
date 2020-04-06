@@ -3,8 +3,7 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
-use Tribe\Sq1\Exceptions\Sq1Exception;
-use Tribe\Sq1\Traits\LocalAwareTrait;
+use Robo\Tasks;
 use Droath\RoboDockerCompose\Task\loadTasks;
 
 /**
@@ -12,10 +11,9 @@ use Droath\RoboDockerCompose\Task\loadTasks;
  *
  * @package Tribe\Sq1
  */
-abstract class Sq1Task extends \Robo\Tasks {
+abstract class Sq1Task extends Tasks {
 
 	use loadTasks;
-	use LocalAwareTrait;
 
 	/**
 	 * The root path of the script
@@ -26,6 +24,7 @@ abstract class Sq1Task extends \Robo\Tasks {
 	 * The path to the docker-compose.yml file
 	 */
 	const COMPOSE_CONFIG = self::SCRIPT_PATH . 'global/docker-compose.yml';
+
 	/**
 	 * The path to the docker-compose.override.yml file
 	 */
@@ -40,6 +39,7 @@ abstract class Sq1Task extends \Robo\Tasks {
 
 	/**
 	 * Sq1Task constructor.
+	 *
 	 */
 	public function __construct() {
 		$this->dockerWorkdir = Robo::config()->get( 'SQ1_DOCKER_WORKDIR' );
@@ -55,33 +55,6 @@ abstract class Sq1Task extends \Robo\Tasks {
 	public function create( string $project ) {
 		$name = $this->ask( 'What is the name of your new project? e.g. ' );
 		$this->say( $name );
-	}
-
-	/**
-	 * Runs a composer command in the local docker container
-	 *
-	 * @param string $composerCommand The composer command to run
-	 *
-	 * @command composer
-	 *
-	 * @throws Sq1Exception
-	 */
-	public function composer( string $composerCommand ) {
-		$config = $this->getLocalDockerConfig();
-
-		$this->taskDockerComposeExecute()
-		     ->files( $config['compose'] )
-		     ->projectName( $config['name'] )
-		     ->setContainer( 'php-fpm' )
-		     ->exec( sprintf( 'composer %s -d %s', trim( $composerCommand ), $this->dockerWorkdir ) )
-		     ->run();
-	}
-
-	protected function global_compose_files(): array {
-		return array_filter( [
-			self::COMPOSE_CONFIG,
-			file_exists( self::COMPOSE_OVERRIDE ) ? self::COMPOSE_OVERRIDE: ''
-		] );
 	}
 
 }
