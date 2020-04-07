@@ -1,6 +1,15 @@
-# Sq1 CONSTANTS
+# SquareOne CONSTANTS
 #
+# These are default values for each of the constants bearing the same name
+# within SquareOne. They may be overridden by exporting an environmental
+# variable of the same name, or by adding it to a file named ".env" in the
+# directory from which you are running SquareOne.
 ---
 
 # Docker
 SQ1_DOCKER_WORKDIR: '/application/www'
+SQ1_DOCKER_NETWORK: 'global_proxy'
+SQ1_DOCKER_MYSQL: 'tribe-mysql:db'
+
+# PhpMyAdmin
+SQ1_PHPMYADMIN_PORT: 8080

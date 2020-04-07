@@ -2,6 +2,8 @@
 
 namespace Tribe\Sq1\Tasks;
 
+use Robo\Robo;
+
 /**
  * Global Docker Commands
  *
@@ -83,7 +85,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Start a phpMyAdmin docker container on port http://localhost:8080
+	 * Start a phpMyAdmin docker container. Default: http://localhost:8080
 	 *
 	 * @command global:myadmin
 	 */
@@ -93,14 +95,16 @@ class GlobalDockerTask extends Sq1Task {
 		if ( ! $this->taskDockerStart( 'tribe-phpmyadmin' )->run() ) {
 
 			$this->taskDockerRun( 'phpmyadmin/phpmyadmin' )
-			     ->option( 'network', 'global_proxy' )
-			     ->option( 'link', 'tribe-mysql:db' )
+			     ->option( 'network', Robo::config()->get( 'SQ1_DOCKER_NETWORK' ) )
+			     ->option( 'link', Robo::config()->get( 'SQ1_DOCKER_MYSQL' ) )
 			     ->name( 'tribe-phpmyadmin' )
-			     ->publish( '8080', '80' )
+			     ->publish( Robo::config()->get( 'SQ1_PHPMYADMIN_PORT' ), '80' )
 			     ->detached()
 			     ->run();
 
 		}
+
+		$this->say( sprintf( 'Started container on http://localhost:%d', Robo::config()->get( 'SQ1_PHPMYADMIN_PORT' ) ) );
 	}
 
 	/**
