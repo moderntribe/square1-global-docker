@@ -12,7 +12,7 @@ use Robo\Robo;
 class ShellTask extends LocalDockerTask {
 
 	/**
-	 * Gives you a shell into the docker container
+	 * Gives you a shell into the php-fpm docker container.
 	 *
 	 * @command shell
 	 */
