@@ -20,7 +20,7 @@ class GlobalDockerTask extends Sq1Task {
 	 */
 	public function globalStart() {
 		$this->taskDockerComposeUp()
-		     ->files( $this->global_compose_files() )
+		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->detachedMode()
 		     ->run();
@@ -33,7 +33,7 @@ class GlobalDockerTask extends Sq1Task {
 	 */
 	public function globalStop() {
 		$this->taskDockerComposeDown()
-		     ->files( $this->global_compose_files() )
+		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->run();
 	}
@@ -45,7 +45,7 @@ class GlobalDockerTask extends Sq1Task {
 	 */
 	public function globalRestart() {
 		$this->taskDockerComposeRestart()
-		     ->files( $this->global_compose_files() )
+		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->run();
 	}
@@ -67,6 +67,19 @@ class GlobalDockerTask extends Sq1Task {
 	 */
 	public function globalStatus() {
 		$this->_exec( 'docker ps' );
+	}
+
+	/**
+	 * Displays global docker logs.
+	 *
+	 * @command global:logs
+	 */
+	public function logs() {
+		$this->taskDockerComposeLogs()
+		     ->files( $this->globalComposeFiles() )
+		     ->projectName( self::PROJECT_NAME )
+		     ->arg( '-f' )
+		     ->run();
 	}
 
 	/**
@@ -112,7 +125,7 @@ class GlobalDockerTask extends Sq1Task {
 	 *
 	 * @return array
 	 */
-	protected function global_compose_files(): array {
+	protected function globalComposeFiles(): array {
 		return array_filter( [
 			self::COMPOSE_CONFIG,
 			file_exists( self::COMPOSE_OVERRIDE ) ? self::COMPOSE_OVERRIDE : '',

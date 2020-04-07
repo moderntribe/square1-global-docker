@@ -92,6 +92,19 @@ class LocalDockerTask extends Sq1Task {
 	}
 
 	/**
+	 * Displays local docker project logs.
+	 *
+	 * @command logs
+	 */
+	public function logs() {
+		$this->taskDockerComposeLogs()
+			->files( Robo::config()->get( 'compose' ) )
+			->projectName( Robo::config()->get( 'name' ) )
+			->arg( '-f' )
+			->run();
+	}
+
+	/**
 	 * Writes a user supplied GitHub token to the composer-config.json
 	 */
 	protected function runComposerConfig(): void {
