@@ -43,6 +43,10 @@ _sq1()
             opts="${opts} --raw --format"
             ;;
 
+            logs)
+            opts="${opts} "
+            ;;
+
             restart)
             opts="${opts} "
             ;;
@@ -68,6 +72,10 @@ _sq1()
             ;;
 
             global:cert)
+            opts="${opts} "
+            ;;
+
+            global:logs)
             opts="${opts} "
             ;;
 
@@ -105,7 +113,7 @@ _sq1()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer create help list restart shell start stop wp wpx global:cert global:myadmin global:restart global:start global:status global:stop global:stop-all"
+        coms="composer create help list logs restart shell start stop wp wpx global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
@@ -115,3 +123,4 @@ _sq1()
 }
 
 complete -o default -F _sq1 sq1
+
