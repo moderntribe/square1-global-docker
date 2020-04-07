@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tribe\Sq1\Tasks\ComposerTask;
 use Tribe\Sq1\Tasks\GlobalDockerTask;
+use Tribe\Sq1\Tasks\GulpTask;
 use Tribe\Sq1\Tasks\LocalDockerTask;
 
 /**
@@ -78,6 +79,9 @@ class SquareOne {
 		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
 		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
 
+		$container->inflector( GulpTask::class )
+		          ->invokeMethod( 'getLocalDockerConfig', [ $input ] );
+
 		$this->setContainer( $container );
 
 		// Instantiate Robo Runner.
@@ -110,6 +114,7 @@ class SquareOne {
 			\Tribe\Sq1\Tasks\LocalDockerTask::class,
 			\Tribe\Sq1\Tasks\WpCliTask::class,
 			\Tribe\Sq1\Tasks\ShellTask::class,
+			\Tribe\Sq1\Tasks\GulpTask::class,
 		];
 	}
 

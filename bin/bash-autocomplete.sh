@@ -35,6 +35,10 @@ _sq1()
             opts="${opts} "
             ;;
 
+            gulp)
+            opts="${opts} "
+            ;;
+
             help)
             opts="${opts} --format --raw"
             ;;
@@ -113,7 +117,7 @@ _sq1()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer create help list logs restart shell start stop wp wpx global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
+        coms="composer create gulp help list logs restart shell start stop wp wpx global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
@@ -123,4 +127,5 @@ _sq1()
 }
 
 complete -o default -F _sq1 sq1
+
 
