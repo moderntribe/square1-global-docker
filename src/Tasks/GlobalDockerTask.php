@@ -83,7 +83,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Start a phpMyAdmin docker container on port 8080
+	 * Start a phpMyAdmin docker container on port http://localhost:8080
 	 *
 	 * @command global:myadmin
 	 */
