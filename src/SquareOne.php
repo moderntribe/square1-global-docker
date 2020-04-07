@@ -25,7 +25,7 @@ class SquareOne {
 	use ConfigAwareTrait;
 	use ContainerAwareTrait;
 
-	const APPLICATION_NAME = 'Square One Global Docker';
+	const APPLICATION_NAME = 'SquareOne Global Docker';
 	const REPOSITORY       = 'moderntribe/square1-global-docker';
 
 	/**
