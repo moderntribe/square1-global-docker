@@ -74,12 +74,12 @@ trait LocalAwareTrait {
 			return false;
 		}
 
-		$allowedCommands = [
+		$defaultCommands = [
 			'list',
 			'help',
 		];
 
-		if ( in_array( $input->getFirstArgument(), $allowedCommands ) ) {
+		if ( in_array( $input->getFirstArgument(), $defaultCommands ) ) {
 			return false;
 		}
 
