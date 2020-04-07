@@ -8,26 +8,19 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * Local Docker Methods
  *
- *
  * @package Tribe\Sq1\Traits
  */
 trait LocalAwareTrait {
 
 	/**
-	 * Returns the current local docker config.
+	 * Sets the local docker configuration variables.
 	 *
 	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
 	 *
 	 * @param  \Symfony\Component\Console\Input\InputInterface  $input|null
 	 */
 	public function getLocalDockerConfig( ?InputInterface $input ): void {
-		if ( empty( $input ) ) {
-			return;
-		}
-
-		$argument = $input->getFirstArgument();
-
-		if ( ! $argument || 'global' === strtok( $argument, ':' ) ) {
+		if ( ! $this->is_local_command( $input ) ) {
 			return;
 		}
 
@@ -67,5 +60,33 @@ trait LocalAwareTrait {
 		Robo::config()->set( 'docker_dir', $docker_dir );
 		Robo::config()->set( 'compose', array_filter( $compose_config, 'file_exists' ) );
 		Robo::config()->set( 'name', trim( file_get_contents( $project_name ) ) );
+	}
+
+	/**
+	 * Determine if this is a local docker command.
+	 *
+	 * @param  \Symfony\Component\Console\Input\InputInterface  $input|null
+	 *
+	 * @return bool
+	 */
+	protected function is_local_command( ?InputInterface $input ): bool {
+		if ( empty( $input ) || empty ( $input->getFirstArgument() ) ) {
+			return false;
+		}
+
+		$allowedCommands = [
+			'list',
+			'help',
+		];
+
+		if ( in_array( $input->getFirstArgument(), $allowedCommands ) ) {
+			return false;
+		}
+
+		if ( 'global' === strtok( $input->getFirstArgument(), ':' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
