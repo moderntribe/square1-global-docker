@@ -11,7 +11,7 @@ use Robo\Robo;
  */
 class GlobalDockerTask extends Sq1Task {
 
-	const PROJECT_NAME = 'global';
+	public const PROJECT_NAME = 'global';
 
 	/**
 	 * Starts the global docker container.
