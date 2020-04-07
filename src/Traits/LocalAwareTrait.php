@@ -3,8 +3,7 @@
 namespace Tribe\Sq1\Traits;
 
 use Robo\Robo;
-use Robo\Tasks;
-use Tribe\Sq1\Exceptions\Sq1Exception;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Local Docker Methods
@@ -19,13 +18,19 @@ trait LocalAwareTrait {
 	 *
 	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
 	 *
-	 * @param  \Robo\Tasks  $task
-	 *
-	 * @return \Robo\Tasks
-	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 * @param  \Symfony\Component\Console\Input\InputInterface  $input|null
 	 */
-	protected function getLocalDockerConfig( Tasks $task ): Tasks {
+	public function getLocalDockerConfig( ?InputInterface $input ): void {
+		if ( empty( $input ) ) {
+			return;
+		}
+
+		$argument = $input->getFirstArgument();
+
+		if ( ! $argument || 'global' === strtok( $argument, ':' ) ) {
+			return;
+		}
+
 		$workingDir = getcwd();
 		$file       = $workingDir . '/build-process.php';
 		$found      = false;
@@ -54,14 +59,13 @@ trait LocalAwareTrait {
 		}
 
 		if ( ! $found ) {
-			throw new Sq1Exception( 'Unable to find "build-process.php". Are you sure this is a sq1 project?' );
+			$this->yell( 'Unable to find "build-process.php". Are you sure this is a sq1 project?' );
+			exit(1);
 		}
 
 		Robo::config()->set( 'project_root', dirname( $file ) );
 		Robo::config()->set( 'docker_dir', $docker_dir );
 		Robo::config()->set( 'compose', array_filter( $compose_config, 'file_exists' ) );
 		Robo::config()->set( 'name', trim( file_get_contents( $project_name ) ) );
-
-		return $task;
 	}
 }

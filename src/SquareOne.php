@@ -74,6 +74,7 @@ class SquareOne {
 
 		// Build inflections for the InflectionAwareTrait.
 		$container->inflector( LocalDockerTask::class )
+			      ->invokeMethod( 'getLocalDockerConfig', [ $input ] )
 		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
 		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
 

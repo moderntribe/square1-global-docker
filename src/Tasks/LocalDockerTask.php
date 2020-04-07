@@ -19,12 +19,9 @@ class LocalDockerTask extends Sq1Task {
 	/**
 	 * LocalDockerTask constructor.
 	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
 	 */
 	public function __construct() {
 		parent::__construct();
-		// Set configuration variables.
-		$this->getLocalDockerConfig( $this );
 	}
 
 	/**
