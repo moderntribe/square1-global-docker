@@ -4,6 +4,8 @@
 # within SquareOne. They may be overridden by exporting an environmental
 # variable of the same name, or by adding it to a file named ".env" in the
 # directory from which you are running SquareOne.
+#
+# Copy this file to constants.override.yml to customize.
 ---
 
 # Docker

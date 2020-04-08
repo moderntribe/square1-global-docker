@@ -16,11 +16,6 @@ Run `./install.sh`
 1. bash-completion (if you want sq1 autocomplete commands)
 1. git
 
-### OSX Dependencies
-
-Run `brew install $(<brew/packages.txt)` to install dependencies.
-
-
 ### Development installation
 
 1. Clone this repo.
@@ -42,4 +37,8 @@ Run `symfony-autocomplete sq1` and copy the contents into [bash-autocomplete.sh]
 ### Usage
 - Run `sq1` to see a command list.
 - To pass arguments to a command, separate the command and the arguments with `--`, e.g. `sq1 wp cli info -- --format=json`
+
+### Configuration
+
+Copy [constants.yml](config/constants.yml) to `constants.override.yml` and customize to your liking.
 

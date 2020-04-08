@@ -21,10 +21,14 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Tribe\Sq1\SquareOne;
 
+$configFiles = [
+	__DIR__ . '/config/constants.override.yml',
+	__DIR__ . '/config/constants.yml',
+];
+
 $input                 = new ArgvInput( $argv );
 $output                = new ConsoleOutput();
-$configurationFilename = __DIR__ . '/config/constants.yml';
-$config                = Robo::createConfiguration( [ $configurationFilename ] );
+$config                = Robo::createConfiguration( [ current( array_filter( $configFiles, 'file_exists' ) ) ] );
 $version               = trim( file_get_contents( __DIR__ . '/VERSION' ) );
 $sq1                   = new SquareOne( $version, $config, $input, $output );
 $status_code           = $sq1->run( $input, $output );
