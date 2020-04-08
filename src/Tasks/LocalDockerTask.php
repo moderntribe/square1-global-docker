@@ -3,6 +3,7 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
+use Tribe\Sq1\Models\Cert;
 use Tribe\Sq1\Traits\InflectionAwareTrait;
 use Tribe\Sq1\Traits\LocalAwareTrait;
 
@@ -30,10 +31,12 @@ class LocalDockerTask extends Sq1Task {
 	 * @command start
 	 */
 	public function start(): self {
-		$cert = realpath( self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) ) );
+		$certPath = self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) );
+
+		$cert = new Cert( $certPath );
 
 		// Generate a certificate for this project if it doesn't exist
-		if ( false === $cert || ! is_file( $cert ) ) {
+		if ( ! $cert->exists() || $cert->expired() ) {
 			$this->globalTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
 			$this->globalTask->globalRestart();
 		}

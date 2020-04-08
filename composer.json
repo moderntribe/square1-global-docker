@@ -10,6 +10,7 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^7.2",
+    "ext-openssl": "*",
     "pimple/pimple": "~3.0@dev",
     "consolidation/robo": "^1.0.0",
     "droath/robo-docker-compose": "0.0.*"
