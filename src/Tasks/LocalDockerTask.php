@@ -32,13 +32,13 @@ class LocalDockerTask extends Sq1Task {
 	 * @command start
 	 */
 	public function start(): self {
-		$certPath = self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( 'name' ) );
+		$certPath = self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
 
 		$cert = new Cert( $certPath );
 
 		// Generate a certificate for this project if it doesn't exist or if it expired.
 		if ( ! $cert->exists() || $cert->expired() ) {
-			$this->globalTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
+			$this->globalTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
 			$this->globalTask->globalRestart();
 		}
 
@@ -57,7 +57,7 @@ class LocalDockerTask extends Sq1Task {
 			$this->runComposerConfig();
 		}
 
-		$this->say( sprintf( 'Starting docker-compose project: %s', Robo::config()->get( 'name' ) ) );
+		$this->say( sprintf( 'Starting docker-compose project: %s', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
 
 		// Start the local project
 		$this->taskDockerComposeUp()
