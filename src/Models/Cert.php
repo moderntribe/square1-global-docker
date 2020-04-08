@@ -10,12 +10,17 @@ namespace Tribe\Sq1\Models;
 class Cert {
 
 	/**
-	 * The certificate path.
+	 * The path to the crt file.
 	 *
 	 * @var false|string
 	 */
 	protected $certPath;
 
+	/**
+	 * Cert constructor.
+	 *
+	 * @param  string  $path The path to the crt file.
+	 */
 	public function __construct( string $path ) {
 		$this->certPath = realpath( $path );
 	}
