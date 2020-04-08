@@ -14,6 +14,7 @@ Run `./install.sh`
 1. docker-compose
 1. docker-credential-helper (osx)
 1. bash-completion (if you want sq1 autocomplete commands)
+1. git
 
 ### OSX Dependencies
 
