@@ -35,7 +35,7 @@ class LocalDockerTask extends Sq1Task {
 
 		$cert = new Cert( $certPath );
 
-		// Generate a certificate for this project if it doesn't exist
+		// Generate a certificate for this project if it doesn't exist or if it expired.
 		if ( ! $cert->exists() || $cert->expired() ) {
 			$this->globalTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( 'name' ) ) );
 			$this->globalTask->globalRestart();
