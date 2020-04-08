@@ -2,13 +2,23 @@
 
 Status: **Alpha**
 
+### Get Started
+
+Run `./install.sh`
+
 ### Requirements
 
 1. PHP 7.2+
 1. composer
 1. docker
 1. docker-compose
-1. bash-completion
+1. docker-credential-helper (osx)
+1. bash-completion (if you want sq1 autocomplete commands)
+
+### OSX Dependencies
+
+Run `brew install $(<brew/packages.txt)` to install dependencies.
+
 
 ### Development installation
 
@@ -19,16 +29,9 @@ Status: **Alpha**
 1. Run `composer install`.
 1. Run `sq1` for command options (`sq1 create` doesn't do anything yet).
 
-### Release Installation (Do not use)
+### Manual Bash Autocompletion
 
-1. `composer global require consolidation/cgr`
-1. Add your composer bin path to your $PATH, e.g. `PATH="$(composer config -g home)/vendor/bin:$PATH"`
-1. `cgr moderntribe/square1-global-docker`
-1. `composer install`
-
-### Bash Autocompletion
-
-Add `source /path/to/this/repo/bin/bash-autocomplete.sh` to your `~/.bashrc` or `~/.zshrc` or `~/.bash_profile` and reload your terminal.
+Add `source /PATH/TO/THIS/REPO/bin/bash-autocomplete.sh` to your `~/.bashrc` or `~/.zshrc` or `~/.bash_profile` and reload your terminal.
 
 **Development**
 

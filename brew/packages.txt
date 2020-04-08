@@ -1,0 +1,4 @@
+php
+composer
+bash-completion@2
+docker-credential-helper
