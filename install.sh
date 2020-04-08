@@ -49,6 +49,9 @@ fi
 echo "Enabling sq1 autocompletion..."
 enable_bash_autocomplete
 
+echo "Running composer install..."
+composer install -a
+
 echo "Symlinking sq1 binary to /usr/local/bin/sq1, enter your password when requested."
 symlink_sq1
 
