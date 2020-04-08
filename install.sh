@@ -23,13 +23,13 @@ symlink_sq1() {
 
 # OSX
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  which -s docker
+  command -v docker >/dev/null 2>&1
   if [[ $? != 0 ]] ; then
       echo "Docker appears to be missing, install it from here: https://hub.docker.com/editions/community/docker-ce-desktop-mac"
       exit 1;
   fi
 
-  which -s brew
+  command -v brew >/dev/null 2>&1
   if [[ $? != 0 ]] ; then
       echo "Homebrew not found, do you want to install it?"
       select yn in "Yes" "No"; do
