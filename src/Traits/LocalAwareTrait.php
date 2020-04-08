@@ -4,6 +4,7 @@ namespace Tribe\Sq1\Traits;
 
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
+use Tribe\Sq1\Models\LocalDocker;
 
 /**
  * Local Docker Methods
@@ -56,10 +57,10 @@ trait LocalAwareTrait {
 			exit(1);
 		}
 
-		Robo::config()->set( 'project_root', dirname( $file ) );
-		Robo::config()->set( 'docker_dir', $docker_dir );
-		Robo::config()->set( 'compose', array_filter( $compose_config, 'file_exists' ) );
-		Robo::config()->set( 'name', trim( file_get_contents( $project_name ) ) );
+		Robo::config()->set( LocalDocker::CONFIG_PROJECT_ROOT, dirname( $file ) );
+		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $project_name ) ) );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $docker_dir );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( $compose_config, 'file_exists' ) );
 	}
 
 	/**

@@ -4,6 +4,7 @@ namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
 use Tribe\Sq1\Models\Cert;
+use Tribe\Sq1\Models\LocalDocker;
 use Tribe\Sq1\Traits\InflectionAwareTrait;
 use Tribe\Sq1\Traits\LocalAwareTrait;
 
@@ -44,13 +45,13 @@ class LocalDockerTask extends Sq1Task {
 		// Start global containers
 		$this->globalTask->globalStart();
 
-		$composer_cache = Robo::config()->get( 'docker_dir' ) . '/composer-cache';
+		$composer_cache = Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer-cache';
 
 		if ( ! is_dir( $composer_cache ) ) {
 			mkdir( $composer_cache );
 		}
 
-		$composer_config = Robo::config()->get( 'docker_dir' ) . '/composer/auth.json';
+		$composer_config = Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json';
 
 		if ( ! is_file( $composer_config ) ) {
 			$this->runComposerConfig();
@@ -60,8 +61,8 @@ class LocalDockerTask extends Sq1Task {
 
 		// Start the local project
 		$this->taskDockerComposeUp()
-		     ->files( Robo::config()->get( 'compose' ) )
-		     ->projectName( Robo::config()->get( 'name' ) )
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
+		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 		     ->detachedMode()
 		     ->forceRecreate()
 		     ->run();
@@ -78,8 +79,8 @@ class LocalDockerTask extends Sq1Task {
 	 */
 	public function stop(): self {
 		$this->taskDockerComposeDown()
-		     ->files( Robo::config()->get( 'compose' ) )
-		     ->projectName( Robo::config()->get( 'name' ) )
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
+		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 		     ->run();
 
 		return $this;
@@ -101,8 +102,8 @@ class LocalDockerTask extends Sq1Task {
 	 */
 	public function logs() {
 		$this->taskDockerComposeLogs()
-			->files( Robo::config()->get( 'compose' ) )
-			->projectName( Robo::config()->get( 'name' ) )
+			->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE) )
+			->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 			->arg( '-f' )
 			->run();
 	}
@@ -114,7 +115,7 @@ class LocalDockerTask extends Sq1Task {
 		$token =
 			$this->ask( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one. Paste the token here:' );
 
-		$this->taskWriteToFile( Robo::config()->get( 'docker_dir' ) . '/composer/auth.json' )
+		$this->taskWriteToFile( Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json' )
 		     ->line( sprintf( '{ "github-oauth": { "github.com": "%s" } }', trim( $token ) ) )
 		     ->run();
 	}

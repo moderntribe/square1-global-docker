@@ -3,6 +3,7 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
+use Tribe\Sq1\Models\LocalDocker;
 
 /**
  * Class ComposerTask
@@ -20,8 +21,8 @@ class ComposerTask extends Sq1Task {
 	 */
 	public function composer( array $args ) {
 		$this->taskDockerComposeExecute()
-		     ->files( Robo::config()->get( 'compose' ) )
-		     ->projectName( Robo::config()->get( 'name' ) )
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
+		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 		     ->setContainer( 'php-fpm' )
 		     ->exec( sprintf( 'composer %s -d %s', trim( implode( ' ', $args ) ), $this->dockerWorkdir ) )
 		     ->run();

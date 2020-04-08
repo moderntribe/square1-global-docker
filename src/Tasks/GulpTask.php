@@ -3,6 +3,7 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
+use Tribe\Sq1\Models\LocalDocker;
 use Tribe\Sq1\Traits\LocalAwareTrait;
 
 class GulpTask extends Sq1Task {
@@ -20,7 +21,7 @@ class GulpTask extends Sq1Task {
 	 */
 	public function gulp( string $gulpCommand ) {
 		$this->taskExec( self::NVM_SOURCE . " && gulp ${gulpCommand}" )
-			->dir( Robo::config()->get( 'project_root' ) )
+			->dir( Robo::config()->get( LocalDocker::CONFIG_PROJECT_ROOT ) )
 			->run();
 	}
 }

@@ -3,6 +3,7 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
+use Tribe\Sq1\Models\LocalDocker;
 
 /**
  * WP CLI Commands.
@@ -21,8 +22,8 @@ class WpCliTask extends LocalDockerTask {
 	 */
 	public function wp( array $args ) {
 		$this->taskDockerComposeExecute()
-		     ->files( Robo::config()->get( 'compose' ) )
-		     ->projectName( Robo::config()->get( 'name' ) )
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
+		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 		     ->setContainer( 'php-fpm' )
 		     ->envVariable( 'WP_CLI_PHP_ARGS', '' )
 		     ->exec( sprintf( 'wp --allow-root %s', trim( implode( ' ', $args ) ) ) )
@@ -38,10 +39,10 @@ class WpCliTask extends LocalDockerTask {
 	 *
 	 */
 	public function wpx( array $args ) {
-		$projectName = Robo::config()->get( 'name' );
+		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
 
 		$this->taskDockerComposeExecute()
-		     ->files( Robo::config()->get( 'compose' ) )
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
 		     ->projectName( $projectName )
 		     ->setContainer( 'php-fpm' )
 		     ->envVariable( 'PHP_IDE_CONFIG', "serverName=${projectName}.tribe" )
