@@ -10,6 +10,7 @@
 SQ1_DOCKER_WORKDIR: '/application/www'
 SQ1_DOCKER_NETWORK: 'global_proxy'
 SQ1_DOCKER_MYSQL: 'tribe-mysql:db'
+SQ1_CERT_EXPIRY: 825
 
 # PhpMyAdmin
 SQ1_PHPMYADMIN_PORT: 8080

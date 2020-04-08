@@ -85,15 +85,16 @@ class GlobalDockerTask extends Sq1Task {
 	/**
 	 * Generates an SSL certificate for a local .tribe domain
 	 *
-	 * @param string $domain The .tribe domain to generate a certificate for
+	 * @param  string  $domain  The .tribe domain to generate a certificate for
 	 *
 	 * @command global:cert
 	 *
-	 * @TODO Move actual cert.sh logic into PHP
+	 * @TODO    Move actual cert.sh logic into PHP
 	 */
 	public function globalCert( string $domain ) {
 		$this->taskExec( self::SCRIPT_PATH . 'global/cert.sh' )
 		     ->arg( $domain )
+		     ->arg( Robo::config()->get( 'SQ1_CERT_EXPIRY' ) )
 		     ->run();
 	}
 
