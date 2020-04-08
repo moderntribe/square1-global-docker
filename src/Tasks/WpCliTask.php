@@ -50,20 +50,4 @@ class WpCliTask extends LocalDockerTask {
 		     ->run();
 	}
 
-	/**
-	 * Find the local Wp Binary Path.
-	 *
-	 * @return string
-	 *
-	 * @throws \Robo\Exception\TaskException
-	 */
-	protected function getWpBinaryPath(): string {
-		$command = $this->taskExecStack()
-		                ->printOutput( false )
-		                ->exec( 'which wp' )
-		                ->run();
-
-		$command->getMessage();
-	}
-
 }
