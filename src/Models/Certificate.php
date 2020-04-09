@@ -3,11 +3,11 @@
 namespace Tribe\Sq1\Models;
 
 /**
- * SSL Certificate
+ * SSL Certificate Model
  *
  * @package Tribe\Sq1\Models
  */
-class Cert {
+class Certificate {
 
 	/**
 	 * The path to the crt file.
@@ -16,13 +16,18 @@ class Cert {
 	 */
 	protected $certPath;
 
+
 	/**
-	 * Cert constructor.
+	 * Certificate Path Setter
 	 *
-	 * @param  string  $path The path to the crt file.
+	 * @param  string  $path  The path to the .crt file.
+	 *
+	 * @return \Tribe\Sq1\Models\Certificate
 	 */
-	public function __construct( string $path ) {
+	public function setCertPath( string $path ): self {
 		$this->certPath = realpath( $path );
+
+		return $this;
 	}
 
 	/**
