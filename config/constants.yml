@@ -16,3 +16,10 @@ SQ1_CERT_EXPIRY: 825
 
 # PhpMyAdmin
 SQ1_PHPMYADMIN_PORT: 8080
+
+# Global Command Options
+options:
+  path:
+    name: '--path'
+    shortcut: 'p'
+    description: 'Path to a SquareOne local project.'

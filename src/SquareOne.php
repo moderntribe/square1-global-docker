@@ -134,7 +134,11 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	 */
 	private function configureGlobalOptions(): void {
 		$this->app->getDefinition()->addOption(
-			new InputOption( '--path', 'p', InputOption::VALUE_OPTIONAL, 'Path to a SquareOne local project.' )
+			new InputOption( $this->config->get( 'options.path.name' ),
+				$this->config->get( 'options.path.shortcut' ),
+				InputOption::VALUE_OPTIONAL,
+				$this->config->get( 'options.path.description' )
+			)
 		);
 	}
 
