@@ -14,7 +14,9 @@ use Tribe\Sq1\Models\LocalDocker;
 trait LocalAwareTrait {
 
 	/**
-	 * Sets the local docker configuration variables.
+	 * Sets the local docker configuration variables. Uses consolidation/annotated-command hooks to run when each command does.
+	 *
+	 * @hook init *
 	 *
 	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
 	 *
@@ -25,7 +27,13 @@ trait LocalAwareTrait {
 			return;
 		}
 
-		$workingDir = getcwd();
+		// Set a user's custom path if provided.
+		if ( $input->hasOption( 'path' ) && ! empty( $input->getOption( 'path' ) ) ) {
+			$workingDir = $input->getOption( 'path' );
+		} else {
+			$workingDir = getcwd();
+		}
+
 		$file       = $workingDir . '/build-process.php';
 		$found      = false;
 

@@ -125,12 +125,8 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		// Build inflections for the InflectionAwareTrait.
 		$container->inflector( LocalDockerTask::class )
 		          ->invokeMethod( 'setCertificate', [ Certificate::class ] )
-		          ->invokeMethod( 'getLocalDockerConfig', [ $container->get( 'input' ) ] )
 		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
 		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
-
-		$container->inflector( GulpTask::class )
-		          ->invokeMethod( 'getLocalDockerConfig', [ $container->get( 'input' ) ] );
 	}
 
 	/**
