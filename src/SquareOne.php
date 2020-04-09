@@ -8,8 +8,11 @@ use Robo\Runner as RoboRunner;
 use Robo\Common\ConfigAwareTrait;
 use League\Container\ContainerAwareTrait;
 use Symfony\Component\Console\Application;
+use League\Container\ContainerAwareInterface;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Tasks\ComposerTask;
 use Tribe\Sq1\Tasks\GlobalDockerTask;
 use Tribe\Sq1\Tasks\GulpTask;
@@ -20,7 +23,7 @@ use Tribe\Sq1\Tasks\LocalDockerTask;
  *
  * @package Tribe\Sq1
  */
-class SquareOne {
+class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
 	use ConfigAwareTrait;
 	use ContainerAwareTrait;
@@ -72,17 +75,8 @@ class SquareOne {
 
 		// Create and configure container.
 		$container = Robo::createDefaultContainer( $input, $output, $this->app, $config );
-
-		// Build inflections for the InflectionAwareTrait.
-		$container->inflector( LocalDockerTask::class )
-			      ->invokeMethod( 'getLocalDockerConfig', [ $input ] )
-		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
-		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
-
-		$container->inflector( GulpTask::class )
-		          ->invokeMethod( 'getLocalDockerConfig', [ $input ] );
-
 		$this->setContainer( $container );
+		$this->configureContainer();
 
 		// Instantiate Robo Runner.
 		$this->runner = new RoboRunner( $this->getTasks() );
@@ -116,6 +110,25 @@ class SquareOne {
 			\Tribe\Sq1\Tasks\ShellTask::class,
 			\Tribe\Sq1\Tasks\GulpTask::class,
 		];
+	}
+
+	/**
+	 * Configure the container.
+	 */
+	private function configureContainer(): void {
+		$container = $this->getContainer();
+
+		$container->share( Certificate::class );
+
+		// Build inflections for the InflectionAwareTrait.
+		$container->inflector( LocalDockerTask::class )
+		          ->invokeMethod( 'setCertificate', [ Certificate::class ] )
+		          ->invokeMethod( 'getLocalDockerConfig', [ $container->get( 'input' ) ] )
+		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
+		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
+
+		$container->inflector( GulpTask::class )
+		          ->invokeMethod( 'getLocalDockerConfig', [ $container->get( 'input' ) ] );
 	}
 
 }
