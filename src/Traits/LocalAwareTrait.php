@@ -29,9 +29,7 @@ trait LocalAwareTrait {
 
 		// Set a user's custom path if provided.
 		if ( $input->hasOption( 'path' ) && ! empty( $input->getOption( 'path' ) ) ) {
-			$workingDir = $input->getOption( 'path' );
-		} else {
-			$workingDir = getcwd();
+			$workingDir = is_string( $input->getOption( 'path' ) ) ? $input->getOption( 'path' ) : getcwd();
 		}
 
 		$file       = $workingDir . '/build-process.php';
