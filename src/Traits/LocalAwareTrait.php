@@ -28,7 +28,7 @@ trait LocalAwareTrait {
 		}
 
 		// Set a user's custom path if provided.
-		if ( $input->hasOption( 'path' ) && ! empty( $input->getOption( 'path' ) ) ) {
+		if ( $input->hasOption( 'path' ) ) {
 			$workingDir = is_string( $input->getOption( 'path' ) ) ? $input->getOption( 'path' ) : getcwd();
 		}
 
