@@ -3,7 +3,8 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
-use Tribe\Sq1\Models\Cert;
+use Tribe\Sq1\Contracts\CertificateAwareInterface;
+use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Models\LocalDocker;
 use Tribe\Sq1\Traits\InflectionAwareTrait;
 use Tribe\Sq1\Traits\LocalAwareTrait;
@@ -13,17 +14,36 @@ use Tribe\Sq1\Traits\LocalAwareTrait;
  *
  * @package Tribe\Sq1\Tasks
  */
-class LocalDockerTask extends Sq1Task {
+class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 
 	use LocalAwareTrait;
 	use InflectionAwareTrait;
 
 	/**
-	 * LocalDockerTask constructor.
+	 * The Certificate Model.
 	 *
+	 * @var Certificate
 	 */
-	public function __construct() {
-		parent::__construct();
+	protected $certificate;
+
+	/**
+	 * Set the Certificate model.
+	 *
+	 * @param  \Tribe\Sq1\Models\Certificate  $cert
+	 *
+	 * @return mixed|void
+	 */
+	public function setCertificate( Certificate $cert ): void {
+		$this->certificate = $cert;
+	}
+
+	/**
+	 * Get the Certificate model.
+	 *
+	 * @return \Tribe\Sq1\Models\Certificate
+	 */
+	public function getCertificate(): Certificate {
+		return $this->certificate;
 	}
 
 	/**
@@ -34,7 +54,7 @@ class LocalDockerTask extends Sq1Task {
 	public function start(): self {
 		$certPath = self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
 
-		$cert = new Cert( $certPath );
+		$cert = $this->certificate->setCertPath( $certPath );
 
 		// Generate a certificate for this project if it doesn't exist or if it expired.
 		if ( ! $cert->exists() || $cert->expired() ) {
