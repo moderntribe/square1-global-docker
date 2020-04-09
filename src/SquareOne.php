@@ -11,6 +11,7 @@ use Symfony\Component\Console\Application;
 use League\Container\ContainerAwareInterface;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Tasks\ComposerTask;
@@ -72,6 +73,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		// Create application.
 		$this->setConfig( $config );
 		$this->app = new Application( self::APPLICATION_NAME, $this->version );
+		$this->configureGlobalOptions();
 
 		// Create and configure container.
 		$container = Robo::createDefaultContainer( $input, $output, $this->app, $config );
@@ -129,6 +131,15 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
 		$container->inflector( GulpTask::class )
 		          ->invokeMethod( 'getLocalDockerConfig', [ $container->get( 'input' ) ] );
+	}
+
+	/**
+	 * Add Global Command Options.
+	 */
+	private function configureGlobalOptions(): void {
+		$this->app->getDefinition()->addOption(
+			new InputOption( '--path', 'p', InputOption::VALUE_OPTIONAL, 'Path to a SquareOne local project.' )
+		);
 	}
 
 }
