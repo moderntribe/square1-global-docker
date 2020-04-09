@@ -106,7 +106,9 @@ class GlobalDockerTask extends Sq1Task {
 	public function myAdmin() {
 		$this->globalStart();
 
-		if ( ! $this->taskDockerStart( 'tribe-phpmyadmin' )->run() ) {
+		if ( ! $this->taskDockerStart( 'tribe-phpmyadmin' )->run()->wasSuccessful() ) {
+
+			$this->taskDockerRemove( 'tribe-phpmyadmin' )->run();
 
 			$this->taskDockerRun( 'phpmyadmin/phpmyadmin' )
 			     ->option( 'network', Robo::config()->get( 'SQ1_DOCKER_NETWORK' ) )
