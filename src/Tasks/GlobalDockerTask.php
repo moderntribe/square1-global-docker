@@ -185,7 +185,7 @@ class GlobalDockerTask extends Sq1Task {
 		}
 
 		// Add nameservers
-		if ( ! file_exists( $resolverFile ) ) {
+		if ( ! file_exists( $resolverDir . $resolverFile ) ) {
 			$this->writeResolver( $resolverDir, $resolverFile );
 		}
 
