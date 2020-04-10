@@ -3,6 +3,8 @@
 namespace Tribe\Sq1\Tasks;
 
 use Robo\Robo;
+use Tribe\Sq1\Models\OS;
+use Robo\Contract\VerbosityThresholdInterface;
 
 /**
  * Global Docker Commands
@@ -19,7 +21,8 @@ class GlobalDockerTask extends Sq1Task {
 	 * @command global:start
 	 */
 	public function globalStart() {
-		$this->taskDockerComposeUp()
+		$this->init()
+		     ->taskDockerComposeUp()
 		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->detachedMode()
@@ -44,7 +47,8 @@ class GlobalDockerTask extends Sq1Task {
 	 * @command global:restart
 	 */
 	public function globalRestart() {
-		$this->taskDockerComposeRestart()
+		$this->init()
+		     ->taskDockerComposeRestart()
 		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->run();
@@ -134,4 +138,83 @@ class GlobalDockerTask extends Sq1Task {
 			file_exists( self::COMPOSE_OVERRIDE ) ? self::COMPOSE_OVERRIDE : '',
 		] );
 	}
+
+	/**
+	 * Initialize Global Docker.
+	 *
+	 * @return $this
+	 */
+	protected function init(): self {
+		$env = Sq1Task::SCRIPT_PATH . 'global/.env';
+
+		$ip           = '0.0.0.0';
+		$resolverFile = '/etc/resolver/tribe';
+
+		// Get the Docker host IP from the alpine container.
+		if ( OS::MAC_OS === $this->os || OS::WINDOWS === $this->os ) {
+			$result = $this->taskDockerRun( 'alpine:3.11.5' )
+			               ->args( [ '--rm' ] )
+			               ->exec( 'nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
+			               ->interactive( false )
+			               ->run();
+
+			$ip = $result->getMessage();
+		}
+
+		// Get the Docker host IP from the ip command.
+		if ( $this->os === OS::LINUX ) {
+			$result = $this->taskExec( "ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+'" )
+			               ->printOutput( false )
+			               ->silent( true )
+			               ->run();
+
+			$ip = $result->getMessage();
+
+			$resolverFile = '/etc/resolv.conf.head';
+
+			// Ubuntu
+			if ( is_dir( '/etc/resolvconf' ) ) {
+				$resolverFile = '/etc/resolvconf/resolv.conf.d/head';
+			}
+
+		}
+
+		// Add nameservers
+		if ( ! file_exists( $resolverFile ) ) {
+			$this->writeResolver( $resolverFile );
+		}
+
+		// Write docker host IP address to the .env file.
+		$this->taskWriteToFile( $env )
+		     ->setVerbosityThreshold( VerbosityThresholdInterface::VERBOSITY_DEBUG )
+		     ->line( 'HOSTIP={IP}' )
+		     ->place( 'IP', $ip )
+		     ->run();
+
+		// synchronize VM time with system time
+		$this->taskDockerRun( 'phpdockerio/php7-fpm' )
+		     ->privileged()
+		     ->args( [ '--rm' ] )
+		     ->exec( 'date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
+		     ->printOutput( false )
+		     ->silent( true )
+		     ->run();
+
+		return $this;
+	}
+
+	/**
+	 * Writes nameservers to a resolver file.
+	 *
+	 * @param  string  $path          The absolute path to the resolver file.
+	 * @param  string  $nameserverIp  The nameserver IP to add to the file.
+	 */
+	protected function writeResolver( string $path, string $nameserverIp = '127.0.0.1' ): void {
+		$this->taskWriteToFile( $path )
+		     ->setVerbosityThreshold( VerbosityThresholdInterface::VERBOSITY_DEBUG )
+		     ->line( 'nameserver {IP}' )
+		     ->place( 'IP', $nameserverIp )
+		     ->run();
+	}
+
 }
