@@ -148,7 +148,10 @@ class GlobalDockerTask extends Sq1Task {
 		$env = Sq1Task::SCRIPT_PATH . 'global/.env';
 
 		$ip           = '0.0.0.0';
-		$resolverFile = '/etc/resolver/tribe';
+
+		// Mac OS defaults.
+		$resolverDir  = '/etc/resolver/';
+		$resolverFile = 'tribe';
 
 		// Get the Docker host IP from the alpine container.
 		if ( OS::MAC_OS === $this->os || OS::WINDOWS === $this->os ) {
@@ -170,18 +173,20 @@ class GlobalDockerTask extends Sq1Task {
 
 			$ip = $result->getMessage();
 
-			$resolverFile = '/etc/resolv.conf.head';
+			$resolverDir  = '/etc/';
+			$resolverFile = 'resolv.conf.head';
 
 			// Ubuntu
-			if ( is_dir( '/etc/resolvconf' ) ) {
-				$resolverFile = '/etc/resolvconf/resolv.conf.d/head';
+			if ( is_dir( '/etc/resolvconf/resolv.conf.d/' ) ) {
+				$resolverDir = '/etc/resolvconf/resolv.conf.d/';
+				$resolverFile = 'head';
 			}
 
 		}
 
 		// Add nameservers
 		if ( ! file_exists( $resolverFile ) ) {
-			$this->writeResolver( $resolverFile );
+			$this->writeResolver( $resolverDir, $resolverFile );
 		}
 
 		// Write docker host IP address to the .env file.
@@ -204,17 +209,29 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Writes nameservers to a resolver file.
+	 * Writes nameservers to a resolver file and copies it to the correct location.
 	 *
-	 * @param  string  $path          The absolute path to the resolver file.
+	 * @param  string  $dir           The resolver directory.
+	 * @param  string  $fileName      The resolver file name.
 	 * @param  string  $nameserverIp  The nameserver IP to add to the file.
 	 */
-	protected function writeResolver( string $path, string $nameserverIp = '127.0.0.1' ): void {
-		$this->taskWriteToFile( $path )
+	protected function writeResolver( string $dir, string $fileName, string $nameserverIp = '127.0.0.1' ): void {
+		$file    = $dir . $fileName;
+		$tmpFile = $this->taskTmpFile()->getPath();
+
+		$this->taskWriteToFile( $tmpFile )
 		     ->setVerbosityThreshold( VerbosityThresholdInterface::VERBOSITY_DEBUG )
 		     ->line( 'nameserver {IP}' )
 		     ->place( 'IP', $nameserverIp )
 		     ->run();
+
+		if ( ! is_dir( $dir ) ) {
+			$this->taskExec( sprintf( 'sudo mkdir -p %s', $dir ) )->run();
+		}
+
+		$this->taskExec( sprintf( 'sudo cp %s %s', $tmpFile, $file ) )->run();
+
+		unset( $tmpFile );
 	}
 
 }
