@@ -38,11 +38,19 @@ abstract class Sq1Task extends Tasks {
 	protected $dockerWorkdir;
 
 	/**
+	 * The User's Operating System.
+	 *
+	 * @var string
+	 */
+	protected $os;
+
+	/**
 	 * Sq1Task constructor.
 	 *
 	 */
 	public function __construct() {
 		$this->dockerWorkdir = Robo::config()->get( 'SQ1_DOCKER_WORKDIR' );
+		$this->os = PHP_OS_FAMILY;
 	}
 
 	/**
