@@ -6,14 +6,14 @@ use Robo\Robo;
 use Tribe\Sq1\Models\LocalDocker;
 
 /**
- * WP CLI Commands.
+ * WP CLI Commands
  *
  * @package Tribe\Sq1\Tasks
  */
 class WpCliTask extends LocalDockerTask {
 
 	/**
-	 * Run WP CLI commands in the Local Container.
+	 * Run WP CLI commands in the Local Container
 	 *
 	 * @command wp
 	 * @option  xdebug Run with Xdebug enabled.
@@ -33,7 +33,7 @@ class WpCliTask extends LocalDockerTask {
 	}
 
 	/**
-	 * Run WP CLI commands in the Local Container.
+	 * Run WP CLI commands in the Local Container
 	 *
 	 * @param  string  $command
 	 */
@@ -48,7 +48,7 @@ class WpCliTask extends LocalDockerTask {
 	}
 
 	/**
-	 * Run WP CLI commands in the Local Container with Xdebug enabled.
+	 * Run WP CLI commands in the Local Container with Xdebug enabled
 	 *
 	 * @param  string  $command
 	 */
