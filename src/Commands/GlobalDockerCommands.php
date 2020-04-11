@@ -148,7 +148,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 	protected function init(): self {
 		$env = SquareOneCommand::SCRIPT_PATH . 'global/.env';
 
-		$ip           = '0.0.0.0';
+		$ip = '0.0.0.0';
 
 		// Mac OS defaults.
 		$resolverDir  = '/etc/resolver/';
@@ -179,7 +179,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 
 			// Ubuntu
 			if ( is_dir( '/etc/resolvconf/resolv.conf.d/' ) ) {
-				$resolverDir = '/etc/resolvconf/resolv.conf.d/';
+				$resolverDir  = '/etc/resolvconf/resolv.conf.d/';
 				$resolverFile = 'head';
 			}
 
