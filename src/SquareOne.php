@@ -136,7 +136,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		$this->app->getDefinition()->addOption(
 			new InputOption( $this->config->get( 'options.path.name' ),
 				$this->config->get( 'options.path.shortcut' ),
-				InputOption::VALUE_OPTIONAL,
+				InputOption::VALUE_REQUIRED,
 				$this->config->get( 'options.path.description' )
 			)
 		);
