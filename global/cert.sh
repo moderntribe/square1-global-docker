@@ -26,7 +26,7 @@ fi;
 
 echo "Generating SSL certificate for $DOMAIN";
 
-openssl req -new -nodes -sha256 -newkey rsa:4096 -days ${DAYS} \
+openssl req -new -nodes -sha256 -newkey rsa:4096 \
 	-keyout "${SCRIPTDIR}/certs/${DOMAIN}.key" \
 	-out "${SCRIPTDIR}/certs/${DOMAIN}.csr" \
 	-subj "/C=US/ST=California/L=Santa Cruz/O=Modern Tribe/OU=Dev/CN=${DOMAIN}";
