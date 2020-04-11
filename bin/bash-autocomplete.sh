@@ -23,15 +23,11 @@ _sq1()
 
     # completing for an option
     if [[ ${cur} == --* ]] ; then
-        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction"
+        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --project-path"
 
         case "$com" in
 
             composer)
-            opts="${opts} "
-            ;;
-
-            create)
             opts="${opts} "
             ;;
 
@@ -67,12 +63,12 @@ _sq1()
             opts="${opts} "
             ;;
 
-            wp)
-            opts="${opts} "
+            test)
+            opts="${opts} --xdebug --clean"
             ;;
 
-            wpx)
-            opts="${opts} "
+            wp)
+            opts="${opts} --xdebug"
             ;;
 
             global:cert)
@@ -117,7 +113,7 @@ _sq1()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer create gulp help list logs restart shell start stop wp wpx global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
+        coms="composer gulp help list logs restart shell start stop test wp global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
@@ -127,5 +123,3 @@ _sq1()
 }
 
 complete -o default -F _sq1 sq1
-
-
