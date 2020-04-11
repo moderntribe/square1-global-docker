@@ -13,7 +13,7 @@ use Tribe\Sq1\Models\LocalDocker;
 class ShellTask extends LocalDockerTask {
 
 	/**
-	 * Gives you a shell into the php-fpm docker container.
+	 * Gives you a shell into the php-fpm docker container
 	 *
 	 * @command shell
 	 */
