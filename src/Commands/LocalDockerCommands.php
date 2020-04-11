@@ -52,7 +52,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * @command start
 	 */
 	public function start(): self {
-		$certPath = self::SCRIPT_PATH . sprintf( 'global/certs/%s.tribe.crt', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
+		$certPath = sprintf( '%s/%s.tribe.crt', Robo::config()->get( 'docker.certs-folder' ), Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
 
 		$cert = $this->certificate->setCertPath( $certPath );
 

@@ -14,6 +14,7 @@ docker:
   workdir: '/application/www'
   network: 'global_proxy'
   mysql: 'tribe-mysql:db'
+  certs-folder: '~/.config/sq1/certs'
   cert-expiry: 825
   phpmyadmin-port: 8080
 

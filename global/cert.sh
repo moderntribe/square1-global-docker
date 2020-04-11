@@ -8,30 +8,35 @@ fi
 DOMAIN=$1
 DAYS=${2:-825}
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
+CERTDIR=~/.config/sq1/certs
+
+if [ ! -d "${CERTDIR}" ]; then
+  mkdir -p ${CERTDIR}
+fi
 
 cd "$SCRIPTDIR";
 
-if [ ! -f "${SCRIPTDIR}/certs/tribeCA.key" ]; then
+if [ ! -f "${CERTDIR}/tribeCA.key" ]; then
 	echo "Generating certificate authority"
 
 	openssl req -x509 -new -nodes -sha256 -newkey rsa:4096 -days ${DAYS} \
-		-keyout "${SCRIPTDIR}/certs/tribeCA.key" \
-		-out "${SCRIPTDIR}/certs/tribeCA.pem" \
+		-keyout "${CERTDIR}/tribeCA.key" \
+		-out "${CERTDIR}/tribeCA.pem" \
 		-subj "/C=US/ST=California/L=Santa Cruz/O=Modern Tribe/OU=Dev/CN=tri.be";
 
 	if [[ $OSTYPE == darwin* ]]; then
-		sudo security add-trusted-cert -d -r trustRoot -e hostnameMismatch -k /Library/Keychains/System.keychain "${SCRIPTDIR}/certs/tribeCA.pem";
+		sudo security add-trusted-cert -d -r trustRoot -e hostnameMismatch -k /Library/Keychains/System.keychain "${CERTDIR}/tribeCA.pem";
 	fi;
 fi;
 
 echo "Generating SSL certificate for $DOMAIN";
 
 openssl req -new -nodes -sha256 -newkey rsa:4096 \
-	-keyout "${SCRIPTDIR}/certs/${DOMAIN}.key" \
-	-out "${SCRIPTDIR}/certs/${DOMAIN}.csr" \
+	-keyout "${CERTDIR}/${DOMAIN}.key" \
+	-out "${CERTDIR}/${DOMAIN}.csr" \
 	-subj "/C=US/ST=California/L=Santa Cruz/O=Modern Tribe/OU=Dev/CN=${DOMAIN}";
 
-cat > "${SCRIPTDIR}/certs/${DOMAIN}.ext" <<-EOF
+cat > "${CERTDIR}/${DOMAIN}.ext" <<-EOF
 	authorityKeyIdentifier=keyid,issuer
 	basicConstraints=CA:FALSE
 	keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
@@ -42,11 +47,11 @@ cat > "${SCRIPTDIR}/certs/${DOMAIN}.ext" <<-EOF
 EOF
 
 openssl x509 -req -days ${DAYS} -sha256 \
-	-in "${SCRIPTDIR}/certs/${DOMAIN}.csr" \
-	-CA "${SCRIPTDIR}/certs/tribeCA.pem" \
-	-CAkey "${SCRIPTDIR}/certs/tribeCA.key" \
+	-in "${CERTDIR}/${DOMAIN}.csr" \
+	-CA "${CERTDIR}/tribeCA.pem" \
+	-CAkey "${CERTDIR}/tribeCA.key" \
 	-CAcreateserial \
-	-extfile "${SCRIPTDIR}/certs/${DOMAIN}.ext" \
-	-out "${SCRIPTDIR}/certs/${DOMAIN}.crt";
+	-extfile "${CERTDIR}/${DOMAIN}.ext" \
+	-out "${CERTDIR}/${DOMAIN}.crt";
 
-rm "${SCRIPTDIR}/certs/${DOMAIN}.ext";
+rm "${CERTDIR}/${DOMAIN}.ext";
