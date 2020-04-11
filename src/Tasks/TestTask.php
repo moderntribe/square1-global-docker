@@ -21,8 +21,8 @@ class TestTask extends LocalDockerTask {
 	 * @option  clean Clean Codeception output directory and generated code. Default: true.
 	 * @usage sq1 test -- run integration
 	 *
-	 * @param  array  $args
-	 * @param  array  $opts
+	 * @param  array  $args The Codeception command and arguments.
+	 * @param  array  $opts The options.
 	 */
 	public function test( array $args, array $opts = [ 'xdebug' => false, 'clean' => true ] ): void {
 		$codeceptCommand = trim( implode( ' ', $args ) );
