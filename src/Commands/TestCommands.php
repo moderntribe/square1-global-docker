@@ -49,7 +49,7 @@ class TestCommands extends LocalDockerCommands {
 		$this->taskDockerComposeExecute()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
 		     ->projectName( $projectName )
-		     ->setContainer( 'php-fpm' )
+		     ->setContainer( Robo::config()->get( 'tests.php-container' ) )
 		     ->envVariable( 'COMPOSE_INTERACTIVE_NO_CLI', 1 )
 		     ->envVariable( 'PHP_IDE_CONFIG', "serverName=${projectName}.tribe" )
 		     ->exec( sprintf( 'php -dxdebug.remote_autostart=0 -dxdebug.remote_enable=0 %s -c "%s" %s',
@@ -71,7 +71,7 @@ class TestCommands extends LocalDockerCommands {
 		$this->taskDockerComposeExecute()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
 		     ->projectName( $projectName )
-		     ->setContainer( 'php-fpm' )
+		     ->setContainer( Robo::config()->get( 'tests.php-container' ) )
 		     ->envVariable( 'COMPOSE_INTERACTIVE_NO_CLI', 1 )
 		     ->envVariable( 'PHP_IDE_CONFIG', "serverName=${projectName}.tribe" )
 		     ->exec( sprintf( 'php -dxdebug.remote_autostart=1 -dxdebug.remote_host=host.tribe -dxdebug.remote_enable=1 %s -c "%s" %s %s',
