@@ -144,6 +144,8 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * Initialize Global Docker
 	 *
 	 * @return $this
+	 *
+	 * @throws \Robo\Exception\TaskException
 	 */
 	protected function init(): self {
 		$env = SquareOneCommand::SCRIPT_PATH . 'global/.env';
