@@ -16,7 +16,7 @@ class GlobalDockerTask extends Sq1Task {
 	public const PROJECT_NAME = 'global';
 
 	/**
-	 * Starts the global docker container
+	 * Starts the SquareOne global docker container
 	 *
 	 * @command global:start
 	 */
@@ -31,7 +31,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Stops the global docker container
+	 * Stops the SquareOne global docker container
 	 *
 	 * @command global:stop
 	 */
@@ -43,7 +43,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Restarts the global docker container
+	 * Restarts the SquareOne global docker container
 	 *
 	 * @command global:restart
 	 */
@@ -56,7 +56,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Stops ALL docker containers on your system
+	 * Stops ALL running docker containers on your system
 	 *
 	 * @command global:stop-all
 	 */
@@ -66,7 +66,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Check if the global containers are running
+	 * Shows all running docker containers
 	 *
 	 * @command global:status
 	 */
@@ -75,7 +75,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Displays global docker logs
+	 * Displays SquareOne global docker logs
 	 *
 	 * @command global:logs
 	 */

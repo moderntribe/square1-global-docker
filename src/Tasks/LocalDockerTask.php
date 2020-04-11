@@ -10,7 +10,7 @@ use Tribe\Sq1\Traits\InflectionAwareTrait;
 use Tribe\Sq1\Traits\LocalAwareTrait;
 
 /**
- * Local Docker/Project Commands
+ * Local SquareOne Docker/Project Commands
  *
  * @package Tribe\Sq1\Tasks
  */
@@ -47,7 +47,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Starts your local sq1 project, run anywhere in a sq1 project
+	 * Starts your local SquareOne project, run anywhere in a project folder
 	 *
 	 * @command start
 	 */
@@ -93,7 +93,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Stops your local sq1 project, run anywhere in a sq1 project
+	 * Stops your local SquareOne project, run anywhere in a project folder
 	 *
 	 * @command stop
 	 */
@@ -107,7 +107,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Restarts your local sq1 project
+	 * Restarts your local SquareOne project
 	 *
 	 * @command restart
 	 */
@@ -116,7 +116,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Displays local docker project logs
+	 * Displays local SquareOne project docker logs
 	 *
 	 * @command logs
 	 */

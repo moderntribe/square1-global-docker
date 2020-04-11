@@ -13,7 +13,7 @@ use Tribe\Sq1\Models\LocalDocker;
 class WpCliTask extends LocalDockerTask {
 
 	/**
-	 * Run WP CLI commands in the Local Container
+	 * Run WP CLI commands in the SquareOne local container
 	 *
 	 * @command wp
 	 * @option  xdebug Run with Xdebug enabled.

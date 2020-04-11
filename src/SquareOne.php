@@ -98,7 +98,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	}
 
 	/**
-	 * Add all Square One tasks here.
+	 * Add all SquareOne tasks here.
 	 *
 	 * @return array
 	 */
