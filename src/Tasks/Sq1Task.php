@@ -49,7 +49,7 @@ abstract class Sq1Task extends Tasks {
 	 *
 	 */
 	public function __construct() {
-		$this->dockerWorkdir = Robo::config()->get( 'SQ1_DOCKER_WORKDIR' );
+		$this->dockerWorkdir = Robo::config()->get( 'docker.workdir' );
 		$this->os = PHP_OS_FAMILY;
 	}
 

@@ -9,13 +9,12 @@
 ---
 
 # Docker
-SQ1_DOCKER_WORKDIR: '/application/www'
-SQ1_DOCKER_NETWORK: 'global_proxy'
-SQ1_DOCKER_MYSQL: 'tribe-mysql:db'
-SQ1_CERT_EXPIRY: 825
-
-# PhpMyAdmin
-SQ1_PHPMYADMIN_PORT: 8080
+docker:
+  workdir: '/application/www'
+  network: 'global_proxy'
+  mysql: 'tribe-mysql:db'
+  cert-expiry: 825
+  phpmyadmin-port: 8080
 
 # Global Command Options
 options:
@@ -26,7 +25,7 @@ options:
 
 # Automated Testing
 tests:
-  xdebug_overrides:
+  xdebug-overrides:
     - '-o "modules: config: WPBrowser: cookies: cookie-1: Name: XDEBUG_SESSION"'
     - '-o "modules: config: WPBrowser: cookies: cookie-1: Value: PHPSTORM"'
     - '-o "modules: config: WPWebDriver: xdebug_enabled: true"'

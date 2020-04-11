@@ -99,7 +99,7 @@ class GlobalDockerTask extends Sq1Task {
 	public function globalCert( string $domain ) {
 		$this->taskExec( self::SCRIPT_PATH . 'global/cert.sh' )
 		     ->arg( $domain )
-		     ->arg( Robo::config()->get( 'SQ1_CERT_EXPIRY' ) )
+		     ->arg( Robo::config()->get( 'docker.cert-expiry' ) )
 		     ->run();
 	}
 
@@ -116,16 +116,16 @@ class GlobalDockerTask extends Sq1Task {
 			$this->taskDockerRemove( 'tribe-phpmyadmin' )->run();
 
 			$this->taskDockerRun( 'phpmyadmin/phpmyadmin' )
-			     ->option( 'network', Robo::config()->get( 'SQ1_DOCKER_NETWORK' ) )
-			     ->option( 'link', Robo::config()->get( 'SQ1_DOCKER_MYSQL' ) )
+			     ->option( 'network', Robo::config()->get( 'docker.network' ) )
+			     ->option( 'link', Robo::config()->get( 'docker.mysql' ) )
 			     ->name( 'tribe-phpmyadmin' )
-			     ->publish( Robo::config()->get( 'SQ1_PHPMYADMIN_PORT' ), '80' )
+			     ->publish( Robo::config()->get( 'docker.phpmyadmin-port' ), '80' )
 			     ->detached()
 			     ->run();
 
 		}
 
-		$this->say( sprintf( 'Started phpMyAdmin on http://localhost:%d', Robo::config()->get( 'SQ1_PHPMYADMIN_PORT' ) ) );
+		$this->say( sprintf( 'Started phpMyAdmin on http://localhost:%d', Robo::config()->get( 'docker.phpmyadmin-port' ) ) );
 	}
 
 	/**
