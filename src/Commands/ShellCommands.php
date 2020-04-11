@@ -1,16 +1,16 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Models\LocalDocker;
 
 /**
- * Class ShellTask
+ * Class ShellCommands
  *
  * @package Tribe\Sq1\Tasks
  */
-class ShellTask extends LocalDockerTask {
+class ShellCommands extends LocalDockerCommands {
 
 	/**
 	 * Gives you a shell into the php-fpm docker container

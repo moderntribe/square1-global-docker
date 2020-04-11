@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Models\LocalDocker;
@@ -10,7 +10,7 @@ use Tribe\Sq1\Models\LocalDocker;
  *
  * @package Tribe\Sq1\Tasks
  */
-class WpCliTask extends LocalDockerTask {
+class WpCliCommands extends LocalDockerCommands {
 
 	/**
 	 * Run WP CLI commands in the SquareOne local container

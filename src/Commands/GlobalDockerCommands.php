@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Models\OS;
@@ -11,7 +11,7 @@ use Robo\Contract\VerbosityThresholdInterface;
  *
  * @package Tribe\Sq1\Tasks
  */
-class GlobalDockerTask extends Sq1Task {
+class GlobalDockerCommands extends SquareOneCommand {
 
 	public const PROJECT_NAME = 'global';
 
@@ -146,7 +146,7 @@ class GlobalDockerTask extends Sq1Task {
 	 * @return $this
 	 */
 	protected function init(): self {
-		$env = Sq1Task::SCRIPT_PATH . 'global/.env';
+		$env = SquareOneCommand::SCRIPT_PATH . 'global/.env';
 
 		$ip           = '0.0.0.0';
 

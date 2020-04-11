@@ -1,17 +1,17 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Robo\Tasks;
 use Droath\RoboDockerCompose\Task\loadTasks;
 
 /**
- * Sq1 CLI Command
+ * Sq1 (SquareOne) CLI Command
  *
  * @package Tribe\Sq1
  */
-abstract class Sq1Task extends Tasks {
+abstract class SquareOneCommand extends Tasks {
 
 	use loadTasks;
 
@@ -45,7 +45,7 @@ abstract class Sq1Task extends Tasks {
 	protected $os;
 
 	/**
-	 * Sq1Task constructor.
+	 * SquareOneCommand constructor.
 	 *
 	 */
 	public function __construct() {

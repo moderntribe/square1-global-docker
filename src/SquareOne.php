@@ -14,9 +14,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tribe\Sq1\Models\Certificate;
-use Tribe\Sq1\Tasks\ComposerTask;
-use Tribe\Sq1\Tasks\GlobalDockerTask;
-use Tribe\Sq1\Tasks\LocalDockerTask;
+use Tribe\Sq1\Commands\ComposerCommands;
+use Tribe\Sq1\Commands\GlobalDockerCommands;
+use Tribe\Sq1\Commands\LocalDockerCommands;
 
 /**
  * The Square One Global Docker Application
@@ -104,13 +104,13 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	 */
 	private function getTasks(): array {
 		return [
-			\Tribe\Sq1\Tasks\GlobalDockerTask::class,
-			\Tribe\Sq1\Tasks\ComposerTask::class,
-			\Tribe\Sq1\Tasks\LocalDockerTask::class,
-			\Tribe\Sq1\Tasks\WpCliTask::class,
-			\Tribe\Sq1\Tasks\ShellTask::class,
-			\Tribe\Sq1\Tasks\GulpTask::class,
-			\Tribe\Sq1\Tasks\TestTask::class,
+			\Tribe\Sq1\Commands\GlobalDockerCommands::class,
+			\Tribe\Sq1\Commands\ComposerCommands::class,
+			\Tribe\Sq1\Commands\LocalDockerCommands::class,
+			\Tribe\Sq1\Commands\WpCliCommands::class,
+			\Tribe\Sq1\Commands\ShellCommands::class,
+			\Tribe\Sq1\Commands\GulpCommands::class,
+			\Tribe\Sq1\Commands\TestCommands::class,
 		];
 	}
 
@@ -123,10 +123,10 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		$container->share( Certificate::class );
 
 		// Build inflections for the InflectionAwareTrait.
-		$container->inflector( LocalDockerTask::class )
+		$container->inflector( LocalDockerCommands::class )
 		          ->invokeMethod( 'setCertificate', [ Certificate::class ] )
-		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerTask::class . 'Commands' ] )
-		          ->invokeMethod( 'setComposerTask', [ ComposerTask::class . 'Commands' ] );
+		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerCommands::class . 'Commands' ] )
+		          ->invokeMethod( 'setComposerTask', [ ComposerCommands::class . 'Commands' ] );
 	}
 
 	/**

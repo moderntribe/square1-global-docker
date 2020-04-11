@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Contracts\CertificateAwareInterface;
@@ -14,7 +14,7 @@ use Tribe\Sq1\Traits\LocalAwareTrait;
  *
  * @package Tribe\Sq1\Tasks
  */
-class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
+class LocalDockerCommands extends SquareOneCommand implements CertificateAwareInterface {
 
 	use LocalAwareTrait;
 	use InflectionAwareTrait;

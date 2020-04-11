@@ -1,12 +1,17 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Models\LocalDocker;
 use Tribe\Sq1\Traits\LocalAwareTrait;
 
-class GulpTask extends Sq1Task {
+/**
+ * Class GulpCommands
+ *
+ * @package Tribe\Sq1\Commands
+ */
+class GulpCommands extends SquareOneCommand {
 
 	use LocalAwareTrait;
 

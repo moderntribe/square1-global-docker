@@ -1,16 +1,16 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Tasks;
+namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Models\LocalDocker;
 
 /**
- * Class ComposerTask
+ * Class ComposerCommands
  *
  * @package Tribe\Sq1\Tasks
  */
-class ComposerTask extends Sq1Task {
+class ComposerCommands extends SquareOneCommand {
 
 	/**
 	 * Runs a composer command in the local docker container
