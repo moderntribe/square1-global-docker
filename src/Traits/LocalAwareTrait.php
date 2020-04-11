@@ -20,7 +20,7 @@ trait LocalAwareTrait {
 	 *
 	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
 	 *
-	 * @param  \Symfony\Component\Console\Input\InputInterface  $input|null
+	 * @param  \Symfony\Component\Console\Input\InputInterface  $input  |null
 	 */
 	public function getLocalDockerConfig( ?InputInterface $input ): void {
 		if ( ! $this->is_local_command( $input ) ) {
@@ -29,19 +29,19 @@ trait LocalAwareTrait {
 
 		$optionProjectPath = Robo::config()->get( 'options.project-path.name' );
 
-		// Set a user's custom path if provided.
-		if ( $input->hasOption( $optionProjectPath ) ) {
-			$workingDir = is_string( $input->getOption( $optionProjectPath ) ) ? $input->getOption( $optionProjectPath ) : getcwd();
-		}
+		// Set a user's custom project path if provided via --project-path=/path/to/project
+		$workingDir = ( $input->hasOption( $optionProjectPath ) && is_string( $input->getOption( $optionProjectPath ) ) )
+			? $input->getOption( $optionProjectPath ) : getcwd();
 
-		$file       = $workingDir . '/build-process.php';
-		$found      = false;
+		$file  = $workingDir . '/build-process.php';
+		$found = false;
 
 		if ( is_file( $file ) ) {
-			$docker_dir     = dirname( $file ) . '/dev/docker';
-			$compose_config = [ realpath( $docker_dir . '/docker-compose.yml' ), realpath( $docker_dir . '/docker-compose.override.yml' ) ];
-			$project_name   = realpath( $docker_dir . '/.projectID' );
-			$found          = true;
+			$projectRoot   = dirname( $file );
+			$dockerDir     = $projectRoot . '/dev/docker';
+			$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( $dockerDir . '/docker-compose.override.yml' ) ];
+			$projectName   = realpath( $dockerDir . '/.projectID' );
+			$found         = true;
 		} else {
 			$levels = explode( DIRECTORY_SEPARATOR, $workingDir );
 
@@ -51,10 +51,11 @@ trait LocalAwareTrait {
 				}
 
 				if ( is_file( dirname( getcwd(), $count ) . '/build-process.php' ) ) {
-					$docker_dir     = dirname( getcwd(), $count ) . '/dev/docker';
-					$compose_config = [ realpath( $docker_dir . '/docker-compose.yml' ), realpath( $docker_dir . '/docker-compose.override.yml' ) ];
-					$project_name   = realpath( $docker_dir . '/.projectID' );
-					$found          = true;
+					$projectRoot   = dirname( getcwd(), $count );
+					$dockerDir     = $projectRoot . '/dev/docker';
+					$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( $dockerDir . '/docker-compose.override.yml' ) ];
+					$projectName   = realpath( $dockerDir . '/.projectID' );
+					$found         = true;
 					break;
 				}
 			}
@@ -62,19 +63,34 @@ trait LocalAwareTrait {
 
 		if ( ! $found ) {
 			$this->yell( 'Unable to find "build-process.php". Are you sure this is a sq1 project?' );
-			exit(1);
+			exit( E_ERROR );
 		}
 
-		Robo::config()->set( LocalDocker::CONFIG_PROJECT_ROOT, dirname( $file ) );
-		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $project_name ) ) );
-		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $docker_dir );
-		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( $compose_config, 'file_exists' ) );
+		$this->maybeLoadConfig( $projectRoot );
+
+		Robo::config()->set( LocalDocker::CONFIG_PROJECT_ROOT, $projectRoot );
+		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $projectName ) ) );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $dockerDir );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( $composeConfig, 'file_exists' ) );
+	}
+
+	/**
+	 * Load extra configuration options if the project has a sq1.yml.
+	 *
+	 * @param  string  $projectRoot
+	 */
+	protected function maybeLoadConfig( string $projectRoot ): void {
+		$localConfig = $projectRoot . '/' . LocalDocker::CONFIG_FILE;
+
+		if ( file_exists( $localConfig ) ) {
+			Robo::loadConfiguration( [ $localConfig ], Robo::config() );
+		}
 	}
 
 	/**
 	 * Determine if this is a local docker command.
 	 *
-	 * @param  \Symfony\Component\Console\Input\InputInterface  $input|null
+	 * @param  \Symfony\Component\Console\Input\InputInterface  $input  |null
 	 *
 	 * @return bool
 	 */
@@ -98,4 +114,5 @@ trait LocalAwareTrait {
 
 		return true;
 	}
+
 }

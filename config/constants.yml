@@ -5,7 +5,8 @@
 # variable of the same name, or by adding it to a file named ".env" in the
 # directory from which you are running SquareOne.
 #
-# Copy this file to constants.override.yml to customize.
+# Copy this file to constants.override.yml to customize or place a sq1.yml file in
+# your local project's root folder.
 ---
 
 # Docker
