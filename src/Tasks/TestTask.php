@@ -13,13 +13,13 @@ use Tribe\Sq1\Models\LocalDocker;
 class TestTask extends LocalDockerTask {
 
 	/**
-	 * Run Codeception tests.
+	 * Run Codeception tests
 	 *
 	 * @command test
 	 *
 	 * @option  xdebug Run with Xdebug enabled. Default: false.
 	 * @option  clean Clean Codeception output directory and generated code. Default: true.
-	 * @usage sq1 test -- run integration
+	 * @usage e.g. sq1 test -- run integration
 	 *
 	 * @param  array  $args The Codeception command and arguments.
 	 * @param  array  $opts The options.

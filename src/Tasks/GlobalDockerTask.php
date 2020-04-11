@@ -16,7 +16,7 @@ class GlobalDockerTask extends Sq1Task {
 	public const PROJECT_NAME = 'global';
 
 	/**
-	 * Starts the global docker container.
+	 * Starts the global docker container
 	 *
 	 * @command global:start
 	 */
@@ -75,7 +75,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Displays global docker logs.
+	 * Displays global docker logs
 	 *
 	 * @command global:logs
 	 */
@@ -129,7 +129,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Get the available global docker compose files.
+	 * Get the available global docker compose files
 	 *
 	 * @return array
 	 */
@@ -141,7 +141,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Initialize Global Docker.
+	 * Initialize Global Docker
 	 *
 	 * @return $this
 	 */
@@ -210,7 +210,7 @@ class GlobalDockerTask extends Sq1Task {
 	}
 
 	/**
-	 * Writes nameservers to a resolver file and copies it to the correct location.
+	 * Writes nameservers to a resolver file and copies it to the correct location
 	 *
 	 * @param  string  $dir           The resolver directory.
 	 * @param  string  $fileName      The resolver file name.

@@ -20,14 +20,14 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	use InflectionAwareTrait;
 
 	/**
-	 * The Certificate Model.
+	 * The Certificate Model
 	 *
 	 * @var Certificate
 	 */
 	protected $certificate;
 
 	/**
-	 * Set the Certificate model.
+	 * Set the Certificate model
 	 *
 	 * @param  \Tribe\Sq1\Models\Certificate  $cert
 	 *
@@ -38,7 +38,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Get the Certificate model.
+	 * Get the Certificate model
 	 *
 	 * @return \Tribe\Sq1\Models\Certificate
 	 */
@@ -47,7 +47,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Starts your local sq1 project, run anywhere in a sq1 project.
+	 * Starts your local sq1 project, run anywhere in a sq1 project
 	 *
 	 * @command start
 	 */
@@ -93,7 +93,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Stops your local sq1 project, run anywhere in a sq1 project.
+	 * Stops your local sq1 project, run anywhere in a sq1 project
 	 *
 	 * @command stop
 	 */
@@ -107,7 +107,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Restarts your local sq1 project.
+	 * Restarts your local sq1 project
 	 *
 	 * @command restart
 	 */
@@ -116,7 +116,7 @@ class LocalDockerTask extends Sq1Task implements CertificateAwareInterface {
 	}
 
 	/**
-	 * Displays local docker project logs.
+	 * Displays local docker project logs
 	 *
 	 * @command logs
 	 */
