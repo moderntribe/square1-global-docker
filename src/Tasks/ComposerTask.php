@@ -20,11 +20,13 @@ class ComposerTask extends Sq1Task {
 	 * @command composer
 	 */
 	public function composer( array $args ) {
+		$command = $this->prepareCommand( $args );
+
 		$this->taskDockerComposeExecute()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
 		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 		     ->setContainer( 'php-fpm' )
-		     ->exec( sprintf( 'composer %s -d %s', trim( implode( ' ', $args ) ), $this->dockerWorkdir ) )
+		     ->exec( sprintf( 'composer %s -d %s', $command, $this->dockerWorkdir ) )
 		     ->run();
 	}
 

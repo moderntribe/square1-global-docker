@@ -19,29 +19,29 @@ class TestTask extends LocalDockerTask {
 	 *
 	 * @option  xdebug Run with Xdebug enabled. Default: false.
 	 * @option  clean Clean Codeception output directory and generated code. Default: true.
-	 * @usage e.g. sq1 test -- run integration
+	 * @usage   e.g. sq1 test -- run integration
 	 *
-	 * @param  array  $args The Codeception command and arguments.
-	 * @param  array  $opts The options.
+	 * @param  array  $args  The Codeception command and arguments.
+	 * @param  array  $opts  The options.
 	 */
 	public function test( array $args, array $opts = [ 'xdebug' => false, 'clean' => true ] ): void {
-		$codeceptCommand = trim( implode( ' ', $args ) );
+		$command = $this->prepareCommand( $args );
 
 		if ( $opts['clean'] ) {
 			$this->runCodecept( 'clean' );
 		}
 
 		if ( $opts['xdebug'] ) {
-			$this->runCodeceptX( $codeceptCommand );
+			$this->runCodeceptX( $command );
 		} else {
-			$this->runCodecept( $codeceptCommand );
+			$this->runCodecept( $command );
 		}
 	}
 
 	/**
 	 * Run a Codeception command in the Docker container.
 	 *
-	 * @param  string  $command The Codeception command.
+	 * @param  string  $command  The Codeception command.
 	 */
 	protected function runCodecept( string $command ): void {
 		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
@@ -63,7 +63,7 @@ class TestTask extends LocalDockerTask {
 	/**
 	 * Run a Codeception command in the Docker container with Xdebug enabled.
 	 *
-	 * @param  string  $command The Codeception command.
+	 * @param  string  $command  The Codeception command.
 	 */
 	protected function runCodeceptX( string $command ): void {
 		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );

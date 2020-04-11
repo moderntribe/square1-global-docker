@@ -53,4 +53,15 @@ abstract class Sq1Task extends Tasks {
 		$this->os = PHP_OS_FAMILY;
 	}
 
+	/**
+	 * Robo commands with spaces/arguments come in an array, convert to a string.
+	 *
+	 * @param  array  $args The Robo command array.
+	 *
+	 * @return string The command and arguments as a string.
+	 */
+	protected function prepareCommand( array $args ): string {
+		return trim( implode( ' ', $args ) );
+	}
+
 }

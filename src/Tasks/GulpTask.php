@@ -17,10 +17,12 @@ class GulpTask extends Sq1Task {
 	 *
 	 * @command gulp
 	 *
-	 * @param  string  $gulpCommand  The Gulp Command, e.g. dist, watch etc...
+	 * @param  array  $args The Gulp Command, e.g. dist, watch etc...
 	 */
-	public function gulp( string $gulpCommand ) {
-		$this->taskExec( self::NVM_SOURCE . " && gulp ${gulpCommand}" )
+	public function gulp( array $args ) {
+		$command = $this->prepareCommand( $args );
+
+		$this->taskExec( self::NVM_SOURCE . " && gulp ${command}" )
 			->dir( Robo::config()->get( LocalDocker::CONFIG_PROJECT_ROOT ) )
 			->run();
 	}

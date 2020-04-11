@@ -23,7 +23,7 @@ class WpCliTask extends LocalDockerTask {
 	 * @param  array  $opts  The options.
 	 */
 	public function wp( array $args, array $opts = [ 'xdebug' => false ] ) {
-		$command = trim( implode( ' ', $args ) );
+		$command = $this->prepareCommand( $args );
 
 		if ( $opts['xdebug'] ) {
 			$this->runWpX( $command );
