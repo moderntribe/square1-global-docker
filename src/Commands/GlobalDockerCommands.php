@@ -190,6 +190,8 @@ class GlobalDockerCommands extends SquareOneCommand {
 			$this->writeResolver( $resolverDir, $resolverFile );
 		}
 
+		$this->initCaCertificate();
+
 		// Write docker host IP address to the .env file.
 		$this->taskWriteToFile( $env )
 		     ->setVerbosityThreshold( VerbosityThresholdInterface::VERBOSITY_DEBUG )
@@ -207,6 +209,40 @@ class GlobalDockerCommands extends SquareOneCommand {
 		     ->run();
 
 		return $this;
+	}
+
+	/**
+	 * Generate and install our custom CA Certificate
+	 *
+	 * @throws \Robo\Exception\TaskException
+	 */
+	protected function initCaCertificate(): void {
+		$caCertName = Robo::config()->get( 'docker.cert-ca' );
+		$ca         = Robo::config()->get( 'docker.certs-folder' ) . '/' . $caCertName;
+
+		if ( OS::LINUX === $this->os ) {
+
+			$targetCertName = 'tribeCA.crt';
+
+			// Ubuntu defaults
+			$caCertPath = '/usr/local/share/ca-certificate/' . $targetCertName;
+			$command    = 'update-ca-certificates';
+
+			// Arch + others
+			if ( file_exists( '/usr/bin/trust' ) ) {
+				$caCertPath = '/etc/ca-certificates/trust-source/anchors/' . $targetCertName;
+				$command = 'trust extract-compat';
+			}
+
+			if ( ! file_exists( $caCertPath ) ) {
+				$this->taskExecStack()
+				     ->stopOnFail()
+				     ->exec( sprintf( 'sudo openssl x509 -outform der -in %s -out %s', $ca, $caCertPath ) )
+				     ->exec( sprintf( 'sudo %s', $command ) )
+				     ->run();
+			}
+		}
+
 	}
 
 	/**

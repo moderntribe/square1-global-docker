@@ -12,5 +12,7 @@ class OS {
 	public const MAC_OS  = 'Darwin';
 	public const LINUX   = 'Linux';
 	public const WINDOWS = 'Windows';
+	public const MANJARO = 'Manjaro';
+	public const UBUNTU  = 'Ubuntu';
 
 }
