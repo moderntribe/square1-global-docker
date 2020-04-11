@@ -7,6 +7,10 @@
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
 
 # Functions
+create_config_folder() {
+  mkdir -p ~/.config/sq1
+}
+
 install_homebrew() {
   bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 }
@@ -47,6 +51,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Installing dependencies via brew..."
   brew install $(<brew/packages.txt)
 fi
+
+echo "Creating config folder: ~/.config/sq1"
+create_config_folder
 
 echo "Enabling sq1 autocompletion, enter your password when requested."
 enable_bash_autocomplete
