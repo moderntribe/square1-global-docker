@@ -18,9 +18,9 @@ docker:
 
 # Global Command Options
 options:
-  path:
-    name: '--project-path'
-    shortcut: '-p'
+  project-path:
+    name: 'project-path'
+    shortcut: 'p'
     description: 'Path to a SquareOne local project files'
 
 # Automated Testing

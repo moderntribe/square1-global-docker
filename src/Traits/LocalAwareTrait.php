@@ -27,9 +27,11 @@ trait LocalAwareTrait {
 			return;
 		}
 
+		$optionProjectPath = Robo::config()->get( 'options.project-path.name' );
+
 		// Set a user's custom path if provided.
-		if ( $input->hasOption( 'path' ) ) {
-			$workingDir = is_string( $input->getOption( 'path' ) ) ? $input->getOption( 'path' ) : getcwd();
+		if ( $input->hasOption( $optionProjectPath ) ) {
+			$workingDir = is_string( $input->getOption( $optionProjectPath ) ) ? $input->getOption( $optionProjectPath ) : getcwd();
 		}
 
 		$file       = $workingDir . '/build-process.php';
