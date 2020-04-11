@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #############################################################
-# SquareOne Global Installer
+# SquareOne Docker Installer
 #############################################################
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
@@ -12,9 +12,11 @@ install_homebrew() {
 }
 
 enable_bash_autocomplete() {
-  echo "source ${SCRIPTDIR}/bin/bash-autocomplete.sh" >> ~/.bashrc
-  echo "source ${SCRIPTDIR}/bin/bash-autocomplete.sh" >> ~/.zshrc
-  echo "source ${SCRIPTDIR}/bin/bash-autocomplete.sh" >> ~/.bash_profile
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sudo cp -f sq1.autocompletion $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
+  else
+    sudo cp -f sq1.autocompletion /etc/bash_completion.d/sq1.autocompletion
+  fi
 }
 
 symlink_sq1() {
@@ -46,7 +48,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   brew install $(<brew/packages.txt)
 fi
 
-echo "Enabling sq1 autocompletion..."
+echo "Enabling sq1 autocompletion, enter your password when requested."
 enable_bash_autocomplete
 
 echo "Running composer install..."
@@ -56,4 +58,7 @@ echo "Symlinking sq1 binary to /usr/local/bin/sq1, enter your password when requ
 symlink_sq1
 
 sq1
+echo ""
+echo "************************************"
 echo "If everything went smoothly, you should see the sq1 command list above. Reload your terminal to enable autocompletion."
+echo "************************************"

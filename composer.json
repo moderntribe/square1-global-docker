@@ -32,7 +32,7 @@
             "mv -f box.phar tools/box"
         ],
         "phar:build": "env PATH=tools:$PATH box build",
-        "autocomplete:build": "vendor/bin/symfony-autocomplete sq1 > bin/bash-autocomplete.sh"
+        "autocomplete:build": "vendor/bin/symfony-autocomplete sq1 > sq1.autocompletion"
     },
     "extra": {
         "branch-alias": {
