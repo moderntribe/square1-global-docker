@@ -25,6 +25,7 @@ class GlobalDockerTask extends Sq1Task {
 		     ->taskDockerComposeUp()
 		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
+		     ->removeOrphans()
 		     ->detachedMode()
 		     ->run();
 	}
