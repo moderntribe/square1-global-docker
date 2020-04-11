@@ -89,11 +89,7 @@ class TestTask extends LocalDockerTask {
 	 * @return array
 	 */
 	protected function getCodeceptionOverrides(): array {
-		return [
-			'-o "modules: config: WPBrowser: cookies: cookie-1: Name: XDEBUG_SESSION"',
-			'-o "modules: config: WPBrowser: cookies: cookie-1: Value: PHPSTORM"',
-			'-o "modules: config: WPWebDriver: xdebug_enabled: true"',
-		];
+		return Robo::config()->get( 'tests.xdebug_overrides' );
 	}
 
 }

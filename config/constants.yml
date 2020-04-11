@@ -23,3 +23,10 @@ options:
     name: '--path'
     shortcut: 'p'
     description: 'Path to a SquareOne local project.'
+
+# Automated Testing
+tests:
+  xdebug_overrides:
+    - '-o "modules: config: WPBrowser: cookies: cookie-1: Name: XDEBUG_SESSION"'
+    - '-o "modules: config: WPBrowser: cookies: cookie-1: Value: PHPSTORM"'
+    - '-o "modules: config: WPWebDriver: xdebug_enabled: true"'
