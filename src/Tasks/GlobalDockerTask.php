@@ -125,7 +125,7 @@ class GlobalDockerTask extends Sq1Task {
 
 		}
 
-		$this->say( sprintf( 'Started container on http://localhost:%d', Robo::config()->get( 'SQ1_PHPMYADMIN_PORT' ) ) );
+		$this->say( sprintf( 'Started phpMyAdmin on http://localhost:%d', Robo::config()->get( 'SQ1_PHPMYADMIN_PORT' ) ) );
 	}
 
 	/**
