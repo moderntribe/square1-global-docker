@@ -111,6 +111,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 			\Tribe\Sq1\Tasks\WpCliTask::class,
 			\Tribe\Sq1\Tasks\ShellTask::class,
 			\Tribe\Sq1\Tasks\GulpTask::class,
+			\Tribe\Sq1\Tasks\TestTask::class,
 		];
 	}
 
