@@ -16,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Tasks\ComposerTask;
 use Tribe\Sq1\Tasks\GlobalDockerTask;
-use Tribe\Sq1\Tasks\GulpTask;
 use Tribe\Sq1\Tasks\LocalDockerTask;
 
 /**
