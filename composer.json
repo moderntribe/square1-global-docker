@@ -5,7 +5,8 @@
   "license": "GPL-2.0-only",
   "config": {
     "vendor-dir": "vendor",
-    "preferred-install": "dist"
+    "preferred-install": "dist",
+    "optimize-autoloader": true
   },
   "minimum-stability": "stable",
   "require": {
@@ -20,7 +21,18 @@
       "Tribe\\Sq1\\": "src"
     }
   },
-  "bin":["sq1"],
+  "bin":[
+    "sq1"
+  ],
+  "scripts": {
+    "phar:install-tools": [
+      "gem install mime-types -v 2.6.2",
+      "curl -LSs https://box-project.github.io/box2/installer.php | php",
+      "mkdir -p tools",
+      "mv -f box.phar tools/box"
+    ],
+    "phar:build": "env PATH=tools:$PATH box build"
+  },
   "extra": {
     "branch-alias": {
       "dev-master": "2.1-dev"

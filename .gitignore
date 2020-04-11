@@ -17,7 +17,9 @@ pimple.json
 
 # PHP
 /vendor
-*.phar
+/*.phar
+/builds
+/tools
 
 # Docker
 global/.env
