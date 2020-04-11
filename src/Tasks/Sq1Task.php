@@ -53,18 +53,4 @@ abstract class Sq1Task extends Tasks {
 		$this->os = PHP_OS_FAMILY;
 	}
 
-	/**
-	 * Clones square-one src and creates a new sq1 project
-	 *
-	 * @TODO move this out and finish later.
-	 *
-	 * @command create
-	 *
-	 * @usage <project_name>
-	 */
-	public function create( string $project ) {
-		$name = $this->ask( 'What is the name of your new project? e.g. ' );
-		$this->say( $name );
-	}
-
 }
