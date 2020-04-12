@@ -25,8 +25,7 @@ use Tribe\Sq1\Util\HomeDir;
 $home = ( new HomeDir() )->get();
 
 $configFiles = [
-	$home . '/.config/sq1/constants.yml',
-	$rootPath . '/config/constants.override.yml',
+	$home . '/.config/sq1/global/constants.yml',
 	$rootPath . '/config/constants.yml',
 ];
 

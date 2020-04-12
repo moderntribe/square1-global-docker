@@ -26,11 +26,6 @@ abstract class SquareOneCommand extends Tasks {
 	const COMPOSE_CONFIG = self::SCRIPT_PATH . 'global/docker-compose.yml';
 
 	/**
-	 * The path to the docker-compose.override.yml file
-	 */
-	const COMPOSE_OVERRIDE = self::SCRIPT_PATH . 'global/docker-compose.override.yml';
-
-	/**
 	 * The docker working directory, e.g. /application/www
 	 *
 	 * @var string

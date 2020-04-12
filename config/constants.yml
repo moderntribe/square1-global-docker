@@ -5,17 +5,22 @@
 # variable of the same name, or by adding it to a file named ".env" in the
 # directory from which you are running SquareOne.
 #
-# Copy this file to constants.override.yml to customize or place a sq1.yml file in
+# Copy this file to ~/.config/sq1/constants.yml to customize or place a sq1.yml file in
 # your local project's root folder.
 ---
+
+# Variables
+vars:
+  config: '${env.HOME}/.config/sq1'
 
 # Docker
 docker:
   workdir: '/application/www'
   network: 'global_proxy'
   mysql: 'tribe-mysql:db'
+  compose-override: '${vars.config}/global/docker-compose.yml'
   cert-ca: 'tribeCA.pem'
-  certs-folder: "${env.HOME}/.config/sq1/certs"
+  certs-folder: '${vars.config}/global/certs'
   cert-expiry: 825
   phpmyadmin-port: 8080
 

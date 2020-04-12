@@ -8,7 +8,7 @@ fi
 DOMAIN=$1
 DAYS=${2:-825}
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
-CERTDIR=~/.config/sq1/certs
+CERTDIR=~/.config/sq1/global/certs
 
 if [ ! -d "${CERTDIR}" ]; then
   mkdir -p ${CERTDIR}

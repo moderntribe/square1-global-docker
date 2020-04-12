@@ -134,9 +134,11 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @return array
 	 */
 	protected function globalComposeFiles(): array {
+		$composeOverride = Robo::config()->get( 'docker.compose-override' );
+
 		return array_filter( [
 			self::COMPOSE_CONFIG,
-			file_exists( self::COMPOSE_OVERRIDE ) ? self::COMPOSE_OVERRIDE : '',
+			file_exists( $composeOverride ) ? $composeOverride : '',
 		] );
 	}
 
