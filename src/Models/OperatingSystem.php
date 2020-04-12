@@ -7,7 +7,7 @@ namespace Tribe\Sq1\Models;
  *
  * @package Tribe\Sq1\Models
  */
-class OS {
+class OperatingSystem {
 
 	public const MAC_OS  = 'Darwin';
 	public const LINUX   = 'Linux';

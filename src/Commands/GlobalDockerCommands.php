@@ -3,7 +3,7 @@
 namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
-use Tribe\Sq1\Models\OS;
+use Tribe\Sq1\Models\OperatingSystem;
 use Robo\Contract\VerbosityThresholdInterface;
 
 /**
@@ -159,7 +159,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 		$resolverFile = 'tribe';
 
 		// Get the Docker host IP from the alpine container.
-		if ( OS::MAC_OS === $this->os || OS::WINDOWS === $this->os ) {
+		if ( OperatingSystem::MAC_OS === $this->os || OperatingSystem::WINDOWS === $this->os ) {
 			$result = $this->taskDockerRun( 'alpine:3.11.5' )
 			               ->args( [ '--rm' ] )
 			               ->exec( 'nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
@@ -170,7 +170,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 		}
 
 		// Get the Docker host IP from the ip command.
-		if ( $this->os === OS::LINUX ) {
+		if ( $this->os === OperatingSystem::LINUX ) {
 			$result = $this->taskExec( "ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+'" )
 			               ->printOutput( false )
 			               ->silent( true )
@@ -224,7 +224,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 		$caCertName = Robo::config()->get( 'docker.cert-ca' );
 		$ca         = Robo::config()->get( 'docker.certs-folder' ) . '/' . $caCertName;
 
-		if ( OS::LINUX === $this->os ) {
+		if ( OperatingSystem::LINUX === $this->os ) {
 
 			$targetCertName = 'tribeCA.crt';
 
