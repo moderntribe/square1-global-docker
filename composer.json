@@ -22,7 +22,7 @@
         }
     },
     "bin": [
-        "sq1"
+        "bin/sq1"
     ],
     "scripts": {
         "phar:install-tools": [

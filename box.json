@@ -29,6 +29,6 @@
   "git-commit": "git-commit",
   "git-version": "git-version",
   "output": "sq1.phar",
-  "main": "sq1",
+  "main": "bin/sq1",
   "stub": true
 }
