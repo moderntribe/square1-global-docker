@@ -60,7 +60,7 @@ echo "Enabling sq1 autocompletion, enter your password when requested."
 enable_bash_autocomplete
 
 echo "Running composer install..."
-composer install -o -d=${SCRIPTDIR}/..
+composer install -o -d ${SCRIPTDIR}/../
 
 echo "Symlinking sq1 binary to /usr/local/bin/sq1, enter your password when requested."
 symlink_sq1
