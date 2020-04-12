@@ -28,7 +28,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	use ConfigAwareTrait;
 	use ContainerAwareTrait;
 
-	const APPLICATION_NAME = 'SquareOne Global Docker';
+	const APPLICATION_NAME = 'SquareOne Docker';
 	const REPOSITORY       = 'moderntribe/square1-global-docker';
 
 	/**
