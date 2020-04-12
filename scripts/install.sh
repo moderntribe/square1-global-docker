@@ -6,6 +6,7 @@
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
 
+
 # Functions
 create_config_folder() {
   mkdir -p ~/.config/sq1
@@ -17,14 +18,14 @@ install_homebrew() {
 
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo cp -f sq1.autocompletion $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
+    sudo cp -f ${SCRIPTDIR}/../sq1.autocompletion $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
   else
-    sudo cp -f sq1.autocompletion /etc/bash_completion.d/sq1.autocompletion
+    sudo cp -f ${SCRIPTDIR}/../sq1.autocompletion /etc/bash_completion.d/sq1.autocompletion
   fi
 }
 
 symlink_sq1() {
-  sudo ln -s ${SCRIPTDIR}/sq1 /usr/local/bin/sq1
+  sudo ln -s ${SCRIPTDIR}/../bin/sq1 /usr/local/bin/sq1
 }
 
 # OSX
@@ -59,7 +60,7 @@ echo "Enabling sq1 autocompletion, enter your password when requested."
 enable_bash_autocomplete
 
 echo "Running composer install..."
-composer install -a
+composer install -o -d=${SCRIPTDIR}/..
 
 echo "Symlinking sq1 binary to /usr/local/bin/sq1, enter your password when requested."
 symlink_sq1
