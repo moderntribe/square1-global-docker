@@ -116,6 +116,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 			\Tribe\Sq1\Commands\ShellCommands::class,
 			\Tribe\Sq1\Commands\GulpCommands::class,
 			\Tribe\Sq1\Commands\TestCommands::class,
+			\Tribe\Sq1\Commands\ConfigCommands::class,
 		];
 	}
 

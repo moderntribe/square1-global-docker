@@ -37,6 +37,10 @@ _sq1()
             opts="${opts} --format --raw"
             ;;
 
+            init)
+            opts="${opts} "
+            ;;
+
             list)
             opts="${opts} --raw --format"
             ;;
@@ -67,6 +71,14 @@ _sq1()
 
             wp)
             opts="${opts} --xdebug"
+            ;;
+
+            config:compose-copy)
+            opts="${opts} "
+            ;;
+
+            config:copy)
+            opts="${opts} "
             ;;
 
             global:cert)
@@ -111,7 +123,7 @@ _sq1()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer gulp help list logs restart shell start stop test wp global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
+        coms="composer gulp help init list logs restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
