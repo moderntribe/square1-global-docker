@@ -12,7 +12,7 @@ use Tribe\Sq1\Models\Certificate;
 interface CertificateAwareInterface {
 
 	/**
-	 * Inject a certificate model.
+	 * Inject a Certificate model.
 	 *
 	 * @param  \Tribe\Sq1\Models\Certificate  $cert
 	 *
