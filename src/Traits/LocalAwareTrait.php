@@ -16,7 +16,7 @@ trait LocalAwareTrait {
 	/**
 	 * Sets the local docker configuration variables. Uses consolidation/annotated-command hooks to run when each command does.
 	 *
-	 * @hook init *
+	 * @hook pre-init *
 	 *
 	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
 	 *
