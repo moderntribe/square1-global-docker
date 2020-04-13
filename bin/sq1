@@ -5,7 +5,7 @@
 $pharPath = \Phar::running( true );
 if ( $pharPath ) {
 	$autoloaderPath = "$pharPath/vendor/autoload.php";
-	$rootPath       = __DIR__;
+	$rootPath       = $pharPath;
 } else {
 	if ( file_exists( __DIR__ . '/../vendor/autoload.php' ) ) {
 		$autoloaderPath = __DIR__ . '/../vendor/autoload.php';
