@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #############################################################
-# SquareOne Global Docker Installer
+# SquareOne Global Docker Dev Installer
 #############################################################
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
@@ -18,14 +18,14 @@ install_homebrew() {
 
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo curl 'https://raw.githubusercontent.com...' -o $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
+    sudo cp -f ${SCRIPTDIR}/../sq1.autocompletion $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
   else
-    sudo curl 'https://raw.githubusercontent.com...' -o /etc/bash_completion.d/sq1.autocompletion
+    sudo cp -f ${SCRIPTDIR}/../sq1.autocompletion /etc/bash_completion.d/sq1.autocompletion
   fi
 }
 
-install_phar() {
-  sudo curl 'https://raw.githubusercontent.com...' -o /usr/local/bin/sq1
+symlink_sq1() {
+  sudo ln -s ${SCRIPTDIR}/../bin/sq1 /usr/local/bin/sq1
 }
 
 # OSX
@@ -59,8 +59,11 @@ create_config_folder
 echo "Enabling sq1 autocompletion, enter your password when requested."
 enable_bash_autocomplete
 
-echo "Downloading sq1.phar to /usr/local/bin/sq1, enter your password when requested."
-install_phar
+echo "Running composer install..."
+composer install -d ${SCRIPTDIR}/../
+
+echo "Symlinking sq1 binary to /usr/local/bin/sq1, enter your password when requested."
+symlink_sq1
 
 sq1
 
