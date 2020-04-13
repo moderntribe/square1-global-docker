@@ -25,8 +25,8 @@ use Tribe\Sq1\Util\HomeDir;
 $home = ( new HomeDir() )->get();
 
 $configFiles = [
-	$home . '/.config/sq1/global/constants.yml',
-	$rootPath . '/config/constants.yml',
+	$home . '/.config/sq1/sq1.yml',
+	$rootPath . '/config/sq1.yml',
 ];
 
 $input       = new ArgvInput( $argv );

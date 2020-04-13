@@ -5,7 +5,7 @@
 # variable of the same name, or by adding it to a file named ".env" in the
 # directory from which you are running SquareOne.
 #
-# Copy this file to ~/.config/sq1/constants.yml to customize or place a sq1.yml file in
+# Copy this file to ~/.config/sq1/sq1.yml to customize or place a sq1.yml file in
 # your local project's root folder.
 ---
 
