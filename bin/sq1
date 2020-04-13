@@ -25,13 +25,13 @@ use Tribe\Sq1\Util\HomeDir;
 $home = ( new HomeDir() )->get();
 
 $configFiles = [
-	$home . '/.config/sq1/sq1.yml',
 	$rootPath . '/config/sq1.yml',
+	$home . '/.config/sq1/sq1.yml',
 ];
 
 $input       = new ArgvInput( $argv );
 $output      = new ConsoleOutput();
-$config      = Robo::createConfiguration( [ current( array_filter( $configFiles, 'file_exists' ) ) ] );
+$config      = Robo::createConfiguration( array_filter( $configFiles, 'file_exists' ) );
 $version     = trim( file_get_contents( $rootPath . '/VERSION' ) );
 $sq1         = new SquareOne( $version, $config, $input, $output );
 $status_code = $sq1->run( $input, $output );
