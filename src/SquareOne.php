@@ -13,10 +13,12 @@ use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tribe\Sq1\Hooks\ResolverHandler;
 use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Commands\ComposerCommands;
 use Tribe\Sq1\Commands\GlobalDockerCommands;
 use Tribe\Sq1\Commands\LocalDockerCommands;
+use Tribe\Sq1\Models\OperatingSystem;
 
 /**
  * The Square One Global Docker Application
@@ -98,12 +100,15 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	}
 
 	/**
-	 * Add all SquareOne tasks here.
+	 * Add all SquareOne hooks and commands here.
 	 *
 	 * @return array
 	 */
 	private function getTasks(): array {
 		return [
+			\Tribe\Sq1\Hooks\Certificate::class,
+			\Tribe\Sq1\Hooks\ResolverHandler::class,
+			\Tribe\Sq1\Hooks\Docker::class,
 			\Tribe\Sq1\Commands\GlobalDockerCommands::class,
 			\Tribe\Sq1\Commands\ComposerCommands::class,
 			\Tribe\Sq1\Commands\LocalDockerCommands::class,
@@ -127,6 +132,13 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		          ->invokeMethod( 'setCertificate', [ Certificate::class ] )
 		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerCommands::class . 'Commands' ] )
 		          ->invokeMethod( 'setComposerTask', [ ComposerCommands::class . 'Commands' ] );
+
+		$container->add( 'os', OperatingSystem::class );
+		$container->inflector( ResolverHandler::class )
+		          ->invokeMethod( 'init', [ 'os' ] );
+
+		$container->inflector( \Tribe\Sq1\Hooks\Certificate::class )
+		          ->invokeMethod( 'init', [ 'os' ] );
 	}
 
 	/**

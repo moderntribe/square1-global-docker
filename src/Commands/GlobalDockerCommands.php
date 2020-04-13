@@ -3,6 +3,7 @@
 namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
+use Tribe\Sq1\Hooks\Docker;
 use Tribe\Sq1\Models\OperatingSystem;
 use Robo\Contract\VerbosityThresholdInterface;
 
@@ -21,9 +22,9 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @command global:start
 	 */
 	public function globalStart() {
-		$this->init()
-		     ->taskDockerComposeUp()
+		$this->taskDockerComposeUp()
 		     ->files( $this->globalComposeFiles() )
+		     ->env( 'HOSTIP', getenv( Docker::VAR ) )
 		     ->projectName( self::PROJECT_NAME )
 		     ->removeOrphans()
 		     ->detachedMode()
@@ -48,8 +49,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @command global:restart
 	 */
 	public function globalRestart() {
-		$this->init()
-		     ->taskDockerComposeRestart()
+		$this->taskDockerComposeRestart()
 		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
 		     ->run();
@@ -140,139 +140,6 @@ class GlobalDockerCommands extends SquareOneCommand {
 			self::COMPOSE_CONFIG,
 			file_exists( $composeOverride ) ? $composeOverride : '',
 		] );
-	}
-
-	/**
-	 * Initialize Global Docker
-	 *
-	 * @return $this
-	 *
-	 * @throws \Robo\Exception\TaskException
-	 */
-	protected function init(): self {
-		$env = SquareOneCommand::SCRIPT_PATH . 'global/.env';
-
-		$ip = '0.0.0.0';
-
-		// Mac OS defaults.
-		$resolverDir  = '/etc/resolver/';
-		$resolverFile = 'tribe';
-
-		// Get the Docker host IP from the alpine container.
-		if ( OperatingSystem::MAC_OS === $this->os || OperatingSystem::WINDOWS === $this->os ) {
-			$result = $this->taskDockerRun( 'alpine:3.11.5' )
-			               ->args( [ '--rm' ] )
-			               ->exec( 'nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
-			               ->interactive( false )
-			               ->run();
-
-			$ip = $result->getMessage();
-		}
-
-		// Get the Docker host IP from the ip command.
-		if ( $this->os === OperatingSystem::LINUX ) {
-			$result = $this->taskExec( "ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+'" )
-			               ->printOutput( false )
-			               ->silent( true )
-			               ->run();
-
-			$ip = $result->getMessage();
-
-			$resolverDir  = '/etc/';
-			$resolverFile = 'resolv.conf.head';
-
-			// Ubuntu
-			if ( is_dir( '/etc/resolvconf/resolv.conf.d/' ) ) {
-				$resolverDir  = '/etc/resolvconf/resolv.conf.d/';
-				$resolverFile = 'head';
-			}
-
-		}
-
-		// Add nameservers
-		if ( ! file_exists( $resolverDir . $resolverFile ) ) {
-			$this->writeResolver( $resolverDir, $resolverFile );
-		}
-
-		$this->initCaCertificate();
-
-		// Write docker host IP address to the .env file.
-		$this->taskWriteToFile( $env )
-		     ->setVerbosityThreshold( VerbosityThresholdInterface::VERBOSITY_DEBUG )
-		     ->line( 'HOSTIP={IP}' )
-		     ->place( 'IP', $ip )
-		     ->run();
-
-		// synchronize VM time with system time
-		$this->taskDockerRun( 'phpdockerio/php7-fpm' )
-		     ->privileged()
-		     ->args( [ '--rm' ] )
-		     ->exec( 'date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
-		     ->printOutput( false )
-		     ->silent( true )
-		     ->run();
-
-		return $this;
-	}
-
-	/**
-	 * Generate and install our custom CA Certificate
-	 *
-	 * @throws \Robo\Exception\TaskException
-	 */
-	protected function initCaCertificate(): void {
-		$caCertName = Robo::config()->get( 'docker.cert-ca' );
-		$ca         = Robo::config()->get( 'docker.certs-folder' ) . '/' . $caCertName;
-
-		if ( OperatingSystem::LINUX === $this->os ) {
-
-			$targetCertName = 'tribeCA.crt';
-
-			// Ubuntu defaults
-			$caCertPath = '/usr/local/share/ca-certificate/' . $targetCertName;
-			$command    = 'update-ca-certificates';
-
-			// Arch + others
-			if ( file_exists( '/usr/bin/trust' ) ) {
-				$caCertPath = '/etc/ca-certificates/trust-source/anchors/' . $targetCertName;
-				$command = 'trust extract-compat';
-			}
-
-			if ( ! file_exists( $caCertPath ) ) {
-				$this->taskExecStack()
-				     ->stopOnFail()
-				     ->exec( sprintf( 'sudo openssl x509 -outform der -in %s -out %s', $ca, $caCertPath ) )
-				     ->exec( sprintf( 'sudo %s', $command ) )
-				     ->run();
-			}
-		}
-
-	}
-
-	/**
-	 * Writes nameservers to a resolver file and copies it to the correct location
-	 *
-	 * @param  string  $dir           The resolver directory.
-	 * @param  string  $fileName      The resolver file name.
-	 * @param  string  $nameserverIp  The nameserver IP to add to the file.
-	 */
-	protected function writeResolver( string $dir, string $fileName, string $nameserverIp = '127.0.0.1' ): void {
-		$file    = $dir . $fileName;
-		$tmpFile = $this->taskTmpFile()->getPath();
-
-		$this->taskWriteToFile( $tmpFile )
-		     ->setVerbosityThreshold( VerbosityThresholdInterface::VERBOSITY_DEBUG )
-		     ->line( 'nameserver {IP}' )
-		     ->place( 'IP', $nameserverIp )
-		     ->run();
-
-		if ( ! is_dir( $dir ) ) {
-			$this->taskExec( sprintf( 'sudo mkdir -p %s', $dir ) )->run();
-		}
-
-		$this->taskExec( sprintf( 'sudo cp %s %s', $tmpFile, $file ) )->run();
-
-		unset( $tmpFile );
 	}
 
 }

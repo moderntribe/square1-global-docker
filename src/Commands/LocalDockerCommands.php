@@ -80,7 +80,8 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		$this->say( sprintf( 'Starting docker-compose project: %s', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
 
 		// Start the local project
-		$this->taskDockerComposeUp()
+		$this->syncVmtime()
+		     ->taskDockerComposeUp()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
 		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
 		     ->detachedMode()
@@ -138,6 +139,25 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		$this->taskWriteToFile( Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json' )
 		     ->line( sprintf( '{ "github-oauth": { "github.com": "%s" } }', trim( $token ) ) )
 		     ->run();
+	}
+
+	/**
+	 * Synchronize VM time with system time
+	 *
+	 * This is to fix a time sync bug on OSX, may not need it anymore.
+	 *
+	 * @return $this
+	 */
+	protected function syncVmTime(): self {
+		$this->taskDockerRun( 'phpdockerio/php7-fpm' )
+		     ->privileged()
+		     ->args( [ '--rm' ] )
+		     ->exec( 'date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
+		     ->printOutput( false )
+		     ->silent( true )
+		     ->run();
+
+		return $this;
 	}
 
 }
