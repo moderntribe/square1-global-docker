@@ -18,8 +18,6 @@ use Tribe\Sq1\Traits\LocalAwareTrait;
  */
 class CertificateHandler {
 
-	use LocalAwareTrait;
-
 	public const CERT_TARGET_NAME = 'tribeCA.crt';
 
 	/**
@@ -101,7 +99,7 @@ class CertificateHandler {
 	public function installLocalCertificate( InputInterface $input, AnnotationData $data ): void {
 		$command = $data->get( 'command' );
 
-		if ( 'start' === $command ) {
+		if ( 'start' === $command || 'restart' === $command ) {
 			$certPath = sprintf( '%s/%s.tribe.crt', Robo::config()->get( 'docker.certs-folder' ), Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
 
 			$cert = $this->localCertificate->setCertPath( $certPath );
