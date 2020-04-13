@@ -13,7 +13,6 @@
         "php": "^7.2",
         "ext-openssl": "*",
         "ext-json": "*",
-        "pimple/pimple": "~3.0@dev",
         "consolidation/robo": "^1.0.0",
         "droath/robo-docker-compose": "0.0.*",
         "eaudeweb/robo-curl": "^1.0"
