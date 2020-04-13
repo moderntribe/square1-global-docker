@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2bdc87346ad3952eee86cf243484a627",
+    "content-hash": "b084874ccdc55b765702a441a74e60cb",
     "packages": [
         {
             "name": "consolidation/annotated-command",
@@ -543,6 +543,46 @@
                 "task runner"
             ],
             "time": "2018-05-06T19:39:35+00:00"
+        },
+        {
+            "name": "eaudeweb/robo-curl",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eaudeweb/robo-curl.git",
+                "reference": "c646df96e4a0e46721033f1ec18af474c4002dc7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eaudeweb/robo-curl/zipball/c646df96e4a0e46721033f1ec18af474c4002dc7",
+                "reference": "c646df96e4a0e46721033f1ec18af474c4002dc7",
+                "shasum": ""
+            },
+            "require": {
+                "consolidation/robo": "~1",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "robo-tasks",
+            "autoload": {
+                "psr-4": {
+                    "EauDeWeb\\Robo\\Task\\Curl\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cristian Romanescu",
+                    "email": "cristian@romanescu.ro"
+                }
+            ],
+            "description": "Robo command wrapper for cURL command line client",
+            "time": "2018-11-19T21:31:41+00:00"
         },
         {
             "name": "grasmash/expander",
@@ -1668,7 +1708,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.2",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "1.1.0"
