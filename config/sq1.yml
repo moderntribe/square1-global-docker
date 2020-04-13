@@ -24,6 +24,14 @@ docker:
   cert-expiry: 825
   phpmyadmin-port: 8080
 
+# Local Docker
+local-docker:
+  # Files to look for to determine if this is a Square One local
+  files:
+    - 'local-config-sample.json'
+    - 'build-process.php'
+    - 'sq1.yml'
+
 # Global Command Options
 options:
   project-path:

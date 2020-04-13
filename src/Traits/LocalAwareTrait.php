@@ -14,11 +14,11 @@ use Tribe\Sq1\Models\LocalDocker;
 trait LocalAwareTrait {
 
 	/**
-	 * Sets the local docker configuration variables. Uses consolidation/annotated-command hooks to run when each command does.
+	 * Sets the local docker configuration variables. Uses consolidation/annotated-command hooks to run when each command does
 	 *
 	 * @hook pre-init *
 	 *
-	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
+	 * This checks the current folder for specific SquareOne files, and traverses up directories until it finds a match
 	 *
 	 * @param  \Symfony\Component\Console\Input\InputInterface  $input  |null
 	 */
@@ -33,36 +33,45 @@ trait LocalAwareTrait {
 		$workingDir = ( $input->hasOption( $optionProjectPath ) && is_string( $input->getOption( $optionProjectPath ) ) )
 			? $input->getOption( $optionProjectPath ) : getcwd();
 
-		$file  = $workingDir . '/build-process.php';
+		// Get a list of files from the config that are unique to SquareOne projects
+		$files = Robo::config()->get( 'local-docker.files' );
+
+		// Track if we found any identifying files
 		$found = false;
 
-		if ( is_file( $file ) ) {
-			$projectRoot   = dirname( $file );
-			$dockerDir     = $projectRoot . '/dev/docker';
-			$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( $dockerDir . '/docker-compose.override.yml' ) ];
-			$projectName   = realpath( $dockerDir . '/.projectID' );
-			$found         = true;
-		} else {
-			$levels = explode( DIRECTORY_SEPARATOR, $workingDir );
+		// Loop over the files until we get a hit
+		foreach ( $files as $file ) {
+			$rootFile = sprintf( '%s/%s', $workingDir, $file );
 
-			foreach ( $levels as $count => $level ) {
-				if ( $count < 1 ) {
-					continue;
-				}
+			if ( is_file( $rootFile ) ) {
+				$projectRoot   = dirname( $rootFile );
+				$dockerDir     = $projectRoot . '/dev/docker';
+				$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( Robo::config()->get( 'docker.compose-override' ) ) ];
+				$projectName   = realpath( $dockerDir . '/.projectID' );
+				$found         = true;
+			} else {
+				$levels = explode( DIRECTORY_SEPARATOR, $workingDir );
 
-				if ( is_file( dirname( getcwd(), $count ) . '/build-process.php' ) ) {
-					$projectRoot   = dirname( getcwd(), $count );
-					$dockerDir     = $projectRoot . '/dev/docker';
-					$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( $dockerDir . '/docker-compose.override.yml' ) ];
-					$projectName   = realpath( $dockerDir . '/.projectID' );
-					$found         = true;
-					break;
+				foreach ( $levels as $count => $level ) {
+					if ( $count < 1 ) {
+						continue;
+					}
+
+					if ( is_file( dirname( getcwd(), $count ) . '/' . $file ) ) {
+						$projectRoot   = dirname( getcwd(), $count );
+						$dockerDir     = $projectRoot . '/dev/docker';
+						$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( Robo::config()->get( 'docker.compose-override' ) ) ];
+						$projectName   = realpath( $dockerDir . '/.projectID' );
+						$found         = true;
+						break;
+					}
 				}
 			}
+
 		}
 
 		if ( ! $found ) {
-			$this->yell( 'Unable to find "build-process.php". Are you sure this is a sq1 project?' );
+			$this->yell( 'Unable to launch project. Are you sure this is a sq1 project?' );
 			exit( E_ERROR );
 		}
 
