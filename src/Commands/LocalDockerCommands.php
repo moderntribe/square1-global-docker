@@ -52,16 +52,6 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * @command start
 	 */
 	public function start(): self {
-		$certPath = sprintf( '%s/%s.tribe.crt', Robo::config()->get( 'docker.certs-folder' ), Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
-
-		$cert = $this->certificate->setCertPath( $certPath );
-
-		// Generate a certificate for this project if it doesn't exist or if it expired.
-		if ( ! $cert->exists() || $cert->expired() ) {
-			$this->globalTask->globalCert( sprintf( '%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
-			$this->globalTask->globalRestart();
-		}
-
 		// Start global containers
 		$this->globalTask->globalStart();
 
@@ -89,6 +79,8 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		     ->run();
 
 		$this->composerTask->composer( [ 'install' ] );
+
+		$this->taskOpenBrowser( sprintf( 'https://%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) )->run();
 
 		return $this;
 	}

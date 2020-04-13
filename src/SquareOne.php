@@ -106,7 +106,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	 */
 	private function getTasks(): array {
 		return [
-			\Tribe\Sq1\Hooks\Certificate::class,
+			\Tribe\Sq1\Hooks\CertificateHandler::class,
 			\Tribe\Sq1\Hooks\ResolverHandler::class,
 			\Tribe\Sq1\Hooks\Docker::class,
 			\Tribe\Sq1\Commands\GlobalDockerCommands::class,
@@ -137,8 +137,8 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		$container->inflector( ResolverHandler::class )
 		          ->invokeMethod( 'init', [ 'os' ] );
 
-		$container->inflector( \Tribe\Sq1\Hooks\Certificate::class )
-		          ->invokeMethod( 'init', [ 'os' ] );
+		$container->inflector( \Tribe\Sq1\Hooks\CertificateHandler::class )
+		          ->invokeMethod( 'init', [ 'os', Certificate::class ] );
 	}
 
 	/**
