@@ -37,7 +37,7 @@ options:
   project-path:
     name: 'project-path'
     shortcut: 'p'
-    description: 'Path to a SquareOne local project files'
+    description: 'Path to a SquareOne project'
 
 # Automated Testing
 tests:
