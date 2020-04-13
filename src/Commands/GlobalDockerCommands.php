@@ -125,7 +125,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 
 		}
 
-		$this->say( sprintf( 'Started phpMyAdmin on http://localhost:%d', Robo::config()->get( 'docker.phpmyadmin-port' ) ) );
+		$this->taskOpenBrowser( sprintf( 'http://localhost:%d', Robo::config()->get( 'docker.phpmyadmin-port' ) ) )->run();
 	}
 
 	/**
