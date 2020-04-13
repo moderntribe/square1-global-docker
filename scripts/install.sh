@@ -18,14 +18,14 @@ install_homebrew() {
 
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo curl 'https://raw.githubusercontent.com...' -o $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
+    sudo curl 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/3cc1406eccb2a694f13bf87cee64870ce44f81bb/sq1.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
   else
-    sudo curl 'https://raw.githubusercontent.com...' -o /etc/bash_completion.d/sq1.autocompletion
+    sudo curl 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/3cc1406eccb2a694f13bf87cee64870ce44f81bb/sq1.autocompletion' -o /etc/bash_completion.d/sq1.autocompletion
   fi
 }
 
 install_phar() {
-  sudo curl 'https://raw.githubusercontent.com...' -o /usr/local/bin/sq1
+  sudo curl 'https://github.com/moderntribe/square1-global-docker/releases/download/1.0.0-beta/sq1.phar' -o /usr/local/bin/sq1
 }
 
 # OSX
