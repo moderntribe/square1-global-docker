@@ -21,7 +21,7 @@ _sq1()
 
     # completing for an option
     if [[ ${cur} == --* ]] ; then
-        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --project-path"
+        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --simulate --progress-delay --define --project-path"
 
         case "$com" in
 
@@ -35,10 +35,6 @@ _sq1()
 
             help)
             opts="${opts} --format --raw"
-            ;;
-
-            init)
-            opts="${opts} "
             ;;
 
             list)
@@ -113,6 +109,10 @@ _sq1()
             opts="${opts} "
             ;;
 
+            self:update-check)
+            opts="${opts} --show-existing --no-show-existing"
+            ;;
+
         esac
 
         COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
@@ -123,7 +123,7 @@ _sq1()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer gulp help init list logs restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all"
+        coms="composer gulp help list logs restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all self:update-check"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
