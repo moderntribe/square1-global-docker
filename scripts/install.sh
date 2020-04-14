@@ -26,6 +26,7 @@ enable_bash_autocomplete() {
 
 install_phar() {
   sudo curl 'https://github.com/moderntribe/square1-global-docker/releases/download/1.0.0-beta/sq1.phar' -o /usr/local/bin/sq1
+  sudo chmod +x /usr/local/bin/sq1
 }
 
 # OSX
