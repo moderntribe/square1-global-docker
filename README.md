@@ -29,7 +29,7 @@ Note for macOS users: This script will install brew and all of the requirements 
 - To pass arguments to a command, separate the arguments with `--`, e.g. `sq1 wp cli info -- --format=json`
 
 ```
-SquareOne Global Docker 1.0.0-beta
+SquareOne Global Docker 1.1.0-beta
 
 Usage:
   command [options] [arguments]
@@ -41,7 +41,7 @@ Options:
       --ansi                       Force ANSI output
       --no-ansi                    Disable ANSI output
   -n, --no-interaction             Do not ask any interactive question
-  -p, --project-path=PROJECT-PATH  Path to a SquareOne project
+  -p, --project-path=PROJECT-PATH  Path to a SquareOne project [default: {"name":"project-path","shortcut":"p","description":"Path to a SquareOne project"}]
   -v|vv|vvv, --verbose             Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 
 Available commands:
@@ -68,6 +68,7 @@ Available commands:
   global:status        Shows all running docker containers
   global:stop          Stops the SquareOne global docker container
   global:stop-all      Stops ALL running docker containers on your system
+
 ```
 
 ### Configuration
