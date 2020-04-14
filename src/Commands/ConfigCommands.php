@@ -50,13 +50,13 @@ class ConfigCommands extends SquareOneCommand {
 	 * @command config:compose-copy
 	 */
 	public function composeCopy() {
-		$file = 'docker-compose.yml';
+		$file = Robo::config()->get( 'docker.compose-override' );
 
 		$this->taskCurl( 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/global/docker-compose.yml' )
-		     ->output( sprintf( '%s/%s', $this->configFolder, $file ) )
+		     ->output( Robo::config()->get( 'docker.compose-override' ) )
 		     ->run();
 
-		$this->say( sprintf( 'Saved %s to %s', $file, $this->configFolder ) );
+		$this->say( sprintf( 'Saved to %s', $file ) );
 	}
 
 }
