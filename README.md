@@ -21,7 +21,7 @@ SquareOne Global docker is a command line application that powers management of 
 
 Note for macOS users: This script will install brew and all of the requirements listed above.
 
-`bash <(wget -qO- https://github.com/moderntribe/square1-global-docker/blob/release/beta/scripts/install.sh)`
+`bash -c "$(curl -fsSL https://github.com/moderntribe/square1-global-docker/blob/release/beta/scripts/install.sh)"`
 
 ### Usage
 
