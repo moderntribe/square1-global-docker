@@ -5,11 +5,14 @@
 #############################################################
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
-
+PHAR_NAME="sq1.phar"
+CONFIG_DIR=~/.config/sq1
 
 # Functions
 create_config_folder() {
-  mkdir -p ~/.config/sq1
+  if [ ! -d "${CONFIG_DIR}" ]; then
+    mkdir -p ${CONFIG_DIR}
+  fi
 }
 
 install_homebrew() {
@@ -18,15 +21,21 @@ install_homebrew() {
 
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo curl 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/3cc1406eccb2a694f13bf87cee64870ce44f81bb/sq1.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
+    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/sq1.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
   else
-    sudo curl 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/3cc1406eccb2a694f13bf87cee64870ce44f81bb/sq1.autocompletion' -o /etc/bash_completion.d/sq1.autocompletion
+    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/sq1.autocompletion' -o /etc/bash_completion.d/sq1.autocompletion
   fi
 }
 
 install_phar() {
-  sudo curl 'https://github.com/moderntribe/square1-global-docker/releases/download/1.0.0-beta/sq1.phar' -o /usr/local/bin/sq1
-  sudo chmod +x /usr/local/bin/sq1
+  PHAR_DOWNLOAD=$(curl -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
+        | grep browser_download_url \
+        | grep ${PHAR_NAME} \
+        | cut -d '"' -f 4)
+
+  curl -s -L --create-dirs "${PHAR_DOWNLOAD}" -o ${CONFIG_DIR}/bin/sq1
+  chmod +x ${CONFIG_DIR}/bin/sq1
+  sudo ln -s ${CONFIG_DIR}/bin/sq1 /usr/local/bin/sq1
 }
 
 # OSX
