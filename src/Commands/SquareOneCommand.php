@@ -45,13 +45,13 @@ abstract class SquareOneCommand extends Tasks {
 	 */
 	public function __construct() {
 		$this->dockerWorkdir = Robo::config()->get( 'docker.workdir' );
-		$this->os = PHP_OS_FAMILY;
+		$this->os            = PHP_OS_FAMILY;
 	}
 
 	/**
 	 * Robo commands with spaces/arguments come in an array, convert to a string.
 	 *
-	 * @param  array  $args The Robo command array.
+	 * @param  array  $args  The Robo command array.
 	 *
 	 * @return string The command and arguments as a string.
 	 */
