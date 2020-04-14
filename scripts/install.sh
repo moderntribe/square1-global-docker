@@ -60,7 +60,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   fi
 
   echo "Installing dependencies via brew..."
-  brew install $(<brew/packages.txt)
+  curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o ${CONFIG_DIR}/packages.txt
+  brew install $(<"${CONFIG_DIR}"/packages.txt)
 fi
 
 echo "Creating config folder: ~/.config/sq1"
