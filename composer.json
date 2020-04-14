@@ -15,7 +15,8 @@
         "ext-json": "*",
         "consolidation/robo": "^1.0.0",
         "droath/robo-docker-compose": "0.0.*",
-        "eaudeweb/robo-curl": "^1.0"
+        "eaudeweb/robo-curl": "^1.0",
+        "composer/semver": "^1.5"
     },
     "autoload": {
         "psr-4": {

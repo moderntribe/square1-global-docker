@@ -13,6 +13,7 @@ use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tribe\Sq1\Commands\UpdateCommands;
 use Tribe\Sq1\Hooks\ResolverHandler;
 use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Commands\ComposerCommands;
@@ -117,6 +118,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 			\Tribe\Sq1\Commands\GulpCommands::class,
 			\Tribe\Sq1\Commands\TestCommands::class,
 			\Tribe\Sq1\Commands\ConfigCommands::class,
+			\Tribe\Sq1\Commands\UpdateCommands::class,
 		];
 	}
 
@@ -140,6 +142,9 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
 		$container->inflector( \Tribe\Sq1\Hooks\CertificateHandler::class )
 		          ->invokeMethod( 'setDependencies', [ 'os', Certificate::class ] );
+
+		$container->inflector( UpdateCommands::class )
+		          ->invokeMethod( 'setVersion', [ $this->version ] );
 	}
 
 	/**
