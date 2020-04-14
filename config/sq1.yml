@@ -1,9 +1,8 @@
-# SquareOne CONSTANTS
+# SquareOne Global Docker Config
 #
 # These are default values for each of the constants bearing the same name
 # within SquareOne. They may be overridden by exporting an environmental
-# variable of the same name, or by adding it to a file named ".env" in the
-# directory from which you are running SquareOne.
+# variable of the same name.
 #
 # Copy this file to ~/.config/sq1/sq1.yml to customize or place a sq1.yml file in
 # your local project's root folder.
