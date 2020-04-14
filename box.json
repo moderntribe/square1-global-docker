@@ -3,7 +3,7 @@
   "chmod": "0755",
   "compactors": [],
   "directories": ["bin", "brew", "config", "global", "src"],
-  "files": ["README.md", "VERSION"],
+  "files": ["CONTRIBUTING.md","LICENSE.md","README.md", "VERSION"],
   "finder": [
     {
       "exclude": [
