@@ -1,7 +1,7 @@
 {
     "name": "moderntribe/square1-global-docker",
     "type": "library",
-    "description": "SquareOne Docker",
+    "description": "SquareOne Global Docker",
     "license": "GPL-2.0-only",
     "config": {
         "vendor-dir": "vendor",
