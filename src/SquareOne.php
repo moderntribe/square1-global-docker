@@ -110,6 +110,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 			\Tribe\Sq1\Hooks\CertificateHandler::class,
 			\Tribe\Sq1\Hooks\ResolverHandler::class,
 			\Tribe\Sq1\Hooks\Docker::class,
+			\Tribe\Sq1\Hooks\Update::class,
 			\Tribe\Sq1\Commands\GlobalDockerCommands::class,
 			\Tribe\Sq1\Commands\ComposerCommands::class,
 			\Tribe\Sq1\Commands\LocalDockerCommands::class,
