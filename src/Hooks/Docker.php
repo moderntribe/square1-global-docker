@@ -2,8 +2,10 @@
 
 namespace Tribe\Sq1\Hooks;
 
+use Robo\Robo;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Tribe\Sq1\Exceptions\Sq1Exception;
 
@@ -12,9 +14,25 @@ use Tribe\Sq1\Exceptions\Sq1Exception;
  *
  * @package Tribe\Sq1\Hooks
  */
-class Docker {
+class Docker extends Hook {
 
 	const VAR = 'HOSTIP';
+
+	/**
+	 * Set up Global Docker Configuration files
+	 *
+	 * @hook init *
+	 *
+	 */
+	public function setUp(): void {
+		$filesystem = new Filesystem();
+
+		$dockerConfigFolder = Robo::config()->get( 'docker.config' );
+
+		if ( ! is_dir( $dockerConfigFolder ) ) {
+			$filesystem->mirror( 'global', Robo::config()->get( 'docker.config' ) );
+		}
+	}
 
 	/**
 	 * Set the HOSTIP environment variable for use in docker-composer.yml.

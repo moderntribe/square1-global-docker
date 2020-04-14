@@ -14,10 +14,12 @@ vars:
 
 # Docker
 docker:
+  config: '${vars.config}/global/docker'
   workdir: '/application/www'
   network: 'global_proxy'
   mysql: 'tribe-mysql:db'
-  compose-override: '${vars.config}/global/docker-compose.yml'
+  compose: '${docker.config}/docker-compose.yml'
+  compose-override: '${docker.config}/docker-compose.override.yml'
   cert-ca: 'tribeCA.pem'
   certs-folder: '${vars.config}/global/certs'
   cert-expiry: 825

@@ -5,25 +5,18 @@ namespace Tribe\Sq1\Hooks;
 use Robo\Robo;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Symfony\Component\Console\Input\InputInterface;
-use Tribe\Sq1\Commands\SquareOneCommand;
 use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Models\LocalDocker;
 use Tribe\Sq1\Models\OperatingSystem;
-use Tribe\Sq1\Traits\LocalAwareTrait;
 
 /**
  * CertificateHandler Hooks
  *
  * @package Tribe\Sq1\Hooks
  */
-class CertificateHandler {
+class CertificateHandler extends Hook {
 
 	public const CERT_TARGET_NAME = 'tribeCA.crt';
-
-	/**
-	 * @var OperatingSystem
-	 */
-	protected $os;
 
 	/**
 	 * @var Certificate
@@ -47,15 +40,15 @@ class CertificateHandler {
 	/**
 	 * Invoked via inflection
 	 *
-	 * @param  \Tribe\Sq1\Models\OperatingSystem  $os
-	 * @param  \Tribe\Sq1\Models\Certificate      $localCertificate
+	 * @param  \Tribe\Sq1\Models\Certificate  $localCertificate
+	 * @param  string                         $scriptPath
 	 */
-	public function setDependencies( OperatingSystem $os, Certificate $localCertificate ): void {
-		$this->os               = $os;
+	public function setDependencies( Certificate $localCertificate, string $scriptPath ): void {
 		$this->localCertificate = $localCertificate;
+		$this->scriptPath       = $scriptPath;
 
-		if ( OperatingSystem::LINUX === $os->getFamily() ) {
-			$config        = Robo::config()->get( sprintf( 'certificate.Linux.%s', $os->getLinuxFlavor() ) );
+		if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
+			$config        = Robo::config()->get( sprintf( 'certificate.Linux.%s', $this->os->getLinuxFlavor() ) );
 			$this->dir     = $config['dir'];
 			$this->command = $config['command'];
 		}
@@ -106,7 +99,7 @@ class CertificateHandler {
 
 			// Generate a certificate for this project if it doesn't exist or if it expired
 			if ( ! $cert->exists() || $cert->expired() ) {
-				shell_exec( sprintf( '%s %s.tribe', SquareOneCommand::SCRIPT_PATH . 'global/cert.sh',
+				shell_exec( sprintf( '%s %s.tribe', $this->scriptPath . '/global/cert.sh',
 					Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
 			}
 		}

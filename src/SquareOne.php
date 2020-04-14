@@ -13,7 +13,10 @@ use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tribe\Sq1\Commands\SquareOneCommand;
 use Tribe\Sq1\Commands\UpdateCommands;
+use Tribe\Sq1\Hooks\CertificateHandler;
+use Tribe\Sq1\Hooks\Hook;
 use Tribe\Sq1\Hooks\ResolverHandler;
 use Tribe\Sq1\Models\Certificate;
 use Tribe\Sq1\Commands\ComposerCommands;
@@ -42,6 +45,13 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	private $runner;
 
 	/**
+	 * The path of this script
+	 *
+	 * @var string
+	 */
+	private $scriptPath;
+
+	/**
 	 * The Application Version.
 	 *
 	 * @var string
@@ -59,18 +69,21 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	 * SquareOne constructor.
 	 *
 	 * @param  string                                                  $version
+	 * @param  string                                                  $scriptPath
 	 * @param  \Robo\Config\Config                                     $config
 	 * @param  \Symfony\Component\Console\Input\InputInterface|null    $input
 	 * @param  \Symfony\Component\Console\Output\OutputInterface|null  $output
 	 */
 	public function __construct(
 		string $version,
+		string $scriptPath,
 		Config $config,
 		InputInterface $input = null,
 		OutputInterface $output = null
 	) {
 
-		$this->version = $version;
+		$this->scriptPath = $scriptPath;
+		$this->version    = $version;
 
 		// Create application.
 		$this->setConfig( $config );
@@ -107,7 +120,7 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	 */
 	private function getTasks(): array {
 		return [
-			\Tribe\Sq1\Hooks\CertificateHandler::class,
+			CertificateHandler::class,
 			\Tribe\Sq1\Hooks\ResolverHandler::class,
 			\Tribe\Sq1\Hooks\Docker::class,
 			\Tribe\Sq1\Hooks\Update::class,
@@ -130,19 +143,25 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 		$container = $this->getContainer();
 
 		$container->share( Certificate::class );
+		$container->add( 'os', OperatingSystem::class );
 
-		// Build inflections for the InflectionAwareTrait.
+		$container->inflector( SquareOneCommand::class )
+		          ->invokeMethod( 'setScriptPath', [ $this->scriptPath ] );
+
+		$container->inflector( Hook::class )
+		          ->invokeMethod( 'setScriptPath', [ $this->scriptPath ] )
+		          ->invokeMethod( 'setOperatingSystem', [ 'os' ] );
+
 		$container->inflector( LocalDockerCommands::class )
 		          ->invokeMethod( 'setCertificate', [ Certificate::class ] )
 		          ->invokeMethod( 'setGlobalDockerTask', [ GlobalDockerCommands::class . 'Commands' ] )
 		          ->invokeMethod( 'setComposerTask', [ ComposerCommands::class . 'Commands' ] );
 
-		$container->add( 'os', OperatingSystem::class );
 		$container->inflector( ResolverHandler::class )
-		          ->invokeMethod( 'setDependencies', [ 'os' ] );
+		          ->invokeMethod( 'setDependencies', [] );
 
-		$container->inflector( \Tribe\Sq1\Hooks\CertificateHandler::class )
-		          ->invokeMethod( 'setDependencies', [ 'os', Certificate::class ] );
+		$container->inflector( CertificateHandler::class )
+		          ->invokeMethod( 'setDependencies', [ Certificate::class, $this->scriptPath ] );
 
 		$container->inflector( UpdateCommands::class )
 		          ->invokeMethod( 'setVersion', [ $this->version ] );

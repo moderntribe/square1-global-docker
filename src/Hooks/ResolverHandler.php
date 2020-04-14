@@ -13,12 +13,7 @@ use Tribe\Sq1\Models\OperatingSystem;
  *
  * @package Tribe\Sq1\Hooks
  */
-class ResolverHandler {
-
-	/**
-	 * @var OperatingSystem
-	 */
-	protected $os;
+class ResolverHandler extends Hook {
 
 	/**
 	 * The path to where the resolver config file will be written
@@ -37,23 +32,20 @@ class ResolverHandler {
 	/**
 	 * Run via inflection
 	 *
-	 * @param  \Tribe\Sq1\Models\OperatingSystem  $os
-	 *
 	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
 	 */
-	public function setDependencies( OperatingSystem $os ): void {
-		if ( OperatingSystem::LINUX === $os->getFamily() ) {
-			$resolverConfig = Robo::config()->get( sprintf( 'resolver.%s.%s', $os->getFamily(), $os->getLinuxFlavor() ) );
+	public function setDependencies(): void {
+		if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
+			$resolverConfig = Robo::config()->get( sprintf( 'resolver.%s.%s', $this->os->getFamily(), $this->os->getLinuxFlavor() ) );
 		} else {
 			// MAC OS
-			$resolverConfig = Robo::config()->get( sprintf( 'resolver.%s', $os->getFamily() ) );
+			$resolverConfig = Robo::config()->get( sprintf( 'resolver.%s', $this->os->getFamily() ) );
 		}
 
 		if ( empty( $resolverConfig ) ) {
 			throw new Sq1Exception( 'Unsupported operating system' );
 		}
 
-		$this->os   = $os;
 		$this->dir  = $resolverConfig['dir'];
 		$this->file = $resolverConfig['file'];
 	}

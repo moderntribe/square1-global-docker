@@ -16,16 +16,6 @@ abstract class SquareOneCommand extends Tasks {
 	use loadTasks;
 
 	/**
-	 * The root path of the script
-	 */
-	const SCRIPT_PATH = __DIR__ . '/../../';
-
-	/**
-	 * The path to the docker-compose.yml file
-	 */
-	const COMPOSE_CONFIG = self::SCRIPT_PATH . 'global/docker-compose.yml';
-
-	/**
 	 * The docker working directory, e.g. /application/www
 	 *
 	 * @var string
@@ -40,12 +30,32 @@ abstract class SquareOneCommand extends Tasks {
 	protected $os;
 
 	/**
+	 * The path to this script
+	 *
+	 * @var string
+	 */
+	protected $scriptPath;
+
+	/**
 	 * SquareOneCommand constructor.
 	 *
 	 */
 	public function __construct() {
 		$this->dockerWorkdir = Robo::config()->get( 'docker.workdir' );
 		$this->os            = PHP_OS_FAMILY;
+	}
+
+	/**
+	 * Set via inflection.
+	 *
+	 * @param  string  $scriptPath The script's path
+	 *
+	 * @return $this
+	 */
+	public function setScriptPath( string $scriptPath ): self {
+		$this->scriptPath = $scriptPath;
+
+		return $this;
 	}
 
 	/**

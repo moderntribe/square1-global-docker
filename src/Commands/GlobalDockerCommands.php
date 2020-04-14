@@ -4,8 +4,6 @@ namespace Tribe\Sq1\Commands;
 
 use Robo\Robo;
 use Tribe\Sq1\Hooks\Docker;
-use Tribe\Sq1\Models\OperatingSystem;
-use Robo\Contract\VerbosityThresholdInterface;
 
 /**
  * Global Docker Commands
@@ -97,7 +95,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @TODO    Move actual cert.sh logic into PHP
 	 */
 	public function globalCert( string $domain ) {
-		$this->taskExec( self::SCRIPT_PATH . 'global/cert.sh' )
+		$this->taskExec( $this->scriptPath . '/global/cert.sh' )
 		     ->arg( $domain )
 		     ->arg( Robo::config()->get( 'docker.cert-expiry' ) )
 		     ->run();
@@ -137,7 +135,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 		$composeOverride = Robo::config()->get( 'docker.compose-override' );
 
 		return array_filter( [
-			self::COMPOSE_CONFIG,
+			Robo::config()->get( 'docker.compose' ),
 			file_exists( $composeOverride ) ? $composeOverride : '',
 		] );
 	}
