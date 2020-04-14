@@ -89,7 +89,7 @@ class TestCommands extends LocalDockerCommands {
 	 * @return array
 	 */
 	protected function getCodeceptionOverrides(): array {
-		return Robo::config()->get( 'tests.xdebug_overrides' );
+		return Robo::config()->get( 'tests.xdebug-overrides' );
 	}
 
 }
