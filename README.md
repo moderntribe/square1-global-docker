@@ -41,14 +41,13 @@ Options:
       --ansi                       Force ANSI output
       --no-ansi                    Disable ANSI output
   -n, --no-interaction             Do not ask any interactive question
-  -p, --project-path=PROJECT-PATH  Path to a SquareOne project [default: {"name":"project-path","shortcut":"p","description":"Path to a SquareOne project"}]
+  -p, --project-path=PROJECT-PATH  Path to a SquareOne project
   -v|vv|vvv, --verbose             Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 
 Available commands:
   composer             Runs a composer command in the local docker container
   gulp                 Run a Gulp command
   help                 Displays help for a command
-  init                 Run via inflection
   list                 Lists commands
   logs                 Displays local SquareOne project docker logs
   restart              Restarts your local SquareOne project
