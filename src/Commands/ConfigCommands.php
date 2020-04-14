@@ -35,9 +35,9 @@ class ConfigCommands extends SquareOneCommand {
 	 * @command config:copy
 	 */
 	public function configCopy() {
-		$file = 'test.yaml';
+		$file = 'sq1.yaml';
 
-		$this->taskCurl( 'https://raw.githubusercontent.com/moderntribe/square-one/master/.github/workflows/eslint.yml' )
+		$this->taskCurl( 'https://github.com/moderntribe/square1-global-docker/blob/release/beta/config/sq1.yml' )
 		     ->output( sprintf( '%s/%s', $this->configFolder, $file ) )
 		     ->run();
 
@@ -52,7 +52,7 @@ class ConfigCommands extends SquareOneCommand {
 	public function composeCopy() {
 		$file = 'docker-compose.yml';
 
-		$this->taskCurl( 'https://raw.githubusercontent.com/moderntribe/square-one/master/dev/docker/global/docker-compose.yml' )
+		$this->taskCurl( 'https://github.com/moderntribe/square1-global-docker/blob/release/beta/global/docker-compose.yml' )
 		     ->output( sprintf( '%s/%s', $this->configFolder, $file ) )
 		     ->run();
 
