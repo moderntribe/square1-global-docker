@@ -41,7 +41,7 @@ class ResolverHandler {
 	 *
 	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
 	 */
-	public function init( OperatingSystem $os ): void {
+	public function setDependencies( OperatingSystem $os ): void {
 		if ( OperatingSystem::LINUX === $os->getFamily() ) {
 			$resolverConfig = Robo::config()->get( sprintf( 'resolver.%s.%s', $os->getFamily(), $os->getLinuxFlavor() ) );
 		} else {

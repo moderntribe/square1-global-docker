@@ -136,10 +136,10 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
 		$container->add( 'os', OperatingSystem::class );
 		$container->inflector( ResolverHandler::class )
-		          ->invokeMethod( 'init', [ 'os' ] );
+		          ->invokeMethod( 'setDependencies', [ 'os' ] );
 
 		$container->inflector( \Tribe\Sq1\Hooks\CertificateHandler::class )
-		          ->invokeMethod( 'init', [ 'os', Certificate::class ] );
+		          ->invokeMethod( 'setDependencies', [ 'os', Certificate::class ] );
 	}
 
 	/**

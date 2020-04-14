@@ -50,7 +50,7 @@ class CertificateHandler {
 	 * @param  \Tribe\Sq1\Models\OperatingSystem  $os
 	 * @param  \Tribe\Sq1\Models\Certificate      $localCertificate
 	 */
-	public function init( OperatingSystem $os, Certificate $localCertificate ): void {
+	public function setDependencies( OperatingSystem $os, Certificate $localCertificate ): void {
 		$this->os               = $os;
 		$this->localCertificate = $localCertificate;
 
