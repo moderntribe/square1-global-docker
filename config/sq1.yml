@@ -20,6 +20,7 @@ docker:
   mysql: 'tribe-mysql:db'
   compose: '${docker.config}/docker-compose.yml'
   compose-override: '${docker.config}/docker-compose.override.yml'
+  cert-sh: '${docker.config}/cert.sh'
   cert-ca: 'tribeCA.pem'
   certs-folder: '${vars.config}/global/certs'
   cert-expiry: 825

@@ -95,7 +95,7 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @TODO    Move actual cert.sh logic into PHP
 	 */
 	public function globalCert( string $domain ) {
-		$this->taskExec( $this->scriptPath . '/global/cert.sh' )
+		$this->taskExec( Robo::config()->get( 'docker.cert-sh' ) )
 		     ->arg( $domain )
 		     ->arg( Robo::config()->get( 'docker.cert-expiry' ) )
 		     ->run();

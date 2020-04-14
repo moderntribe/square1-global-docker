@@ -99,7 +99,7 @@ class CertificateHandler extends Hook {
 
 			// Generate a certificate for this project if it doesn't exist or if it expired
 			if ( ! $cert->exists() || $cert->expired() ) {
-				shell_exec( sprintf( '%s %s.tribe', $this->scriptPath . '/global/cert.sh',
+				shell_exec( sprintf( '%s %s.tribe', Robo::config()->get( 'docker.cert-sh' ),
 					Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
 			}
 		}
