@@ -3,11 +3,11 @@
 namespace Tribe\Sq1;
 
 use Robo\Robo;
+use Robo\Application;
 use Robo\Config\Config;
 use Robo\Runner as RoboRunner;
 use Robo\Common\ConfigAwareTrait;
 use League\Container\ContainerAwareTrait;
-use Symfony\Component\Console\Application;
 use League\Container\ContainerAwareInterface;
 use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
