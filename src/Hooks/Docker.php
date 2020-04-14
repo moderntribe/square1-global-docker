@@ -25,12 +25,11 @@ class Docker extends Hook {
 	 *
 	 */
 	public function setUp(): void {
-		$filesystem = new Filesystem();
-
 		$dockerConfigFolder = Robo::config()->get( 'docker.config' );
 
 		if ( ! is_dir( $dockerConfigFolder ) ) {
-			$filesystem->mirror( 'global', Robo::config()->get( 'docker.config' ) );
+			$filesystem = new Filesystem();
+			$filesystem->mirror( $this->scriptPath . '/global', Robo::config()->get( 'docker.config' ) );
 		}
 	}
 
