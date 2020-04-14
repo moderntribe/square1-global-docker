@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+
+// If we're running from phar load the phar autoload file.
+$pharPath = \Phar::running( true );
+if ( $pharPath ) {
+	$autoloaderPath = "$pharPath/vendor/autoload.php";
+	$rootPath       = $pharPath;
+} else {
+	if ( file_exists( __DIR__ . '/../vendor/autoload.php' ) ) {
+		$autoloaderPath = __DIR__ . '/../vendor/autoload.php';
+		$rootPath       = __DIR__ . '/..';
+	} else {
+		die( "Could not find autoloader. Run 'composer install'." );
+	}
+}
+$classLoader = require $autoloaderPath;
+
+use Robo\Robo;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Tribe\Sq1\SquareOne;
+use Tribe\Sq1\Util\HomeDir;
+
+$home = ( new HomeDir() )->get();
+
+$configFiles = [
+	$rootPath . '/config/' . \Tribe\Sq1\Models\LocalDocker::CONFIG_FILE,
+	$home . '/.config/sq1/' . \Tribe\Sq1\Models\LocalDocker::CONFIG_FILE,
+];
+
+$input       = new ArgvInput( $argv );
+$output      = new ConsoleOutput();
+$config      = Robo::createConfiguration( array_filter( $configFiles, 'file_exists' ) );
+$version     = trim( file_get_contents( $rootPath . '/VERSION' ) );
+$sq1         = new SquareOne( $version, $config, $input, $output );
+$status_code = $sq1->run( $input, $output );
+exit( $status_code );

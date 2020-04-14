@@ -2,72 +2,126 @@
 
 namespace Tribe\Sq1\Traits;
 
-use Tribe\Sq1\Exceptions\Sq1Exception;
+use Robo\Robo;
+use Symfony\Component\Console\Input\InputInterface;
+use Tribe\Sq1\Models\LocalDocker;
 
 /**
  * Local Docker Methods
- *
  *
  * @package Tribe\Sq1\Traits
  */
 trait LocalAwareTrait {
 
 	/**
-	 * Returns the current local docker config.
+	 * Sets the local docker configuration variables. Uses consolidation/annotated-command hooks to run when each command does
 	 *
-	 * This checks the current folder for build-process.php, and traverses up directories until it finds it.
+	 * @hook pre-init *
 	 *
-	 * @return array
+	 * This checks the current folder for specific SquareOne files, and traverses up directories until it finds a match
 	 *
-	 * @throws Sq1Exception
+	 * @param  \Symfony\Component\Console\Input\InputInterface  $input  |null
 	 */
-	protected function getLocalDockerConfig(): array {
-		$workingDir = getcwd();
-		$file       = $workingDir . '/build-process.php';
+	public function getLocalDockerConfig( ?InputInterface $input ): void {
+		if ( ! $this->is_local_command( $input ) ) {
+			return;
+		}
 
-		if ( ! is_file( $file  ) ) {
-			$levels = explode( DIRECTORY_SEPARATOR, $workingDir );
+		$optionProjectPath = Robo::config()->get( 'options.project-path.name' );
 
-			foreach ( $levels as $count => $level ) {
-				if ( $count < 1 ) {
-					continue;
-				}
+		// Set a user's custom project path if provided via --project-path=/path/to/project
+		$workingDir = ( $input->hasOption( $optionProjectPath ) && is_string( $input->getOption( $optionProjectPath ) ) )
+			? $input->getOption( $optionProjectPath ) : getcwd();
 
-				if ( is_file( dirname( getcwd(), $count ) . '/build-process.php' ) ) {
-					$docker_dir     = dirname( getcwd(), $count ) . '/dev/docker';
-					$compose_config = [ realpath( $docker_dir . '/docker-compose.yml' ), realpath( $docker_dir . '/docker-compose.override.yml' ) ];
-					$project_name   = realpath( $docker_dir . '/.projectID' );
+		// Get a list of files from the config that are unique to SquareOne projects
+		$files = Robo::config()->get( 'local-docker.files' );
 
-					return $this->getConfig( $docker_dir, $compose_config, $project_name );
+		// Track if we found any identifying files
+		$found = false;
+
+		// Loop over the files until we get a hit
+		foreach ( $files as $file ) {
+			$rootFile = sprintf( '%s/%s', $workingDir, $file );
+
+			if ( is_file( $rootFile ) ) {
+				$projectRoot   = dirname( $rootFile );
+				$dockerDir     = $projectRoot . '/dev/docker';
+				$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( Robo::config()->get( 'docker.compose-override' ) ) ];
+				$projectName   = realpath( $dockerDir . '/.projectID' );
+				$found         = true;
+			} else {
+				$levels = explode( DIRECTORY_SEPARATOR, $workingDir );
+
+				foreach ( $levels as $count => $level ) {
+					if ( $count < 1 ) {
+						continue;
+					}
+
+					if ( is_file( dirname( getcwd(), $count ) . '/' . $file ) ) {
+						$projectRoot   = dirname( getcwd(), $count );
+						$dockerDir     = $projectRoot . '/dev/docker';
+						$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( Robo::config()->get( 'docker.compose-override' ) ) ];
+						$projectName   = realpath( $dockerDir . '/.projectID' );
+						$found         = true;
+						break;
+					}
 				}
 			}
 
-		} else {
-			$docker_dir     = dirname( $file ) . '/dev/docker';
-			$compose_config = [ realpath( $docker_dir . '/docker-compose.yml' ), realpath( $docker_dir . '/docker-compose.override.yml' ) ];
-			$project_name   = realpath( $docker_dir . '/.projectID' );
-
-			return $this->getConfig( $docker_dir, $compose_config, $project_name );
 		}
 
-		throw new Sq1Exception( 'Unable to find "build-process.php". Are you sure this is a sq1 project?' );
+		if ( ! $found ) {
+			$this->yell( 'Unable to launch project. Are you sure this is a sq1 project?' );
+			exit( E_ERROR );
+		}
+
+		$this->maybeLoadConfig( $projectRoot );
+
+		Robo::config()->set( LocalDocker::CONFIG_PROJECT_ROOT, $projectRoot );
+		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $projectName ) ) );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $dockerDir );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( $composeConfig, 'file_exists' ) );
 	}
 
 	/**
-	 * Returns the current project's sq1 config.
+	 * Load extra configuration options if the project has a sq1.yml.
 	 *
-	 * @param  string    $docker_dir The path to the docker directory
-	 * @param  string[]  $compose_config The path to the docker-compose.yml docker-compose.override.yml files
-	 * @param  string    $project_name The project's name, as used by docker-compose
-	 *
-	 * @return array
+	 * @param  string  $projectRoot
 	 */
-	private function getConfig( string $docker_dir, array $compose_config, string $project_name ): array {
-		return [
-			'name'       => trim( file_get_contents( $project_name ) ),
-			'docker_dir' => $docker_dir,
-			'compose'    => array_filter( $compose_config, 'file_exists' ),
+	protected function maybeLoadConfig( string $projectRoot ): void {
+		$localConfig = $projectRoot . '/' . LocalDocker::CONFIG_FILE;
+
+		if ( file_exists( $localConfig ) ) {
+			Robo::loadConfiguration( [ $localConfig ], Robo::config() );
+		}
+	}
+
+	/**
+	 * Determine if this is a local docker command.
+	 *
+	 * @param  \Symfony\Component\Console\Input\InputInterface  $input  |null
+	 *
+	 * @return bool
+	 */
+	protected function is_local_command( ?InputInterface $input ): bool {
+		if ( empty( $input ) || empty ( $input->getFirstArgument() ) ) {
+			return false;
+		}
+
+		$defaultCommands = [
+			'list',
+			'help',
 		];
+
+		if ( in_array( $input->getFirstArgument(), $defaultCommands ) ) {
+			return false;
+		}
+
+		if ( 'global' === strtok( $input->getFirstArgument(), ':' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

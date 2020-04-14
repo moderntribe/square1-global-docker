@@ -1,0 +1,35 @@
+{
+  "alias": "sq1.phar",
+  "chmod": "0755",
+  "compactors": [],
+  "directories": ["bin", "brew", "config", "global", "src"],
+  "files": ["CONTRIBUTING.md", "LICENSE.md", "README.md", "VERSION"],
+  "finder": [
+    {
+      "exclude": [
+        "bamarni",
+        "behat",
+        "phpunit",
+        "php_codesniffer",
+        "php-vcr",
+        "prophecy",
+        "test",
+        "tests",
+        "Test",
+        "Tests",
+        "Tester"
+      ],
+      "in": "vendor",
+      "name": "*.php"
+    },
+    {
+      "in": "vendor/consolidation/annotated-command/src",
+      "name": "*.php"
+    }
+  ],
+  "git-commit": "git-commit",
+  "git-version": "git-version",
+  "output": "sq1.phar",
+  "main": "bin/sq1",
+  "stub": true
+}
