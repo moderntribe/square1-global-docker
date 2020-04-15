@@ -32,7 +32,7 @@ class MigrationFactory {
 	 */
 	public function __construct( ContainerInterface $container ) {
 		$this->container = $container;
-		$this->version   = $this->formatVersion( '2.0.0-beta' );
+		$this->version   = $this->formatVersion( $this->container->get( 'application' )->getVersion() );
 	}
 
 	/**
