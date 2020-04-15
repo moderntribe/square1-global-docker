@@ -8,21 +8,21 @@
 # your local project's root folder.
 ---
 
-# Variables
-vars:
-  config: '${env.HOME}/.config/squareone'
+# Config directory
+squareone:
+  config-dir: '${env.HOME}/.config/squareone'
 
 # Docker
 docker:
-  config: '${vars.config}/global/docker'
+  config-dir: '${squareone.config-dir}/global/docker'
   workdir: '/application/www'
   network: 'global_proxy'
   mysql: 'tribe-mysql:db'
-  compose: '${docker.config}/docker-compose.yml'
-  compose-override: '${docker.config}/docker-compose.override.yml'
-  cert-sh: '${docker.config}/cert.sh'
+  compose: '${docker.config-dir}/docker-compose.yml'
+  compose-override: '${docker.config-dir}/docker-compose.override.yml'
+  cert-sh: '${docker.config-dir}/cert.sh'
   cert-ca: 'tribeCA.pem'
-  certs-folder: '${vars.config}/global/certs'
+  certs-folder: '${squareone.config-dir}/global/certs'
   cert-expiry: 825
   phpmyadmin-port: 8080
 

@@ -42,7 +42,7 @@ class UpdateCommands extends Tasks {
 	 * UpdateCommands constructor.
 	 */
 	public function __construct() {
-		$configDir       = Robo::config()->get( 'vars.config' );
+		$configDir       = Robo::config()->get( 'squareone.config-dir' );
 		$this->cacheFile = sprintf( '%s/%s', $configDir, self::CACHE_FILE_NAME );
 	}
 

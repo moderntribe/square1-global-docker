@@ -26,7 +26,7 @@ class ConfigCommands extends SquareOneCommand {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->configFolder = Robo::config()->get( 'vars.config' );
+		$this->configFolder = Robo::config()->get( 'squareone.config-dir' );
 	}
 
 	/**
