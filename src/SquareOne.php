@@ -18,6 +18,7 @@ use Tribe\SquareOne\Commands\UpdateCommands;
 use Tribe\SquareOne\Hooks\CertificateHandler;
 use Tribe\SquareOne\Hooks\Hook;
 use Tribe\SquareOne\Hooks\ResolverHandler;
+use Tribe\SquareOne\Hooks\Update;
 use Tribe\SquareOne\Models\Certificate;
 use Tribe\SquareOne\Commands\ComposerCommands;
 use Tribe\SquareOne\Commands\GlobalDockerCommands;
@@ -165,6 +166,9 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
 		$container->inflector( UpdateCommands::class )
 		          ->invokeMethod( 'setVersion', [ $this->version ] );
+
+		$container->inflector( Update::class )
+		          ->invokeMethod( 'setVersion', [ $this->version ] );
 	}
 
 	/**
@@ -178,6 +182,15 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 				$this->config->get( 'options.project-path.description' )
 			)
 		);
+	}
+
+	/**
+	 * Get the Application version
+	 *
+	 * @return string
+	 */
+	public function getVersion(): string {
+		return $this->version;
 	}
 
 }
