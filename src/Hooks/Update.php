@@ -49,7 +49,7 @@ class Update implements ContainerAwareInterface {
 				$shouldUpdate = true;
 			} else {
 				$version      = file_get_contents( $versionFile );
-				$shouldUpdate = Comparator::greaterThan( $version, $this->version );
+				$shouldUpdate = Comparator::greaterThan( $this->version, $version );
 			}
 
 			if ( $shouldUpdate ) {
