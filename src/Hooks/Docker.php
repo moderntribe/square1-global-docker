@@ -30,6 +30,7 @@ class Docker extends Hook {
 		if ( ! is_dir( $dockerConfigFolder ) ) {
 			$filesystem = new Filesystem();
 			$filesystem->mirror( $this->scriptPath . '/global', Robo::config()->get( 'docker.config' ) );
+			chmod( Robo::config()->get( 'docker.config' ) . '/cert.sh', '0755' );
 		}
 	}
 
