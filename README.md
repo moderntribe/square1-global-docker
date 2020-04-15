@@ -107,4 +107,10 @@ Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.con
 1. Create a new release/tag on GitHub and attach the generated `so.phar` in the root directory in the binaries box.
 1. Once the release is created you may want to bump the VERSION via semver with the `-dev` suffix.
 
+### Credits
+
+Brought to you by [Modern Tribe](https://tri.be/). Read [License](LICENSE.md) and [Contribution](CONTRIBUTING.md) docs.
+
+Powered by [Robo](https://robo.li/)
+
 
