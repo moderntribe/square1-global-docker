@@ -1,20 +1,20 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Contracts;
+namespace Tribe\SquareOne\Contracts;
 
-use Tribe\Sq1\Models\Certificate;
+use Tribe\SquareOne\Models\Certificate;
 
 /**
  * Interface CertificateAwareInterface
  *
- * @package Tribe\Sq1\Contracts
+ * @package Tribe\SquareOne\Contracts
  */
 interface CertificateAwareInterface {
 
 	/**
 	 * Inject a Certificate model.
 	 *
-	 * @param  \Tribe\Sq1\Models\Certificate  $cert
+	 * @param  \Tribe\SquareOne\Models\Certificate  $cert
 	 *
 	 * @return void
 	 */
@@ -23,7 +23,7 @@ interface CertificateAwareInterface {
 	/**
 	 * Get the Certificate model.
 	 *
-	 * @return \Tribe\Sq1\Models\Certificate
+	 * @return \Tribe\SquareOne\Models\Certificate
 	 */
 	public function getCertificate(): Certificate;
 }

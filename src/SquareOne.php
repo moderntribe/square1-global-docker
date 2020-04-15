@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1;
+namespace Tribe\SquareOne;
 
 use Robo\Robo;
 use Robo\Application;
@@ -13,21 +13,21 @@ use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Tribe\Sq1\Commands\SquareOneCommand;
-use Tribe\Sq1\Commands\UpdateCommands;
-use Tribe\Sq1\Hooks\CertificateHandler;
-use Tribe\Sq1\Hooks\Hook;
-use Tribe\Sq1\Hooks\ResolverHandler;
-use Tribe\Sq1\Models\Certificate;
-use Tribe\Sq1\Commands\ComposerCommands;
-use Tribe\Sq1\Commands\GlobalDockerCommands;
-use Tribe\Sq1\Commands\LocalDockerCommands;
-use Tribe\Sq1\Models\OperatingSystem;
+use Tribe\SquareOne\Commands\SquareOneCommand;
+use Tribe\SquareOne\Commands\UpdateCommands;
+use Tribe\SquareOne\Hooks\CertificateHandler;
+use Tribe\SquareOne\Hooks\Hook;
+use Tribe\SquareOne\Hooks\ResolverHandler;
+use Tribe\SquareOne\Models\Certificate;
+use Tribe\SquareOne\Commands\ComposerCommands;
+use Tribe\SquareOne\Commands\GlobalDockerCommands;
+use Tribe\SquareOne\Commands\LocalDockerCommands;
+use Tribe\SquareOne\Models\OperatingSystem;
 
 /**
  * The Square One Global Docker Application
  *
- * @package Tribe\Sq1
+ * @package Tribe\SquareOne
  */
 class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
@@ -121,18 +121,18 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 	private function getTasks(): array {
 		return [
 			CertificateHandler::class,
-			\Tribe\Sq1\Hooks\ResolverHandler::class,
-			\Tribe\Sq1\Hooks\Docker::class,
-			\Tribe\Sq1\Hooks\Update::class,
-			\Tribe\Sq1\Commands\GlobalDockerCommands::class,
-			\Tribe\Sq1\Commands\ComposerCommands::class,
-			\Tribe\Sq1\Commands\LocalDockerCommands::class,
-			\Tribe\Sq1\Commands\WpCliCommands::class,
-			\Tribe\Sq1\Commands\ShellCommands::class,
-			\Tribe\Sq1\Commands\GulpCommands::class,
-			\Tribe\Sq1\Commands\TestCommands::class,
-			\Tribe\Sq1\Commands\ConfigCommands::class,
-			\Tribe\Sq1\Commands\UpdateCommands::class,
+			\Tribe\SquareOne\Hooks\ResolverHandler::class,
+			\Tribe\SquareOne\Hooks\Docker::class,
+			\Tribe\SquareOne\Hooks\Update::class,
+			\Tribe\SquareOne\Commands\GlobalDockerCommands::class,
+			\Tribe\SquareOne\Commands\ComposerCommands::class,
+			\Tribe\SquareOne\Commands\LocalDockerCommands::class,
+			\Tribe\SquareOne\Commands\WpCliCommands::class,
+			\Tribe\SquareOne\Commands\ShellCommands::class,
+			\Tribe\SquareOne\Commands\GulpCommands::class,
+			\Tribe\SquareOne\Commands\TestCommands::class,
+			\Tribe\SquareOne\Commands\ConfigCommands::class,
+			\Tribe\SquareOne\Commands\UpdateCommands::class,
 		];
 	}
 

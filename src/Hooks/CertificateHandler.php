@@ -1,18 +1,18 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Hooks;
+namespace Tribe\SquareOne\Hooks;
 
 use Robo\Robo;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Symfony\Component\Console\Input\InputInterface;
-use Tribe\Sq1\Models\Certificate;
-use Tribe\Sq1\Models\LocalDocker;
-use Tribe\Sq1\Models\OperatingSystem;
+use Tribe\SquareOne\Models\Certificate;
+use Tribe\SquareOne\Models\LocalDocker;
+use Tribe\SquareOne\Models\OperatingSystem;
 
 /**
  * CertificateHandler Hooks
  *
- * @package Tribe\Sq1\Hooks
+ * @package Tribe\SquareOne\Hooks
  */
 class CertificateHandler extends Hook {
 
@@ -40,7 +40,7 @@ class CertificateHandler extends Hook {
 	/**
 	 * Invoked via inflection
 	 *
-	 * @param  \Tribe\Sq1\Models\Certificate  $localCertificate
+	 * @param  \Tribe\SquareOne\Models\Certificate  $localCertificate
 	 * @param  string                         $scriptPath
 	 */
 	public function setDependencies( Certificate $localCertificate, string $scriptPath ): void {

@@ -1,15 +1,15 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Traits;
+namespace Tribe\SquareOne\Traits;
 
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
-use Tribe\Sq1\Models\LocalDocker;
+use Tribe\SquareOne\Models\LocalDocker;
 
 /**
  * Local Docker Methods
  *
- * @package Tribe\Sq1\Traits
+ * @package Tribe\SquareOne\Traits
  */
 trait LocalAwareTrait {
 
@@ -71,7 +71,7 @@ trait LocalAwareTrait {
 		}
 
 		if ( ! $found ) {
-			$this->yell( 'Unable to launch project. Are you sure this is a sq1 project?' );
+			$this->yell( 'Unable to launch project. Are you sure this is a SquareOne project?' );
 			exit( E_ERROR );
 		}
 
@@ -84,7 +84,7 @@ trait LocalAwareTrait {
 	}
 
 	/**
-	 * Load extra configuration options if the project has a sq1.yml.
+	 * Load extra configuration options if the project has a squareone.yml.
 	 *
 	 * @param  string  $projectRoot
 	 */

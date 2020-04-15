@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
 use Robo\Tasks;
@@ -14,7 +14,7 @@ use stdClass;
  *
  * @note    the self:update command is automatically provided by Robo
  *
- * @package Tribe\Sq1\Commands
+ * @package Tribe\SquareOne\Commands
  */
 class UpdateCommands extends Tasks {
 
@@ -64,7 +64,7 @@ class UpdateCommands extends Tasks {
 		$shouldUpdate = Comparator::greaterThan( $release->version, $this->version );
 
 		if ( $shouldUpdate ) {
-			$this->say( sprintf( '<question>A new version "%s" is available! run sq1 self:update to update now.</question>', $release->version ) );
+			$this->say( sprintf( '<question>A new version "%s" is available! run "so self:update" to update now.</question>', $release->version ) );
 		} else if ( $opts['show-existing'] ) {
 			$this->say( sprintf( "You're running the latest version: %s", $this->version ) );
 		}
@@ -125,7 +125,7 @@ class UpdateCommands extends Tasks {
 	 *
 	 * @param  string  $version  The current phar version
 	 *
-	 * @return \Tribe\Sq1\Commands\UpdateCommands
+	 * @return \Tribe\SquareOne\Commands\UpdateCommands
 	 */
 	public function setVersion( string $version ): self {
 		$this->version = $version;

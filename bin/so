@@ -19,20 +19,20 @@ $classLoader = require $autoloaderPath;
 use Robo\Robo;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Tribe\Sq1\SquareOne;
-use Tribe\Sq1\Util\HomeDir;
+use Tribe\SquareOne\SquareOne;
+use Tribe\SquareOne\Util\HomeDir;
 
 $home = ( new HomeDir() )->get();
 
 $configFiles = [
-	$scriptPath . '/config/' . \Tribe\Sq1\Models\LocalDocker::CONFIG_FILE,
-	$home . '/.config/sq1/' . \Tribe\Sq1\Models\LocalDocker::CONFIG_FILE,
+	$scriptPath . '/config/' . \Tribe\SquareOne\Models\LocalDocker::CONFIG_FILE,
+	$home . '/.config/squareone/' . \Tribe\SquareOne\Models\LocalDocker::CONFIG_FILE,
 ];
 
 $input       = new ArgvInput( $argv );
 $output      = new ConsoleOutput();
 $config      = Robo::createConfiguration( array_filter( $configFiles, 'file_exists' ) );
 $version     = trim( file_get_contents( $scriptPath . '/VERSION' ) );
-$sq1         = new SquareOne( $version, $scriptPath, $config, $input, $output );
-$status_code = $sq1->run( $input, $output );
+$squareOne   = new SquareOne( $version, $scriptPath, $config, $input, $output );
+$status_code = $squareOne->run( $input, $output );
 exit( $status_code );

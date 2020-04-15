@@ -4,13 +4,13 @@
 # within SquareOne. They may be overridden by exporting an environmental
 # variable of the same name.
 #
-# Copy this file to ~/.config/sq1/sq1.yml to customize or place a sq1.yml file in
+# Copy this file to ~/.config/squareone/squareone.yml to customize or place a squareone.yml file in
 # your local project's root folder.
 ---
 
 # Variables
 vars:
-  config: '${env.HOME}/.config/sq1'
+  config: '${env.HOME}/.config/squareone'
 
 # Docker
 docker:
@@ -32,7 +32,7 @@ local-docker:
   files:
     - 'local-config-sample.json'
     - 'build-process.php'
-    - 'sq1.yml'
+    - 'squareone.yml'
 
 # Global Command Options
 options:

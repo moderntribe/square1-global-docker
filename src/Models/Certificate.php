@@ -1,11 +1,11 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Models;
+namespace Tribe\SquareOne\Models;
 
 /**
  * SSL Certificate Model
  *
- * @package Tribe\Sq1\Models
+ * @package Tribe\SquareOne\Models
  */
 class Certificate {
 
@@ -22,7 +22,7 @@ class Certificate {
 	 *
 	 * @param  string  $path  The path to the .crt file.
 	 *
-	 * @return \Tribe\Sq1\Models\Certificate
+	 * @return \Tribe\SquareOne\Models\Certificate
 	 */
 	public function setCertPath( string $path ): self {
 		$this->certPath = realpath( $path );

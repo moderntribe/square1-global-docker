@@ -1,18 +1,18 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Hooks;
+namespace Tribe\SquareOne\Hooks;
 
 use Robo\Robo;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
-use Tribe\Sq1\Exceptions\Sq1Exception;
+use Tribe\SquareOne\Exceptions\SquareOneException;
 
 /**
  * Docker Hooks
  *
- * @package Tribe\Sq1\Hooks
+ * @package Tribe\SquareOne\Hooks
  */
 class Docker extends Hook {
 
@@ -42,7 +42,7 @@ class Docker extends Hook {
 	 * @param  \Symfony\Component\Console\Input\InputInterface  $input
 	 * @param  \Consolidation\AnnotatedCommand\AnnotationData   $data
 	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 * @throws \Tribe\SquareOne\Exceptions\SquareOneException
 	 */
 	public function saveDockerGatewayIP( InputInterface $input, AnnotationData $data ): void {
 		$command = $data->get( 'command' );
@@ -51,13 +51,13 @@ class Docker extends Hook {
 			$ip = $this->getDockerGatewayIP();
 
 			if ( empty( $ip ) ) {
-				throw new Sq1Exception( 'Unable to get the Docker Gateway IP Address.' );
+				throw new SquareOneException( 'Unable to get the Docker Gateway IP Address.' );
 			}
 
 			$result = putenv( sprintf( '%s=%s', self::VAR, $ip ) );
 
 			if ( empty( $result ) ) {
-				throw new Sq1Exception( sprintf( 'Unable to set %s environment variable.', self::VAR ) );
+				throw new SquareOneException( sprintf( 'Unable to set %s environment variable.', self::VAR ) );
 			}
 		}
 	}
@@ -67,14 +67,14 @@ class Docker extends Hook {
 	 *
 	 * @return string The IP Address
 	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 * @throws \Tribe\SquareOne\Exceptions\SquareOneException
 	 */
 	protected function getDockerGatewayIP(): ?string {
 		$process = new Process( [ 'docker', 'network', 'inspect', 'bridge' ] );
 		$process->run();
 
 		if ( ! $process->isSuccessful() ) {
-			throw new Sq1Exception( 'Unable to execute "docker network inspect bridge". Is docker installed?' );
+			throw new SquareOneException( 'Unable to execute "docker network inspect bridge". Is docker installed?' );
 		}
 
 		$data = json_decode( $process->getOutput(), true );

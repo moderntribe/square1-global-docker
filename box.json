@@ -1,5 +1,5 @@
 {
-  "alias": "sq1.phar",
+  "alias": "so.phar",
   "chmod": "0755",
   "compactors": [],
   "directories": ["bin", "brew", "config", "global", "src"],
@@ -29,7 +29,7 @@
   ],
   "git-commit": "git-commit",
   "git-version": "git-version",
-  "output": "sq1.phar",
-  "main": "bin/sq1",
+  "output": "so.phar",
+  "main": "bin/so",
   "stub": true
 }

@@ -20,11 +20,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Tribe\\Sq1\\": "src"
+            "Tribe\\SquareOne\\": "src"
         }
     },
     "bin": [
-        "bin/sq1"
+        "bin/so"
     ],
     "scripts": {
         "phar:install-tools": [
@@ -34,7 +34,7 @@
             "mv -f box.phar tools/box"
         ],
         "phar:build": "env PATH=tools:$PATH box build",
-        "autocomplete:build": "vendor/bin/symfony-autocomplete sq1 > sq1.autocompletion"
+        "autocomplete:build": "vendor/bin/symfony-autocomplete so > squareone.autocompletion"
     },
     "extra": {
         "branch-alias": {

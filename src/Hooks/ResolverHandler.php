@@ -1,17 +1,17 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Hooks;
+namespace Tribe\SquareOne\Hooks;
 
 use Robo\Robo;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Symfony\Component\Console\Input\InputInterface;
-use Tribe\Sq1\Exceptions\Sq1Exception;
-use Tribe\Sq1\Models\OperatingSystem;
+use Tribe\SquareOne\Exceptions\SquareOneException;
+use Tribe\SquareOne\Models\OperatingSystem;
 
 /**
  * Resolver/nameserver Hooks
  *
- * @package Tribe\Sq1\Hooks
+ * @package Tribe\SquareOne\Hooks
  */
 class ResolverHandler extends Hook {
 
@@ -32,7 +32,7 @@ class ResolverHandler extends Hook {
 	/**
 	 * Run via inflection
 	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 * @throws \Tribe\SquareOne\Exceptions\SquareOneException
 	 */
 	public function setDependencies(): void {
 		if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
@@ -43,7 +43,7 @@ class ResolverHandler extends Hook {
 		}
 
 		if ( empty( $resolverConfig ) ) {
-			throw new Sq1Exception( 'Unsupported operating system' );
+			throw new SquareOneException( 'Unsupported operating system' );
 		}
 
 		$this->dir  = $resolverConfig['dir'];
@@ -58,7 +58,7 @@ class ResolverHandler extends Hook {
 	 * @param  \Symfony\Component\Console\Input\InputInterface  $input
 	 * @param  \Consolidation\AnnotatedCommand\AnnotationData   $data
 	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 * @throws \Tribe\SquareOne\Exceptions\SquareOneException
 	 */
 	public function configure( InputInterface $input, AnnotationData $data ): void {
 		$command = $data->get( 'command' );
@@ -78,7 +78,7 @@ class ResolverHandler extends Hook {
 	 *
 	 * @param  string  $nameserverIp  The nameserver IP to add to the file.
 	 *
-	 * @throws \Tribe\Sq1\Exceptions\Sq1Exception
+	 * @throws \Tribe\SquareOne\Exceptions\SquareOneException
 	 */
 	protected function writeResolver( string $nameserverIp = '127.0.0.1' ): void {
 		$file = $this->dir . $this->file;
@@ -89,7 +89,7 @@ class ResolverHandler extends Hook {
 		$result = file_put_contents( $tmpFile, sprintf( 'nameserver %s', $nameserverIp ) );
 
 		if ( empty( $result ) ) {
-			throw new Sq1Exception( sprintf( 'Unable to save nameservers to %s', $tmpFile ) );
+			throw new SquareOneException( sprintf( 'Unable to save nameservers to %s', $tmpFile ) );
 		}
 
 		if ( ! is_dir( $this->dir ) ) {

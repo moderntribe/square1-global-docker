@@ -1,11 +1,11 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Util;
+namespace Tribe\SquareOne\Util;
 
 /**
  * Class HomeDir
  *
- * @package Tribe\Sq1\Util
+ * @package Tribe\SquareOne\Util
  */
 class HomeDir {
 

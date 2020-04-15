@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
 use EauDeWeb\Robo\Task\Curl\loadTasks;
@@ -8,7 +8,7 @@ use EauDeWeb\Robo\Task\Curl\loadTasks;
 /**
  * Copies config files
  *
- * @package Tribe\Sq1\Commands
+ * @package Tribe\SquareOne\Commands
  */
 class ConfigCommands extends SquareOneCommand {
 
@@ -30,14 +30,14 @@ class ConfigCommands extends SquareOneCommand {
 	}
 
 	/**
-	 * Copies the sq1.yml file to the local config folder for customization
+	 * Copies the squareone.yml file to the local config folder for customization
 	 *
 	 * @command config:copy
 	 */
 	public function configCopy() {
-		$file = 'sq1.yaml';
+		$file = 'squareone.yml';
 
-		$this->taskCurl( 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/sq1.yml' )
+		$this->taskCurl( 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/squareone.yml' )
 		     ->output( sprintf( '%s/%s', $this->configFolder, $file ) )
 		     ->run();
 

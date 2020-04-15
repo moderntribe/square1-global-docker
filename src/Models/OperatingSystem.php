@@ -1,11 +1,11 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Models;
+namespace Tribe\SquareOne\Models;
 
 /**
  * Operating System Model.
  *
- * @package Tribe\Sq1\Models
+ * @package Tribe\SquareOne\Models
  */
 class OperatingSystem {
 

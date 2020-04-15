@@ -1,14 +1,14 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
-use Tribe\Sq1\Models\LocalDocker;
+use Tribe\SquareOne\Models\LocalDocker;
 
 /**
  * Class ComposerCommands
  *
- * @package Tribe\Sq1\Tasks
+ * @package Tribe\SquareOne\Commands
  */
 class ComposerCommands extends SquareOneCommand {
 

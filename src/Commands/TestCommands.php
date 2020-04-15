@@ -1,14 +1,14 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
-use Tribe\Sq1\Models\LocalDocker;
+use Tribe\SquareOne\Models\LocalDocker;
 
 /**
  * Run automated test commands
  *
- * @package Tribe\Sq1\Tasks
+ * @package Tribe\SquareOne\Commands
  */
 class TestCommands extends LocalDockerCommands {
 
@@ -19,7 +19,7 @@ class TestCommands extends LocalDockerCommands {
 	 *
 	 * @option  xdebug Run with Xdebug enabled. Default: false.
 	 * @option  clean Clean Codeception output directory and generated code. Default: true.
-	 * @usage   e.g. sq1 test -- run integration
+	 * @usage   e.g. so test -- run integration
 	 *
 	 * @param  array  $args  The Codeception command and arguments.
 	 * @param  array  $opts  The options.

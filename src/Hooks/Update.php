@@ -1,17 +1,17 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Hooks;
+namespace Tribe\SquareOne\Hooks;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Symfony\Component\Console\Input\InputInterface;
-use Tribe\Sq1\Commands\UpdateCommands;
+use Tribe\SquareOne\Commands\UpdateCommands;
 
 /**
  * Update Hooks
  *
- * @package Tribe\Sq1\Hooks
+ * @package Tribe\SquareOne\Hooks
  */
 class Update implements ContainerAwareInterface {
 

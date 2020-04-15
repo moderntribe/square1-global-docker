@@ -5,8 +5,8 @@
 #############################################################
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
-PHAR_NAME="sq1.phar"
-CONFIG_DIR=~/.config/sq1
+PHAR_NAME="so.phar"
+CONFIG_DIR=~/.config/squareone
 
 # Functions
 create_config_folder() {
@@ -21,9 +21,9 @@ install_homebrew() {
 
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/sq1.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/sq1.autocompletion
+    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/squareone.autocompletion
   else
-    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/sq1.autocompletion' -o /etc/bash_completion.d/sq1.autocompletion
+    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/squareone.autocompletion
   fi
 }
 
@@ -33,9 +33,9 @@ install_phar() {
         | grep ${PHAR_NAME} \
         | cut -d '"' -f 4)
 
-  curl -s -L --create-dirs "${PHAR_DOWNLOAD}" -o ${CONFIG_DIR}/bin/sq1
-  chmod +x ${CONFIG_DIR}/bin/sq1
-  sudo ln -s ${CONFIG_DIR}/bin/sq1 /usr/local/bin/sq1
+  curl -s -L --create-dirs "${PHAR_DOWNLOAD}" -o ${CONFIG_DIR}/bin/so
+  chmod +x ${CONFIG_DIR}/bin/so
+  sudo ln -s ${CONFIG_DIR}/bin/so /usr/local/bin/so
 }
 
 # OSX
@@ -64,18 +64,18 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   brew install $(<"${CONFIG_DIR}"/packages.txt)
 fi
 
-echo "Creating config folder: ~/.config/sq1"
+echo "Creating config folder: ~/.config/squareone"
 create_config_folder
 
-echo "Enabling sq1 autocompletion, enter your password when requested."
+echo "Enabling SquareOne autocompletion, enter your password when requested."
 enable_bash_autocomplete
 
-echo "Downloading sq1.phar to /usr/local/bin/sq1, enter your password when requested."
+echo "Downloading so.phar to /usr/local/bin/so, enter your password when requested."
 install_phar
 
-sq1
+so
 
 echo ""
 echo "************************************"
-echo "If everything went smoothly, you should see the sq1 command list above. Reload your terminal to enable autocompletion."
+echo "If everything went smoothly, you should see the 'so' command list above. Reload your terminal to enable autocompletion."
 echo "************************************"

@@ -1,14 +1,14 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
-use Tribe\Sq1\Models\LocalDocker;
+use Tribe\SquareOne\Models\LocalDocker;
 
 /**
  * WP CLI Commands
  *
- * @package Tribe\Sq1\Tasks
+ * @package Tribe\SquareOne\Commands
  */
 class WpCliCommands extends LocalDockerCommands {
 
@@ -17,7 +17,7 @@ class WpCliCommands extends LocalDockerCommands {
 	 *
 	 * @command wp
 	 * @option  xdebug Run with Xdebug enabled.
-	 * @usage   e.g. sq1 wp -- option get home --format=json
+	 * @usage   e.g. so wp -- option get home --format=json
 	 *
 	 * @param  array  $args  The WP CLI command and arguments.
 	 * @param  array  $opts  The options.

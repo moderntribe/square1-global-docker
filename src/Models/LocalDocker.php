@@ -1,11 +1,11 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Models;
+namespace Tribe\SquareOne\Models;
 
 /**
  * LocalDocker Model
  *
- * @package Tribe\Sq1\Models
+ * @package Tribe\SquareOne\Models
  */
 class LocalDocker {
 
@@ -32,6 +32,6 @@ class LocalDocker {
 	/**
 	 * The local docker's config file name
 	 */
-	public const CONFIG_FILE = 'sq1.yml';
+	public const CONFIG_FILE = 'squareone.yml';
 
 }

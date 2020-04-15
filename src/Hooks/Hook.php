@@ -1,13 +1,13 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Hooks;
+namespace Tribe\SquareOne\Hooks;
 
-use Tribe\Sq1\Models\OperatingSystem;
+use Tribe\SquareOne\Models\OperatingSystem;
 
 /**
  * Class Hook
  *
- * @package Tribe\Sq1\Hooks
+ * @package Tribe\SquareOne\Hooks
  */
 abstract class Hook {
 
@@ -39,7 +39,7 @@ abstract class Hook {
 	 *
 	 * Passed via inflection.
 	 *
-	 * @param  \Tribe\Sq1\Models\OperatingSystem  $os
+	 * @param  \Tribe\SquareOne\Models\OperatingSystem  $os
 	 */
 	public function setOperatingSystem( OperatingSystem $os ) {
 		$this->os = $os;

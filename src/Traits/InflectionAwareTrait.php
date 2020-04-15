@@ -1,14 +1,14 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Traits;
+namespace Tribe\SquareOne\Traits;
 
-use Tribe\Sq1\Commands\ComposerCommands;
-use Tribe\Sq1\Commands\GlobalDockerCommands;
+use Tribe\SquareOne\Commands\ComposerCommands;
+use Tribe\SquareOne\Commands\GlobalDockerCommands;
 
 /**
  * Use Container Inflection to inject instances because they are set very late in the cycle by Robo.
  *
- * @package Tribe\Sq1\Traits
+ * @package Tribe\SquareOne\Traits
  */
 trait InflectionAwareTrait {
 
@@ -25,7 +25,7 @@ trait InflectionAwareTrait {
 	/**
 	 * Set via Container Inflection.
 	 *
-	 * @param  \Tribe\Sq1\Commands\GlobalDockerCommands  $globalTask
+	 * @param  \Tribe\SquareOne\Commands\GlobalDockerCommands  $globalTask
 	 */
 	public function setGlobalDockerTask( GlobalDockerCommands $globalTask ) {
 		$this->globalTask = $globalTask;
@@ -34,7 +34,7 @@ trait InflectionAwareTrait {
 	/**
 	 * Set via Container Inflection.
 	 *
-	 * @param  \Tribe\Sq1\Commands\ComposerCommands  $composerTask
+	 * @param  \Tribe\SquareOne\Commands\ComposerCommands  $composerTask
 	 */
 	public function setComposerTask( ComposerCommands $composerTask ) {
 		$this->composerTask = $composerTask;

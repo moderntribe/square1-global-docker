@@ -1,18 +1,18 @@
 <?php declare( strict_types=1 );
 
-namespace Tribe\Sq1\Commands;
+namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
-use Tribe\Sq1\Contracts\CertificateAwareInterface;
-use Tribe\Sq1\Models\Certificate;
-use Tribe\Sq1\Models\LocalDocker;
-use Tribe\Sq1\Traits\InflectionAwareTrait;
-use Tribe\Sq1\Traits\LocalAwareTrait;
+use Tribe\SquareOne\Contracts\CertificateAwareInterface;
+use Tribe\SquareOne\Models\Certificate;
+use Tribe\SquareOne\Models\LocalDocker;
+use Tribe\SquareOne\Traits\InflectionAwareTrait;
+use Tribe\SquareOne\Traits\LocalAwareTrait;
 
 /**
  * Local SquareOne Docker/Project Commands
  *
- * @package Tribe\Sq1\Tasks
+ * @package Tribe\SquareOne\Commands
  */
 class LocalDockerCommands extends SquareOneCommand implements CertificateAwareInterface {
 
@@ -29,7 +29,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	/**
 	 * Set the Certificate model
 	 *
-	 * @param  \Tribe\Sq1\Models\Certificate  $cert
+	 * @param  \Tribe\SquareOne\Models\Certificate  $cert
 	 *
 	 * @return mixed|void
 	 */
@@ -40,7 +40,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	/**
 	 * Get the Certificate model
 	 *
-	 * @return \Tribe\Sq1\Models\Certificate
+	 * @return \Tribe\SquareOne\Models\Certificate
 	 */
 	public function getCertificate(): Certificate {
 		return $this->certificate;
