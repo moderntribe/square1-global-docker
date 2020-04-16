@@ -16,6 +16,7 @@ class OperatingSystem {
 	public const DEBIAN  = 'Debian';
 	public const MANJARO = 'Manjaro';
 	public const UBUNTU  = 'Ubuntu';
+	public const ZORIN   = 'Zorin';
 
 	/**
 	 * Get the Operating System Family
@@ -39,10 +40,11 @@ class OperatingSystem {
 			self::DEBIAN,
 			self::MANJARO,
 			self::UBUNTU,
+			self::ZORIN,
 		];
 
-		$flavor = array_filter( $flavors, function ( $flavor ) use ( $release ) {
-			return ( strpos( $release, $flavor ) !== false );
+		$flavor = array_filter( $flavors, static function ( $flavor ) use ( $release ) {
+			return (string) ( strpos( $release, $flavor ) !== false );
 		} );
 
 		return is_array( $flavor ) ? current( $flavor ) : '';
