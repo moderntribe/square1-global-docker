@@ -21,7 +21,7 @@ class Docker extends Hook {
 	/**
 	 * Set up Global Docker Configuration files
 	 *
-	 * @hook init *
+	 * @hook pre-init *
 	 *
 	 */
 	public function setUp(): void {
@@ -30,7 +30,7 @@ class Docker extends Hook {
 		if ( ! is_dir( $dockerConfigFolder ) ) {
 			$filesystem = new Filesystem();
 			$filesystem->mirror( $this->scriptPath . '/global', Robo::config()->get( 'docker.config-dir' ) );
-			chmod( Robo::config()->get( 'docker.config-dir' ) . '/cert.sh', '0755' );
+			chmod( Robo::config()->get( 'docker.config-dir' ) . '/cert.sh', 0755 );
 		}
 	}
 
