@@ -68,11 +68,13 @@ class CertificateHandler extends Hook {
 			return;
 		}
 
-		$destinationCert = $this->dir . self::CERT_TARGET_NAME;
+		$caCertName = Robo::config()->get( 'docker.cert-ca' );
+		$ca         = Robo::config()->get( 'docker.certs-folder' ) . '/' . $caCertName;
+		$pem        = Robo::config()->get( 'docker.certs-folder' ) . '/' . $caCertName;
 
-		if ( ! file_exists( $destinationCert ) ) {
-			$caCertName = Robo::config()->get( 'docker.cert-ca' );
-			$ca         = Robo::config()->get( 'docker.certs-folder' ) . '/' . $caCertName;
+		// Regenerate our CA cert, copy it to the appropriate location and tell the OS to reload them
+		if ( ! file_exists( $pem ) ) {
+			$this->generateCertificate( 'squareone' );
 
 			printf( 'Writing CA CertificateHandler. Enter your sudo password when requested. ' );
 			shell_exec( sprintf( 'sudo openssl x509 -outform der -in %s -out %s', $ca,
@@ -99,10 +101,19 @@ class CertificateHandler extends Hook {
 
 			// Generate a certificate for this project if it doesn't exist or if it expired
 			if ( ! $cert->exists() || $cert->expired() ) {
-				shell_exec( sprintf( '%s %s.tribe', Robo::config()->get( 'docker.cert-sh' ),
-					Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
+				$this->generateCertificate( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
 			}
 		}
+	}
+
+	/**
+	 * Generate a project certificate
+	 *
+	 * @param  string  $projectName
+	 */
+	protected function generateCertificate( string $projectName ) {
+		$certCommand = Robo::config()->get( 'docker.cert-sh' );
+		shell_exec( sprintf( '%s %s.tribe', $certCommand, $projectName ) );
 	}
 
 }
