@@ -44,10 +44,10 @@ class OperatingSystem {
 		];
 
 		$flavor = array_filter( $flavors, static function ( $flavor ) use ( $release ) {
-			return (string) ( strpos( $release, $flavor ) !== false );
+			return ( strpos( $release, $flavor ) !== false );
 		} );
 
-		return is_array( $flavor ) ? current( $flavor ) : '';
+		return (string) is_array( $flavor ) ? current( $flavor ) : '';
 	}
 
 }
