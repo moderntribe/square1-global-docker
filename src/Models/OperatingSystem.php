@@ -47,7 +47,6 @@ class OperatingSystem {
 			return ( strpos( $release, $flavor ) !== false );
 		} );
 
-		return (string) is_array( $flavor ) ? current( $flavor ) : '';
+		return is_array( $flavor ) ? (string) current( $flavor ) : '';
 	}
-
 }
