@@ -58,11 +58,15 @@ class Update implements ContainerAwareInterface {
 				$factory   = new MigrationFactory( $this->container );
 				$migration = $factory->make();
 
-				if ( $migration && $migration->up() ) {
-					// Write this release to the .version file
-					file_put_contents( $versionFile, $this->version );
+				if ( $migration ) {
+					if ( $migration->up() ) {
+						// Write this release to the .version file
+						file_put_contents( $versionFile, $this->version );
 
-					$output->writeln( sprintf( '<info>Migration to %s complete!</info>', $this->version ) );
+						$output->writeln( sprintf( '<info>Migration to %s complete!</info>', $this->version ) );
+					} else {
+						$output->writeln( sprintf( '<error>Failed to run migration for version %s</error>', $this->version ) );
+					}
 				}
 			}
 		}
