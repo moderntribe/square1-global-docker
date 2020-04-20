@@ -66,7 +66,7 @@ abstract class SquareOneCommand extends Tasks {
 	 * @return string The command and arguments as a string.
 	 */
 	protected function prepareCommand( array $args ): string {
-		return trim( implode( ' ', $args ) );
+		return trim( implode( ' ', array_map( 'escapeshellarg', $args ) ) );
 	}
 
 }
