@@ -127,6 +127,21 @@ class GlobalDockerCommands extends SquareOneCommand {
 	}
 
 	/**
+	 * Get the docker0 interface IP address from inside the VM, macOS only.
+	 *
+	 * @return string The IP address
+	 */
+	public function getMacOSDockerBridgeIP() {
+		$result = $this->taskDockerRun( 'alpine:3.11.5' )
+		     ->args( [ '--rm' ] )
+		     ->exec( 'nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
+		     ->interactive( false )
+		     ->run();
+
+		return (string) $result->getMessage();
+	}
+
+	/**
 	 * Get the available global docker compose files
 	 *
 	 * @return array

@@ -3,18 +3,24 @@
 namespace Tribe\SquareOne\Hooks;
 
 use Robo\Robo;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
+use Tribe\SquareOne\Commands\GlobalDockerCommands;
 use Tribe\SquareOne\Exceptions\SquareOneException;
+use Tribe\SquareOne\Models\OperatingSystem;
 
 /**
  * Docker Hooks
  *
  * @package Tribe\SquareOne\Hooks
  */
-class Docker extends Hook {
+class Docker extends Hook implements ContainerAwareInterface {
+
+	use ContainerAwareTrait;
 
 	const VAR = 'HOSTIP';
 
@@ -70,6 +76,12 @@ class Docker extends Hook {
 	 * @throws \Tribe\SquareOne\Exceptions\SquareOneException
 	 */
 	protected function getDockerGatewayIP(): ?string {
+		if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
+			/** @var GlobalDockerCommands $globalDocker */
+			$globalDocker = $this->container->get( GlobalDockerCommands::class . 'Commands' );
+			return $globalDocker->getMacOSDockerBridgeIP();
+		}
+
 		$process = new Process( [ 'docker', 'network', 'inspect', 'bridge' ] );
 		$process->run();
 
