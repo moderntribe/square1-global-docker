@@ -85,8 +85,6 @@ trait LocalAwareTrait {
 
 		$this->maybeLoadConfig( $projectRoot );
 
-		$this->say( sprintf( 'Docker config files: %s', print_r( $composeConfig, true ) ) );
-
 		Robo::config()->set( LocalDocker::CONFIG_PROJECT_ROOT, $projectRoot );
 		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $projectName ) ) );
 		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $dockerDir );
