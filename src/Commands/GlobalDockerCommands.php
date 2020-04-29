@@ -107,8 +107,6 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @command global:myadmin
 	 */
 	public function myAdmin() {
-		$this->globalStart();
-
 		if ( ! $this->taskDockerStart( 'tribe-phpmyadmin' )->run()->wasSuccessful() ) {
 
 			$this->taskDockerRemove( 'tribe-phpmyadmin' )->run();
