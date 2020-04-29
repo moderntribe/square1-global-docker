@@ -46,7 +46,11 @@ trait LocalAwareTrait {
 			if ( is_file( $rootFile ) ) {
 				$projectRoot   = dirname( $rootFile );
 				$dockerDir     = $projectRoot . '/dev/docker';
-				$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( Robo::config()->get( 'docker.compose-override' ) ) ];
+				$composeConfig = [
+					realpath( $dockerDir . '/docker-compose.yml' ),
+					realpath( $dockerDir . '/docker-compose.override.yml' ),
+					realpath( $dockerDir . '/' . Robo::config()->get( 'local-docker.compose-override' ) ),
+				];
 				$projectName   = realpath( $dockerDir . '/.projectID' );
 				$found         = true;
 			} else {
@@ -60,7 +64,11 @@ trait LocalAwareTrait {
 					if ( is_file( dirname( getcwd(), $count ) . '/' . $file ) ) {
 						$projectRoot   = dirname( getcwd(), $count );
 						$dockerDir     = $projectRoot . '/dev/docker';
-						$composeConfig = [ realpath( $dockerDir . '/docker-compose.yml' ), realpath( Robo::config()->get( 'docker.compose-override' ) ) ];
+						$composeConfig = [
+							realpath( $dockerDir . '/docker-compose.yml' ),
+							realpath( $dockerDir . '/docker-compose.override.yml' ),
+							realpath( $dockerDir . '/' . Robo::config()->get( 'local-docker.compose-override' ) ),
+						];
 						$projectName   = realpath( $dockerDir . '/.projectID' );
 						$found         = true;
 						break;
@@ -77,10 +85,12 @@ trait LocalAwareTrait {
 
 		$this->maybeLoadConfig( $projectRoot );
 
+		$this->say( sprintf( 'Docker config files: %s', print_r( $composeConfig, true ) ) );
+
 		Robo::config()->set( LocalDocker::CONFIG_PROJECT_ROOT, $projectRoot );
 		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $projectName ) ) );
 		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $dockerDir );
-		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( $composeConfig, 'file_exists' ) );
+		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( array_unique( $composeConfig ), 'file_exists' ) );
 	}
 
 	/**

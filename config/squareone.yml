@@ -33,6 +33,7 @@ local-docker:
     - 'local-config-sample.json'
     - 'build-process.php'
     - 'squareone.yml'
+  compose-override: 'docker-compose.override.yml'
 
 # Global Command Options
 options:
