@@ -33,6 +33,21 @@ install_phar() {
         | grep ${PHAR_NAME} \
         | cut -d '"' -f 4)
 
+  if [[ -z "$PHAR_DOWNLOAD" ]] ; then
+    echo 'Error connecting to the GitHub API, enter a GitHub token to try again (you can create a new one here https://github.com/settings/tokens/new):';
+    read GITHUB_TOKEN
+
+    PHAR_DOWNLOAD=$(curl -H "Authorization: token $GITHUB_TOKEN" -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
+      | grep browser_download_url \
+      | grep ${PHAR_NAME} \
+      | cut -d '"' -f 4)
+
+    if [[ -z "$PHAR_DOWNLOAD" ]] ; then
+      echo "Whoops, we still can't connect. Try manually downloading so.phar from the releases page: https://github.com/moderntribe/square1-global-docker/releases"
+      exit 1;
+    fi
+  fi
+
   curl -s -L --create-dirs "${PHAR_DOWNLOAD}" -o ${CONFIG_DIR}/bin/so
   chmod +x ${CONFIG_DIR}/bin/so
   sudo ln -s ${CONFIG_DIR}/bin/so /usr/local/bin/so
@@ -73,6 +88,7 @@ enable_bash_autocomplete
 echo "Downloading so.phar to /usr/local/bin/so, enter your password when requested."
 install_phar
 
+# run SquareOne Global docker
 so
 
 echo ""
