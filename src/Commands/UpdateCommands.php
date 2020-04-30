@@ -51,15 +51,38 @@ class UpdateCommands extends Tasks {
 	 *
 	 * @command self:update-check
 	 *
-	 * @param  array  $opts The options.
+	 * @param  array  $opts  The options.
+	 *
 	 */
-	public function updateCheck( array $opts = [ 'show-existing' => true ] ) {
-		$release = $this->getCachedReleaseData();
+	public function updateCheck( array $opts = [ 'show-existing' => true ] ): void {
+		$attempts = 0;
+		$release  = $this->getCachedReleaseData();
 
-		if ( empty( $release->checked ) || (int) $release->checked < strtotime( '-' . self::TIME_BETWEEN_CHECKS ) ) {
-			$release = $this->getLatestReleaseFromGitHub();
-			$this->saveReleaseData( $release );
+		while ( $attempts < 2 ) {
+
+			if ( empty( $release->checked ) || (int) $release->checked < strtotime( '-' . self::TIME_BETWEEN_CHECKS ) ) {
+				$release = $this->getLatestReleaseFromGitHub();
+
+				// Attempt an authenticated request if this one failed
+				if ( empty( $release ) ) {
+					$this->yell( 'Unable to fetch update data from the GitHub API' );
+					$token   = $this->ask( 'Enter your GitHub token to try an authenticated API request:' );
+					$release = $this->getLatestReleaseFromGitHub( $token );
+					$attempts ++;
+					continue;
+				}
+			} else {
+				break;
+			}
+
 		}
+
+		if ( empty( $release ) ) {
+			$this->say( 'An error occurred while checking for updates.' );
+			return;
+		}
+
+		$this->saveReleaseData( $release );
 
 		$shouldUpdate = Comparator::greaterThan( $release->version, $this->version );
 
@@ -73,15 +96,32 @@ class UpdateCommands extends Tasks {
 	/**
 	 * Get the latest release from the GitHub API
 	 *
-	 * @return object
+	 * @param  string  $token The GitHub Token
+	 *
+	 * @return object|null
 	 */
-	protected function getLatestReleaseFromGitHub(): object {
-		$json = $this->taskCurl( self::UPDATE_URL )
-		             ->silent( true )
-		             ->run()
-		             ->getMessage();
+	protected function getLatestReleaseFromGitHub( string $token = '' ): ?object {
+
+		/** @var \EauDeWeb\Robo\Task\Curl\Curl $curl */
+		$curl = $this->taskCurl( self::UPDATE_URL )
+		             ->silent( true );
+
+		if ( $token ) {
+			$header = sprintf( 'Authorization: token %s', trim( $token ) );
+			$curl->header( $header );
+		}
+
+		$json = $curl->run()->getMessage();
+
+		if ( empty( $json ) ) {
+			return null;
+		}
 
 		$result = json_decode( $json, true );
+
+		if ( empty( $result['tag_name'] ) ) {
+			return null;
+		}
 
 		return (object) [
 			'version' => $result['tag_name'],
