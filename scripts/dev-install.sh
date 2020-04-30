@@ -25,7 +25,7 @@ enable_bash_autocomplete() {
 }
 
 symlink_sq1() {
-  sudo ln -s ${SCRIPTDIR}/../bin/so /usr/local/bin/so
+  sudo ln -s ${SCRIPTDIR}/../bin/so /usr/local/bin/sodev
 }
 
 # OSX
@@ -65,7 +65,7 @@ composer install -d ${SCRIPTDIR}/../
 echo "Symlinking so binary to /usr/local/bin/so, enter your password when requested."
 symlink_sq1
 
-so
+sodev
 
 echo ""
 echo "************************************"
