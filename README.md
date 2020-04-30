@@ -96,7 +96,7 @@ Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.con
 1. Clone this repo.
 1. If you already have an existing square-one repo you're using for your global, copy the `dev/docker/global/certs` folder to the `~/.config/squareone/global/certs` folder.
 1. Stop all your existing containers `docker stop $(docker ps -aq)`.
-1. Run `./scripts/dev-install.sh`
+1. Run `./scripts/dev-install.sh` which will create the `sodev` command.
 
 ### Releasing a new version
 
