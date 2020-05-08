@@ -115,10 +115,72 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 */
 	public function logs() {
 		$this->taskDockerComposeLogs()
-			->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE) )
-			->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
-			->arg( '-f' )
-			->run();
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
+		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
+		     ->arg( '-f' )
+		     ->run();
+	}
+
+	/**
+	 * Migrate a recently imported remote database to your local
+	 *
+	 * @command migrate-domain
+	 */
+	public function migrateDomain() {
+		$wpCommand = $this->container->get( WpCliCommands::class . 'Commands' );
+
+		$dbPrefix = $wpCommand->wp( [
+			'db',
+			'prefix',
+		], [
+			'return' => true,
+		] );
+
+		$dbPrefix = trim( $dbPrefix->getMessage() );
+
+		$sourceDomain = $wpCommand->wp( [
+			'db',
+			'query',
+			"SELECT option_value FROM ${dbPrefix}options WHERE option_name = 'siteurl'",
+			'--skip-column-names',
+		], [
+			'return' => true,
+		] );
+
+		$sourceDomain = trim( $sourceDomain->getMessage() );
+		$sourceDomain = parse_url( $sourceDomain, PHP_URL_HOST );
+		$targetDomain = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) . '.tribe';
+
+		if ( $sourceDomain === $targetDomain ) {
+			$this->yell( sprintf( 'Error: Source and target domains match: %s.', $sourceDomain ) );
+			exit( E_ERROR );
+		}
+
+		$confirm = $this->confirm( sprintf( 'Ready to search and replace "%s" to "%s" (This cannot be undone)?', $sourceDomain, $targetDomain ) );
+
+		if ( ! $confirm ) {
+			$this->say( 'Exiting...' );
+			exit();
+		}
+
+		$wpCommand->wp( [
+			'db',
+			'query',
+			"UPDATE ${dbPrefix}options SET option_value = REPLACE( option_value, '${sourceDomain}', '${targetDomain}' ) WHERE option_name = 'siteurl'",
+		] );
+
+		$wpCommand->wp( [
+			'search-replace',
+			"${sourceDomain}",
+			"${targetDomain}",
+			'--all-tables-with-prefix',
+			'--verbose',
+		] );
+
+		$wpCommand->wp( [
+			'cache',
+			'flush',
+		] );
 	}
 
 	/**
