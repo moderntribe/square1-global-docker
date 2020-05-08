@@ -3,6 +3,7 @@
 namespace Tribe\SquareOne\Commands;
 
 use Robo\Robo;
+use Robo\Result;
 use Tribe\SquareOne\Models\LocalDocker;
 
 /**
@@ -25,7 +26,7 @@ class WpCliCommands extends LocalDockerCommands {
 	 *
 	 * @return \Robo\Result
 	 */
-	public function wp( array $args, array $opts = [ 'xdebug' => false, 'return' => false ] ) {
+	public function wp( array $args, array $opts = [ 'xdebug' => false, 'return' => false ] ): Result {
 		$command     = $this->prepareCommand( $args );
 		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
 
@@ -44,6 +45,7 @@ class WpCliCommands extends LocalDockerCommands {
 			             ->exec( sprintf( 'wp --allow-root %s', $command ) );
 		}
 
+		// Disable docker compose TTY / interactive so that Robo/Result::getMessage() is actually populated
 		if ( isset( $opts['return'] ) ) {
 			$task = $task->disablePseudoTty()
 			             ->interactive( false );
