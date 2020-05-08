@@ -138,7 +138,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 
 		$dbPrefix = trim( $dbPrefix->getMessage() );
 
-		$sourceDomain = $wpCommand->wp( [
+		$domain = $wpCommand->wp( [
 			'db',
 			'query',
 			"SELECT option_value FROM ${dbPrefix}options WHERE option_name = 'siteurl'",
@@ -147,8 +147,14 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 			'return' => true,
 		] );
 
-		$sourceDomain = trim( $sourceDomain->getMessage() );
-		$sourceDomain = parse_url( $sourceDomain, PHP_URL_HOST );
+		$domain       = trim( $domain->getMessage() );
+		$sourceDomain = parse_url( $domain, PHP_URL_HOST );
+
+		if ( empty( $sourceDomain ) ) {
+			$this->yell( sprintf( 'Invalid siteurl found in options table: %s', $domain ) );
+			exit( E_ERROR );
+		}
+
 		$targetDomain = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) . '.tribe';
 
 		if ( $sourceDomain === $targetDomain ) {
