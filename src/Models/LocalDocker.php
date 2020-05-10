@@ -34,4 +34,14 @@ class LocalDocker {
 	 */
 	public const CONFIG_FILE = 'squareone.yml';
 
+	/**
+	 * The Project's path to the composer cache directory
+	 */
+	public const CONFIG_COMPOSER_CACHE = 'composer-cache';
+
+	/**
+	 * The Project's path to the composer auth file
+	 */
+	public const CONFIG_COMPOSER_AUTH = 'composer-auth';
+
 }

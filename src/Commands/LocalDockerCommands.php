@@ -55,13 +55,13 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		// Start global containers
 		$this->globalTask->globalStart();
 
-		$composer_cache = Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer-cache';
+		$composer_cache = Robo::config()->get( LocalDocker::CONFIG_COMPOSER_CACHE );
 
 		if ( ! is_dir( $composer_cache ) ) {
 			mkdir( $composer_cache );
 		}
 
-		$composer_config = Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json';
+		$composer_config = Robo::config()->get( LocalDocker::CONFIG_COMPOSER_AUTH );
 
 		if ( ! is_file( $composer_config ) ) {
 			$this->runComposerConfig();
