@@ -89,8 +89,8 @@ trait LocalAwareTrait {
 		Robo::config()->set( LocalDocker::CONFIG_PROJECT_NAME, trim( file_get_contents( $projectName ) ) );
 		Robo::config()->set( LocalDocker::CONFIG_DOCKER_DIR, $dockerDir );
 		Robo::config()->set( LocalDocker::CONFIG_DOCKER_COMPOSE, array_filter( array_unique( $composeConfig ), 'file_exists' ) );
-		Robo::config()->set( LocalDocker::CONFIG_COMPOSER_CACHE, realpath( $dockerDir . '/' . Robo::config()->get( 'local-docker.composer-cache' ) ) );
-		Robo::config()->set( LocalDocker::CONFIG_COMPOSER_AUTH, realpath( $dockerDir . '/' . Robo::config()->get( 'local-docker.composer-auth' ) ) );
+		Robo::config()->set( LocalDocker::CONFIG_COMPOSER_CACHE, $dockerDir . '/' . Robo::config()->get( 'local-docker.composer-cache' ) );
+		Robo::config()->set( LocalDocker::CONFIG_COMPOSER_AUTH, $dockerDir . '/' . Robo::config()->get( 'local-docker.composer-auth' ) );
 	}
 
 	/**
