@@ -34,6 +34,10 @@ local-docker:
     - 'build-process.php'
     - 'squareone.yml'
   compose-override: 'docker-compose.override.yml'
+  # path to the composer cache directory (relative to the docker directory)
+  composer-cache: 'composer/cache'
+  # path to the composer auth file (relative to the docker directory)
+  composer-auth: 'composer/auth.json'
 
 # Global Command Options
 options:
