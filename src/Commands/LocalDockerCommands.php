@@ -196,7 +196,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		$token =
 			$this->ask( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one. Paste the token here:' );
 
-		$this->taskWriteToFile( Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json' )
+		$this->taskWriteToFile( Robo::config()->get( LocalDocker::CONFIG_COMPOSER_AUTH ) )
 		     ->line( sprintf( '{ "github-oauth": { "github.com": "%s" } }', trim( $token ) ) )
 		     ->run();
 	}
