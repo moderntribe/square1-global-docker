@@ -36,7 +36,7 @@ class WpCliCommands extends LocalDockerCommands {
 		             ->projectName( $projectName )
 		             ->setContainer( 'php-fpm' );
 
-		if ( isset( $opts['xdebug'] ) ) {
+		if ( ! empty( $opts['xdebug'] ) ) {
 			$task = $task->envVariable( 'PHP_IDE_CONFIG', "serverName=${projectName}.tribe" )
 			             ->exec( sprintf( 'php -dxdebug.remote_autostart=1 -dxdebug.remote_host=host.tribe -dxdebug.remote_enable=1 /usr/local/bin/wp --allow-root %s',
 				             $command ) );
@@ -46,7 +46,7 @@ class WpCliCommands extends LocalDockerCommands {
 		}
 
 		// Disable docker compose TTY / interactive so that Robo/Result::getMessage() is actually populated
-		if ( isset( $opts['return'] ) ) {
+		if ( ! empty( $opts['return'] ) ) {
 			$task = $task->disablePseudoTty()
 			             ->interactive( false );
 		}
