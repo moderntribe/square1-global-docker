@@ -35,7 +35,7 @@ local-docker:
     - 'squareone.yml'
   compose-override: 'docker-compose.override.yml'
   # path to the composer cache directory (relative to the docker directory)
-  composer-cache: 'composer-cache'
+  composer-cache: 'composer/cache'
   # path to the composer auth file (relative to the docker directory)
   composer-auth: 'composer/auth.json'
 
