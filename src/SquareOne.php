@@ -19,6 +19,7 @@ use Tribe\SquareOne\Hooks\CertificateHandler;
 use Tribe\SquareOne\Hooks\Hook;
 use Tribe\SquareOne\Hooks\ResolverHandler;
 use Tribe\SquareOne\Hooks\Update;
+use Tribe\SquareOne\Log\SquareOneLogger;
 use Tribe\SquareOne\Models\Certificate;
 use Tribe\SquareOne\Commands\ComposerCommands;
 use Tribe\SquareOne\Commands\GlobalDockerCommands;
@@ -169,6 +170,11 @@ class SquareOne implements ConfigAwareInterface, ContainerAwareInterface {
 
 		$container->inflector( Update::class )
 		          ->invokeMethod( 'setVersion', [ $this->version ] );
+
+		// Override the RoboLogger class with our own, less verbose version
+		$container->share( 'logger', SquareOneLogger::class )
+		          ->withArgument( $container->get( 'output' ) )
+		          ->withMethodCall( 'setLogOutputStyler', [ $container->get( 'logStyler' ) ] );
 	}
 
 	/**
