@@ -58,7 +58,7 @@ _so()
             ;;
 
             start)
-            opts="${opts} "
+            opts="${opts} --browser"
             ;;
 
             stop)
