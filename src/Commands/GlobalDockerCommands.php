@@ -20,6 +20,8 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @command global:start
 	 */
 	public function globalStart() {
+		$this->say( 'Starting global docker containers...' );
+
 		$this->taskDockerComposeUp()
 		     ->files( $this->globalComposeFiles() )
 		     ->env( 'HOSTIP', getenv( Docker::VAR ) )
@@ -59,7 +61,8 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @command global:stop-all
 	 */
 	public function stopAll() {
-		$this->say( 'Stopping all Docker containers' );
+		$this->say( 'Stopping all docker containers...' );
+
 		$this->_exec( 'docker stop $(docker ps -aq)' );
 	}
 
