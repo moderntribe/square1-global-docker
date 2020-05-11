@@ -131,6 +131,10 @@ trait LocalAwareTrait {
 			return false;
 		}
 
+		if ( 'self' === strtok( $input->getFirstArgument(), ':' ) ) {
+			return false;
+		}
+
 		return true;
 	}
 
