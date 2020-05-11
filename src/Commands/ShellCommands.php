@@ -18,9 +18,13 @@ class ShellCommands extends LocalDockerCommands {
 	 * @command shell
 	 */
 	public function shell() {
+		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
+
+		$this->say( sprintf( 'Launching shell for %s...', $projectName ) );
+
 		$this->taskDockerComposeExecute()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
-		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
+		     ->projectName( $projectName )
 		     ->setContainer( 'php-fpm' )
 		     ->exec( '/bin/bash' )
 		     ->run();

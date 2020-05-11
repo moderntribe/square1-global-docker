@@ -45,6 +45,10 @@ _so()
             opts="${opts} "
             ;;
 
+            migrate-domain)
+            opts="${opts} "
+            ;;
+
             restart)
             opts="${opts} "
             ;;
@@ -54,7 +58,7 @@ _so()
             ;;
 
             start)
-            opts="${opts} "
+            opts="${opts} --browser"
             ;;
 
             stop)
@@ -66,7 +70,7 @@ _so()
             ;;
 
             wp)
-            opts="${opts} --xdebug"
+            opts="${opts} --xdebug --return --format"
             ;;
 
             config:compose-copy)
@@ -123,7 +127,7 @@ _so()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer gulp help list logs restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all self:update-check"
+        coms="composer gulp help list logs migrate-domain restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all self:update-check"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"

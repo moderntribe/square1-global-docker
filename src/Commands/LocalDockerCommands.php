@@ -50,18 +50,23 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * Starts your local SquareOne project, run anywhere in a project folder
 	 *
 	 * @command start
+	 *
+	 * @option  browser|b Auto open the project in your default browser
+	 *
+	 * @param   array  $opts
+	 *
 	 */
-	public function start(): self {
+	public function start( array $opts = [ 'browser|b' => false ] ): void {
 		// Start global containers
 		$this->globalTask->globalStart();
 
-		$composer_cache = Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer-cache';
+		$composer_cache = Robo::config()->get( LocalDocker::CONFIG_COMPOSER_CACHE );
 
 		if ( ! is_dir( $composer_cache ) ) {
 			mkdir( $composer_cache );
 		}
 
-		$composer_config = Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json';
+		$composer_config = Robo::config()->get( LocalDocker::CONFIG_COMPOSER_AUTH );
 
 		if ( ! is_file( $composer_config ) ) {
 			$this->runComposerConfig();
@@ -80,20 +85,30 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 
 		$this->composerTask->composer( [ 'install' ] );
 
-		$this->taskOpenBrowser( sprintf( 'https://%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) )->run();
+		$uri = sprintf( 'https://%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
 
-		return $this;
+		if ( ! empty( $opts['browser'] ) ) {
+			$this->taskOpenBrowser( $uri )->run();
+		} else {
+			$this->say( sprintf( 'Project started at %s', $uri ) );
+		}
 	}
 
 	/**
 	 * Stops your local SquareOne project, run anywhere in a project folder
 	 *
 	 * @command stop
+	 *
+	 * @return self
 	 */
 	public function stop(): self {
+		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
+
+		$this->say( sprintf( 'Stopping project %s...', $projectName ) );
+
 		$this->taskDockerComposeDown()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
-		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
+		     ->projectName( $projectName )
 		     ->run();
 
 		return $this;
@@ -115,10 +130,78 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 */
 	public function logs() {
 		$this->taskDockerComposeLogs()
-			->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE) )
-			->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
-			->arg( '-f' )
-			->run();
+		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
+		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
+		     ->arg( '-f' )
+		     ->run();
+	}
+
+	/**
+	 * Migrate a recently imported remote database to your local
+	 *
+	 * @command migrate-domain
+	 */
+	public function migrateDomain() {
+		$wpCommand = $this->container->get( WpCliCommands::class . 'Commands' );
+
+		$dbPrefix = $wpCommand->wp( [
+			'db',
+			'prefix',
+		], [
+			'return' => true,
+		] );
+
+		$dbPrefix = trim( $dbPrefix->getMessage() );
+
+		$domain = $wpCommand->wp( [
+			'db',
+			'query',
+			"SELECT option_value FROM ${dbPrefix}options WHERE option_name = 'siteurl'",
+			'--skip-column-names',
+		], [
+			'return' => true,
+		] );
+
+		$domain       = trim( $domain->getMessage() );
+		$sourceDomain = parse_url( $domain, PHP_URL_HOST );
+
+		if ( empty( $sourceDomain ) ) {
+			$this->yell( sprintf( 'Invalid siteurl found in options table: %s', $domain ) );
+			exit( E_ERROR );
+		}
+
+		$targetDomain = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) . '.tribe';
+
+		if ( $sourceDomain === $targetDomain ) {
+			$this->yell( sprintf( 'Error: Source and target domains match: %s.', $sourceDomain ) );
+			exit( E_ERROR );
+		}
+
+		$confirm = $this->confirm( sprintf( 'Ready to search and replace "%s" to "%s" (This cannot be undone)?', $sourceDomain, $targetDomain ) );
+
+		if ( ! $confirm ) {
+			$this->say( 'Exiting...' );
+			exit();
+		}
+
+		$wpCommand->wp( [
+			'db',
+			'query',
+			"UPDATE ${dbPrefix}options SET option_value = REPLACE( option_value, '${sourceDomain}', '${targetDomain}' ) WHERE option_name = 'siteurl'",
+		] );
+
+		$wpCommand->wp( [
+			'search-replace',
+			"${sourceDomain}",
+			"${targetDomain}",
+			'--all-tables-with-prefix',
+			'--verbose',
+		] );
+
+		$wpCommand->wp( [
+			'cache',
+			'flush',
+		] );
 	}
 
 	/**
@@ -128,7 +211,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		$token =
 			$this->ask( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one. Paste the token here:' );
 
-		$this->taskWriteToFile( Robo::config()->get( LocalDocker::CONFIG_DOCKER_DIR ) . '/composer/auth.json' )
+		$this->taskWriteToFile( Robo::config()->get( LocalDocker::CONFIG_COMPOSER_AUTH ) )
 		     ->line( sprintf( '{ "github-oauth": { "github.com": "%s" } }', trim( $token ) ) )
 		     ->run();
 	}
