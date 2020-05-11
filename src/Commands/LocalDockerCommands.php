@@ -121,8 +121,6 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * @command restart
 	 */
 	public function restart() {
-		$this->say( sprintf( 'Restarting project %s...', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
-
 		$this->stop()->start();
 	}
 
