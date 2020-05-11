@@ -55,9 +55,8 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 *
 	 * @param   array  $opts
 	 *
-	 * @return LocalDockerCommands
 	 */
-	public function start( array $opts = [ 'browser|b' => false ] ): self {
+	public function start( array $opts = [ 'browser|b' => false ] ): void {
 		// Start global containers
 		$this->globalTask->globalStart();
 
@@ -93,14 +92,14 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 		} else {
 			$this->say( sprintf( 'Project started at %s', $uri ) );
 		}
-
-		return $this;
 	}
 
 	/**
 	 * Stops your local SquareOne project, run anywhere in a project folder
 	 *
 	 * @command stop
+	 *
+	 * @return self
 	 */
 	public function stop(): self {
 		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
