@@ -50,8 +50,14 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * Starts your local SquareOne project, run anywhere in a project folder
 	 *
 	 * @command start
+	 *
+	 * @option  browser|b Auto open the project in your default browser
+	 *
+	 * @param   array  $opts
+	 *
+	 * @return LocalDockerCommands
 	 */
-	public function start(): self {
+	public function start( array $opts = [ 'browser|b' => false ] ): self {
 		// Start global containers
 		$this->globalTask->globalStart();
 
@@ -80,7 +86,13 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 
 		$this->composerTask->composer( [ 'install' ] );
 
-		$this->taskOpenBrowser( sprintf( 'https://%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) )->run();
+		$uri = sprintf( 'https://%s.tribe', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) );
+
+		if ( ! empty( $opts['browser'] ) ) {
+			$this->taskOpenBrowser( $uri )->run();
+		} else {
+			$this->say( sprintf( 'Project started at %s', $uri ) );
+		}
 
 		return $this;
 	}
