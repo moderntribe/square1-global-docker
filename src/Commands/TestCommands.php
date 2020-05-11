@@ -27,11 +27,11 @@ class TestCommands extends LocalDockerCommands {
 	public function test( array $args, array $opts = [ 'xdebug' => false, 'clean' => true ] ): void {
 		$command = $this->prepareCommand( $args );
 
-		if ( $opts['clean'] ) {
+		if ( ! empty( $opts['clean'] ) ) {
 			$this->runCodecept( 'clean' );
 		}
 
-		if ( $opts['xdebug'] ) {
+		if ( ! empty( $opts['xdebug'] ) ) {
 			$this->runCodeceptX( $command );
 		} else {
 			$this->runCodecept( $command );
