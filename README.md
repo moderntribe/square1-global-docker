@@ -29,7 +29,7 @@ Note for macOS users: This script will install brew and all of the requirements 
 - To pass arguments to a command, separate the arguments with `--`, e.g. `so wp cli info -- --format=json`
 
 ```
-SquareOne Global Docker 2.0.0-beta
+SquareOne Global Docker 2.2.0-beta
 
 Usage:
   command [options] [arguments]
@@ -53,6 +53,7 @@ Available commands:
   help                 Displays help for a command
   list                 Lists commands
   logs                 Displays local SquareOne project docker logs
+  migrate-domain       Migrate a recently imported remote database to your local
   restart              Restarts your local SquareOne project
   shell                Gives you a shell into the php-fpm docker container
   start                Starts your local SquareOne project, run anywhere in a project folder
