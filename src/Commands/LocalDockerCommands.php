@@ -103,9 +103,13 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * @command stop
 	 */
 	public function stop(): self {
+		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
+
+		$this->say( sprintf( 'Stopping project %s...', $projectName ) );
+
 		$this->taskDockerComposeDown()
 		     ->files( Robo::config()->get( LocalDocker::CONFIG_DOCKER_COMPOSE ) )
-		     ->projectName( Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) )
+		     ->projectName( $projectName )
 		     ->run();
 
 		return $this;
@@ -117,6 +121,8 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 * @command restart
 	 */
 	public function restart() {
+		$this->say( sprintf( 'Restarting project %s...', Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME ) ) );
+
 		$this->stop()->start();
 	}
 
