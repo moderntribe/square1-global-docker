@@ -37,6 +37,8 @@ class GlobalDockerCommands extends SquareOneCommand {
 	 * @command global:stop
 	 */
 	public function globalStop() {
+		$this->say( 'Stopping global docker containers...' );
+
 		$this->taskDockerComposeDown()
 		     ->files( $this->globalComposeFiles() )
 		     ->projectName( self::PROJECT_NAME )
