@@ -17,16 +17,18 @@ class WpCliCommands extends LocalDockerCommands {
 	 * Run WP CLI commands in the SquareOne local container
 	 *
 	 * @command wp
-	 * @option  xdebug Run with Xdebug enabled.
-	 * @option  return Return the command's result, which requires no TTY
-	 * @usage   e.g. so wp -- option get home --format=json
+	 *
+	 * @option  $xdebug Run with Xdebug enabled
+	 * @option  $return Return the command's result, which requires no TTY
+	 *
+	 * @usage   e.g. so wp --xdebug -- option get home --format=json
 	 *
 	 * @param  array  $args  The WP CLI command and arguments.
 	 * @param  array  $opts  The options.
 	 *
 	 * @return \Robo\Result
 	 */
-	public function wp( array $args, array $opts = [ 'xdebug' => false, 'return' => false ] ): Result {
+	public function wp( array $args, array $opts = [ 'xdebug|x' => false, 'return' => false ] ): Result {
 		$command     = $this->prepareCommand( $args );
 		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
 
@@ -36,7 +38,7 @@ class WpCliCommands extends LocalDockerCommands {
 		             ->projectName( $projectName )
 		             ->setContainer( 'php-fpm' );
 
-		if ( ! empty( $opts['xdebug'] ) ) {
+		if ( isset( $opts['xdebug'] ) && true === $opts['xdebug'] ) {
 			$task = $task->envVariable( 'PHP_IDE_CONFIG', "serverName=${projectName}.tribe" )
 			             ->exec( sprintf( 'php -dxdebug.remote_autostart=1 -dxdebug.remote_host=host.tribe -dxdebug.remote_enable=1 /usr/local/bin/wp --allow-root %s',
 				             $command ) );
@@ -46,7 +48,7 @@ class WpCliCommands extends LocalDockerCommands {
 		}
 
 		// Disable docker compose TTY / interactive so that Robo/Result::getMessage() is actually populated
-		if ( ! empty( $opts['return'] ) ) {
+		if ( isset( $opts['return'] ) && true === $opts['return'] ) {
 			$task = $task->disablePseudoTty()
 			             ->interactive( false );
 		}

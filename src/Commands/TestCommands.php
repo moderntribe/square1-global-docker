@@ -25,7 +25,7 @@ class TestCommands extends LocalDockerCommands {
 	 * @param  array  $args  The Codeception command and arguments.
 	 * @param  array  $opts  The options.
 	 */
-	public function test( array $args, array $opts = [ 'xdebug' => false, 'no-clean' => false ] ): void {
+	public function test( array $args, array $opts = [ 'xdebug|x' => false, 'no-clean' => false ] ): void {
 		$command = $this->prepareCommand( $args );
 
 		if ( isset( $opts['no-clean'] ) && ! $opts['no-clean'] ) {
