@@ -51,7 +51,7 @@ class LocalDockerCommands extends SquareOneCommand implements CertificateAwareIn
 	 *
 	 * @command start
 	 *
-	 * @option  browser|b Auto open the project in your default browser
+	 * @option  $browser|b Auto open the project in your default browser
 	 *
 	 * @param   array  $opts
 	 *
