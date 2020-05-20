@@ -64,6 +64,9 @@ resolver:
       Ubuntu:
         dir: '${resolver.Linux.Debian.dir}'
         file: '${resolver.Linux.Debian.file}'
+      Zorin:
+        dir: '${resolver.Linux.Debian.dir}'
+        file: '${resolver.Linux.Debian.file}'
       Manjaro:
         dir: '${resolver.Linux.Arch.dir}'
         file: '${resolver.Linux.Arch.file}'
@@ -79,6 +82,9 @@ certificate:
       dir: '/usr/local/share/ca-certificate/'
       command: 'update-ca-certificates'
     Ubuntu:
+      dir: '${certificate.Linux.Debian.dir}'
+      command: '${certificate.Linux.Debian.command}'
+    Zorin:
       dir: '${certificate.Linux.Debian.dir}'
       command: '${certificate.Linux.Debian.command}'
     Manjaro:
