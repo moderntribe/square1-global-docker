@@ -23,8 +23,8 @@ class WpCliCommands extends LocalDockerCommands {
 	 *
 	 * @usage   e.g. so wp --xdebug -- option get home --format=json
 	 *
-	 * @param  array  $args  The WP CLI command and arguments.
-	 * @param  array  $opts  The options.
+	 * @param   array  $args  The WP CLI command and arguments.
+	 * @param   array  $opts  The options.
 	 *
 	 * @return \Robo\Result
 	 */
@@ -38,7 +38,7 @@ class WpCliCommands extends LocalDockerCommands {
 		             ->projectName( $projectName )
 		             ->setContainer( 'php-fpm' );
 
-		if ( isset( $opts['xdebug'] ) && $opts['xdebug'] ) {
+		if ( ! empty( $opts['xdebug'] ) ) {
 			$task = $task->envVariable( 'PHP_IDE_CONFIG', "serverName=${projectName}.tribe" )
 			             ->exec( sprintf( 'php -dxdebug.remote_autostart=1 -dxdebug.remote_host=host.tribe -dxdebug.remote_enable=1 /usr/local/bin/wp --allow-root %s',
 				             $command ) );
@@ -48,7 +48,7 @@ class WpCliCommands extends LocalDockerCommands {
 		}
 
 		// Disable docker compose TTY / interactive so that Robo/Result::getMessage() is actually populated
-		if ( isset( $opts['return'] ) && $opts['return'] ) {
+		if ( ! empty( $opts['return'] ) ) {
 			$task = $task->disablePseudoTty()
 			             ->interactive( false );
 		}
