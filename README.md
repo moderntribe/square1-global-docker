@@ -103,9 +103,9 @@ Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.con
 
 1. Update the version in the [VERSION](./VERSION) file.
 1. Run `composer run-script phar:install-tools`
+1. Run `composer run-script autocomplete:build`
 1. Run `composer dump-autoload -o --no-dev`
 1. Run `composer run-script phar:build`
-1. Run `composer run-script autocomplete:build`
 1. Create a new release/tag on GitHub and attach the generated `so.phar` in the root directory in the binaries box.
 1. Once the release is created you may want to bump the VERSION via semver with the `-dev` suffix.
 
