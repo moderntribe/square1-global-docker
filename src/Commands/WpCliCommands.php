@@ -17,16 +17,18 @@ class WpCliCommands extends LocalDockerCommands {
 	 * Run WP CLI commands in the SquareOne local container
 	 *
 	 * @command wp
-	 * @option  xdebug Run with Xdebug enabled.
-	 * @option  return Return the command's result, which requires no TTY
-	 * @usage   e.g. so wp -- option get home --format=json
 	 *
-	 * @param  array  $args  The WP CLI command and arguments.
-	 * @param  array  $opts  The options.
+	 * @option  $xdebug Run with Xdebug enabled
+	 * @option  $return Return the command's result, which requires no TTY
+	 *
+	 * @usage   e.g. so wp --xdebug -- option get home --format=json
+	 *
+	 * @param   array  $args  The WP CLI command and arguments.
+	 * @param   array  $opts  The options.
 	 *
 	 * @return \Robo\Result
 	 */
-	public function wp( array $args, array $opts = [ 'xdebug' => false, 'return' => false ] ): Result {
+	public function wp( array $args, array $opts = [ 'xdebug|x' => false, 'return' => false ] ): Result {
 		$command     = $this->prepareCommand( $args );
 		$projectName = Robo::config()->get( LocalDocker::CONFIG_PROJECT_NAME );
 

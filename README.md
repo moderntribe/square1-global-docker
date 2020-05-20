@@ -26,10 +26,10 @@ Note for macOS users: This script will install brew and all of the requirements 
 ### Usage
 
 - Run `so` to see a command list.
-- To pass arguments to a command, separate the arguments with `--`, e.g. `so wp cli info -- --format=json`
+- To pass arguments to a command, separate the arguments with `--`, e.g. `so wp -- cli info --format=json`
 
 ```
-SquareOne Global Docker 2.2.0-beta
+SquareOne Global Docker 2.2.1-beta
 
 Usage:
   command [options] [arguments]
@@ -103,9 +103,9 @@ Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.con
 
 1. Update the version in the [VERSION](./VERSION) file.
 1. Run `composer run-script phar:install-tools`
+1. Run `composer run-script autocomplete:build`
 1. Run `composer dump-autoload -o --no-dev`
 1. Run `composer run-script phar:build`
-1. Run `composer run-script autocomplete:build`
 1. Create a new release/tag on GitHub and attach the generated `so.phar` in the root directory in the binaries box.
 1. Once the release is created you may want to bump the VERSION via semver with the `-dev` suffix.
 
