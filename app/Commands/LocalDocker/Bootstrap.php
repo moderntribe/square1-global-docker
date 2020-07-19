@@ -58,7 +58,7 @@ class Bootstrap extends BaseLocalDocker {
             'password_confirmation' => [ 'required' ],
         ], [
             'required' => 'The :attribute field is required',
-            'same'     => 'The :attribute and :other must match.',
+            'same'     => 'The :attribute and :other must match',
             'email'    => 'Invalid email address',
         ] );
 

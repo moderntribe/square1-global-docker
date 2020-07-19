@@ -139,19 +139,12 @@ class BootstrapTest extends LocalDockerCommand {
     }
 
     public function test_it_fails_validation_with_invalid_input() {
-        $command = $this->app->make( Bootstrap::class );
-
-        $tester = $this->runCommand( $command, [], [
-            'Enter your email address'  => 'invalid email',
-            'Enter your admin username' => '',
-            'Enter your password'       => 'test',
-            'Confirm your password'     => 'wrong confirmation',
-        ] );
-
-        $this->assertSame( BaseCommand::EXIT_ERROR, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Invalid email address', $tester->getDisplay() );
-        $this->assertStringContainsString( 'The username field is required', $tester->getDisplay() );
-        $this->assertStringContainsString( 'The password and password confirmation must match', $tester->getDisplay() );
+        $this->artisan( 'bootstrap' )
+             ->expectsQuestion( 'Enter your email address', 'invalid email' )
+             ->expectsQuestion( 'Enter your admin username', '' )
+             ->expectsQuestion( 'Enter your password', 'test' )
+             ->expectsQuestion( 'Confirm your password', 'not a match')
+             ->assertExitCode( BaseCommand::EXIT_ERROR );
     }
 
 }
