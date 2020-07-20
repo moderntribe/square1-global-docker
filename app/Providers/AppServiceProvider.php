@@ -47,18 +47,22 @@ use App\Services\Certificate\Trust\Strategies\MacOs;
  */
 class AppServiceProvider extends ServiceProvider {
 
+    public const DB_STORE = 'store';
+
     /**
      * Bootstrap any application services.
      *
      * @return void
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function boot() {
-        $this->initConfig();
+        $config = [
+            'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
+        ];
 
-        $bootstrap = $this->app->make( Bootstrap::class );
-        $bootstrap->boot();
+        $this->app->bind( 'Filebase\Database', function () use ( $config ) {
+            return new Database( $config );
+        } );
     }
 
     /**
@@ -66,19 +70,25 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function register() {
+        $this->initConfig();
+
+        $this->app->when( Bootstrap::class )
+                  ->needs( '$configDir' )
+                  ->give( config( 'squareone.config-dir' ) );
+
+        $bootstrap = $this->app->make( Bootstrap::class );
+        $bootstrap->boot();
+
         $this->app->singleton( ResultRecorder::class );
-        //$this->app->singleton( Config::class );
+        $this->app->singleton( Config::class );
 
         $this->app->bind(
             'App\Contracts\Runner',
             'App\Runners\CommandRunner'
         );
-
-        $this->app->when( Bootstrap::class )
-                  ->needs( '$configDir' )
-                  ->give( config( 'squareone.config-dir' ) );
 
         $this->app->when( Handler::class )
                   ->needs( BaseSupport::class )
@@ -140,7 +150,7 @@ class AppServiceProvider extends ServiceProvider {
                   ->needs( Database::class )
                   ->give( function () {
                       return new Database( [
-                          'dir' => config( 'squareone.config-dir' ) . '/' . JsonStoreServiceProvider::DB_STORE . '/releases',
+                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/releases',
                       ] );
                   } );
 

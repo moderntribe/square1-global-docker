@@ -57,7 +57,6 @@ return [
     'providers' => [
         PragmaRX\Yaml\Package\ServiceProvider::class,
         App\Providers\AppServiceProvider::class,
-        App\Providers\JsonStoreServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class
