@@ -10,7 +10,7 @@ use App\Services\Migrations\MigrationCreator;
 
 class MigrationCreatorTest extends TestCase {
 
-    public function tearDown(): void {
+    protected function tearDown(): void {
         Storage::deleteDirectory( 'tests' );
 
         parent::tearDown();

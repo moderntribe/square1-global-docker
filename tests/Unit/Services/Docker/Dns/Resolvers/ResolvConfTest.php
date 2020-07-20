@@ -16,7 +16,7 @@ class ResolvConfTest extends TestCase {
     private $file;
     private $command;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->runner     = $this->mock( CommandRunner::class );

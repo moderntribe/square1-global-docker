@@ -22,7 +22,7 @@ class FactoryTest extends TestCase {
     private $filesystem;
     private $collection;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->os         = $this->partialMock( OperatingSystem::class );

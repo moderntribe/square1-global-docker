@@ -26,7 +26,7 @@ class MigrationTest extends TestCase {
     protected $db;
     protected $migrator;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         Storage::disk( 'local' )->makeDirectory( 'tests/migrations' );

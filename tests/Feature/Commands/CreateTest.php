@@ -16,7 +16,7 @@ class CreateTest extends BaseCommandTest {
     private $projectCreator;
     private $runner;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         PHPMockery::mock( '\App\Commands', 'chdir' )->andReturnTrue();

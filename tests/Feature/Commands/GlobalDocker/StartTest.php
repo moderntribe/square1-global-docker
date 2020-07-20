@@ -13,7 +13,7 @@ class StartTest extends BaseCommandTest {
     protected $resolveHandler;
     protected $dockerCompose;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->resolveHandler = $this->mock( Handler::class );

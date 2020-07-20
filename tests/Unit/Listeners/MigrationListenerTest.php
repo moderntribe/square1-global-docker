@@ -21,7 +21,7 @@ class MigrationListenerTest extends TestCase {
     private $event;
     private $db;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         // Force the listener to fire during tests.

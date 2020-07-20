@@ -2,22 +2,21 @@
 
 namespace Tests\Feature\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
-use App\Commands\LocalDocker\Start;
-use App\Commands\GlobalDocker\Start as GlobalStart;
-use App\Commands\LocalDocker\Composer;
 use App\Commands\Open;
-use App\Runners\CommandRunner;
-use App\Services\Certificate\Handler;
 use App\Services\Config\Env;
+use App\Runners\CommandRunner;
+use App\Commands\DockerCompose;
 use App\Services\Config\Github;
-use App\Services\Docker\Local\Config;
+use App\Commands\LocalDocker\Start;
 use Illuminate\Console\OutputStyle;
-use Illuminate\Contracts\Filesystem\FileExistsException;
+use App\Services\Certificate\Handler;
+use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
+use App\Commands\LocalDocker\Composer;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Commands\BaseCommandTest;
+use App\Commands\GlobalDocker\Start as GlobalStart;
 
 class StartTest extends BaseCommandTest {
 
@@ -25,8 +24,6 @@ class StartTest extends BaseCommandTest {
         parent::setUp();
 
         Storage::disk( 'local' )->makeDirectory( 'tests/dev/docker' );
-
-        var_dump( config() );
     }
 
     public function test_it_can_start_a_project_with_standard_default_env_file() {

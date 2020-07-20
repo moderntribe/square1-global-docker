@@ -14,7 +14,7 @@ class NetworkTest extends TestCase {
     private $runner;
     private $os;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->runner = $this->mock( CommandRunner::class );

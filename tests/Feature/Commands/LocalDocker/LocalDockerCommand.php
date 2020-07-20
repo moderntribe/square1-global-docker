@@ -13,7 +13,7 @@ class LocalDockerCommand extends BaseCommandTest {
     protected $config;
     protected $dockerCompose;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->project       = 'squareone';

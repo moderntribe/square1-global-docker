@@ -15,10 +15,6 @@ use Tests\Feature\Commands\BaseCommandTest;
  */
 class SelfUpdateTest extends BaseCommandTest {
 
-    public function setUp(): void {
-        parent::setUp();
-    }
-
     public function testItWontRunWithoutaPhar() {
         $this->expectException( RuntimeException::class );
 

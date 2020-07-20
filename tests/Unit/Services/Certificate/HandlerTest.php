@@ -16,7 +16,7 @@ class HandlerTest extends TestCase {
     protected $filesystem;
     protected $certFolder;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->ca          = $this->mock( Ca::class );

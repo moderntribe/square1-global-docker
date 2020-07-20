@@ -8,7 +8,7 @@ use Tests\Feature\Commands\BaseCommandTest;
 
 class StatusTest extends BaseCommandTest {
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $runner = $this->mock( CommandRunner::class );

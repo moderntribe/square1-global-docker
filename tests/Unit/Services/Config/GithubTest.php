@@ -12,7 +12,7 @@ class GithubTest extends TestCase {
     private $filesystem;
     private $github;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->filesystem = $this->mock( Filesystem::class );

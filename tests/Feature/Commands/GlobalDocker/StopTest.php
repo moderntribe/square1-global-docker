@@ -11,7 +11,7 @@ class StopTest extends BaseCommandTest {
 
     private $dockerCompose;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->dockerCompose = $this->mock( DockerCompose::class );

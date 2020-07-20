@@ -21,7 +21,7 @@ class MigrateDomainTest extends LocalDockerCommand {
     private $wpCommand;
     private $recorder;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->wpCommand = $this->mock( Wp::class );

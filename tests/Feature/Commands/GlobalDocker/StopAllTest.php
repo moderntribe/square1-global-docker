@@ -8,7 +8,7 @@ use Tests\Feature\Commands\BaseCommandTest;
 
 class StopAllTest extends BaseCommandTest {
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->mock( CommandRunner::class, function ( $mock ) {

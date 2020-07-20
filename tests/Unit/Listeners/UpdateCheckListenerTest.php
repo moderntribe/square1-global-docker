@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class UpdateCheckListenerTest extends TestCase {
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         // Force the listener to fire during tests.

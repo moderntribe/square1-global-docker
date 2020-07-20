@@ -21,7 +21,7 @@ class ProjectBootstrapperTest extends TestCase {
     private $bootstrapper;
     private $projectRoot;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->filesystem   = $this->mock( Filesystem::class );

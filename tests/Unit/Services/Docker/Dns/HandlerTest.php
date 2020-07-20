@@ -16,7 +16,7 @@ class HandlerTest extends TestCase {
     private $dhcp;
     private $os;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->command = $this->mock( Start::class );

@@ -14,7 +14,7 @@ class ConfigExceptionTest extends TestCase {
     private $runner;
     private $response;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         // Prevent Mockery from erroring out on Response::__call

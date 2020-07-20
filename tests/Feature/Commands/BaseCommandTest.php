@@ -14,6 +14,10 @@ use Symfony\Component\Console\Application as ConsoleApplication;
  */
 abstract class BaseCommandTest extends TestCase {
 
+    protected function setUp(): void {
+        parent::setUp();
+    }
+
     /**
      * The `CommandTester` is directly returned, use methods like
      * `->getDisplay()` or `->getStatusCode()` on it.

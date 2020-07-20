@@ -10,7 +10,7 @@ class OperatingSystemTest extends TestCase {
 
     private $os;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->os = $this->partialMock( OperatingSystem::class );

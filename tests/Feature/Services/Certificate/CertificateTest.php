@@ -18,7 +18,7 @@ class CertificateTest extends TestCase {
     protected $filesystem;
     protected $runner;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         Storage::put( 'tests/certs/test.crt', $this->getTestCert() );

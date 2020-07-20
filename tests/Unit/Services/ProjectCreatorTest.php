@@ -11,7 +11,7 @@ class ProjectCreatorTest extends TestCase {
     private $filesystem;
     private $creator;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->filesystem = $this->mock( Filesystem::class );

@@ -11,7 +11,7 @@ class BootstrapTest extends TestCase {
 
     private $filesystem;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->filesystem = new \Illuminate\Filesystem\Filesystem();

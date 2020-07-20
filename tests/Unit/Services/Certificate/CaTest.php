@@ -15,7 +15,7 @@ class CaTest extends TestCase {
     private $runner;
     private $trust;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->filesystem = $this->mock( Filesystem::class );

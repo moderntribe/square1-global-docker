@@ -11,7 +11,7 @@ class DockerComposeTest extends BaseCommandTest {
 
     private $runner;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $process = $this->mock( Process::class );

@@ -12,7 +12,7 @@ class ConfigTest extends TestCase {
 
     protected $runner;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         Storage::disk( 'local' )->put( 'tests/squareone/dev/docker/docker-compose.yml', '' );

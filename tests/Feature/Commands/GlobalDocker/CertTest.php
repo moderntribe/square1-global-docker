@@ -14,7 +14,7 @@ class CertTest extends BaseCommandTest {
     protected $handler;
     protected $restart;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->handler = $this->mock( Handler::class );

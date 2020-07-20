@@ -15,7 +15,7 @@ class UpdateCheckTest extends BaseCommandTest {
     private $updater;
     private $github;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->release = $this->mock( Document::class );
