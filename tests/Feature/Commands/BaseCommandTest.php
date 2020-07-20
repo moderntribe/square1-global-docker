@@ -14,6 +14,13 @@ use Symfony\Component\Console\Application as ConsoleApplication;
  */
 abstract class BaseCommandTest extends TestCase {
 
+    public function setUp(): void {
+        parent::setUp();
+
+        // Don't run laravel events in these tests.
+        $this->withoutEvents();
+    }
+
     /**
      * The `CommandTester` is directly returned, use methods like
      * `->getDisplay()` or `->getStatusCode()` on it.
