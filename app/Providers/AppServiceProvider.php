@@ -217,7 +217,7 @@ class AppServiceProvider extends ServiceProvider {
     /**
      * Load and parse the default squareone configuration file
      */
-    protected function initConfig(): void {
+    public function initConfig(): void {
         $files = $this->getConfigFiles();
 
         $yaml = $this->app->make( 'pragmarx.yaml' );
