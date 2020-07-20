@@ -51,8 +51,4 @@ options:
 
 # Automated Testing
 tests:
-  php-container: 'php-fpm'
-  xdebug-overrides:
-    - '-o "modules: config: WPBrowser: cookies: cookie-1: Name: XDEBUG_SESSION"'
-    - '-o "modules: config: WPBrowser: cookies: cookie-1: Value: PHPSTORM"'
-    - '-o "modules: config: WPWebDriver: xdebug_enabled: true"'
+  php-container: 'php-tests'
