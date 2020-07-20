@@ -69,7 +69,7 @@ class AppServiceProvider extends ServiceProvider {
         $this->initConfig();
 
         $this->app->singleton( ResultRecorder::class );
-        $this->app->singleton( Config::class );
+        //$this->app->singleton( Config::class );
 
         $this->app->bind(
             'App\Contracts\Runner',
