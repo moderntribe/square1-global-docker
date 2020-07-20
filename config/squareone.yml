@@ -13,18 +13,18 @@ config-dir: "{{ env('HOME') }}/.config/squareone"
 
 # Remote configurations
 remote:
-  docker-compose: 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/global/docker-compose.yml'
-  squareone-yml: 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/squareone.yml'
+  docker-compose: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/global/docker-compose.yml"
+  squareone-yml: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/squareone.yml"
 
 # Docker
 docker:
   config-dir: "{{'config-dir'}}/global"
-  workdir: '/application/www'
-  network: 'global_proxy'
-  mysql: 'tribe-mysql:db'
+  workdir: "/application/www"
+  network: "global_proxy"
+  mysql: "tribe-mysql:db"
   compose: "{{'docker.config-dir'}}/docker-compose.yml"
   compose-override: "{{'docker.config-dir'}}/docker-compose.override.yml"
-  cert-ca: 'tribeCA.pem'
+  cert-ca: "tribeCA.pem"
   certs-folder: "{{'config-dir'}}/global/certs"
   cert-expiry: 825
   phpmyadmin-port: 8080
@@ -33,22 +33,22 @@ docker:
 local-docker:
   # Files to look for to determine if this is a Square One local
   files:
-    - 'local-config-sample.json'
-    - 'build-process.php'
-    - 'squareone.yml'
-  compose-override: 'docker-compose.override.yml'
+    - "local-config-sample.json"
+    - "build-process.php"
+    - "squareone.yml"
+  compose-override: "docker-compose.override.yml"
   # path to the composer cache directory (relative to the docker directory)
-  composer-cache: 'composer/cache'
+  composer-cache: "composer/cache"
   # path to the composer auth file (relative to the docker directory)
-  composer-auth: 'composer/auth.json'
+  composer-auth: "composer/auth.json"
 
 # Global Command Options
 options:
   project-path:
-    name: 'project-path'
-    shortcut: 'p'
-    description: 'Path to a SquareOne project'
+    name: "project-path"
+    shortcut: "p"
+    description: "Path to a SquareOne project"
 
 # Automated Testing
 tests:
-  php-container: 'php-tests'
+  php-container: "php-tests"
