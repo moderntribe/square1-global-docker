@@ -4,43 +4,24 @@ on: ['push', 'pull_request']
 
 jobs:
   ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        php: [7.2, 7.3, 7.4]
-        dependency-version: [prefer-stable]
+    runs-on: ubuntu-latest
+    container: 'shivammathur/node:latest'
 
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.composer/cache/files
-          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+      - name: PHP version
+        run: /usr/bin/php -v | /usr/bin/php7.3 -v | /usr/bin/php7.2 -v
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, fileinfo, mbstring, openssl, zip, zlib, xml
-          tools: prestissimo
-          coverage: pcov
+      - name: Docker
+        run: docker -v
+
+      - name: Install composer
+        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
       - name: Install Composer dependencies
-        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
+        run: /usr/bin/php /usr/local/bin/composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
 
-      - name: PHPUnit Testing
-        run: ./vendor/bin/phpunit -c ./phpunit.xml.dist
-
-      - name: Build
-        run: php so app:build --build-version=0.0
-
-      - name: Build Check
-        run: php builds/so --version
-
-
+      - name: PHPUnit
+        run: /usr/bin/php vendor/bin/phpunit -c ./phpunit.xml.dist
