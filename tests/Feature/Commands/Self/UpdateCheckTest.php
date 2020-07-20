@@ -23,7 +23,7 @@ class UpdateCheckTest extends BaseCommandTest {
         $this->github  = $this->mock( Github::class );
     }
 
-    public function testItCanFindANewCachedVersion() {
+    public function test_it_can_find_a_new_cached_version() {
         $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( date( 'U' ) );
 
         $this->release->version = '5000';
@@ -40,7 +40,7 @@ class UpdateCheckTest extends BaseCommandTest {
         ), trim( $tester->getDisplay() ) );
     }
 
-    public function testItDoesNotFindAnUpdate() {
+    public function test_it_does_not_find_an_update() {
         $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( date( 'U' ) );
 
         $this->release->version = '0.0.0.1';
@@ -56,7 +56,7 @@ class UpdateCheckTest extends BaseCommandTest {
         ), trim( $tester->getDisplay() ) );
     }
 
-    public function testItCanForceAnUpdate() {
+    public function test_it_can_force_an_update() {
         $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( date( 'U' ) );
 
         $this->release->version = '5000';
@@ -76,7 +76,7 @@ class UpdateCheckTest extends BaseCommandTest {
         ), trim( $tester->getDisplay() ) );
     }
 
-    public function testItCanHandleAnEmptyGithubReleaseWithNoDefaultToken() {
+    public function test_it_can_handle_empty_release_with_no_default_token() {
         $release = null;
 
         $this->updater->shouldReceive( 'getLatestReleaseFromGitHub' )->andReturn( $release );
@@ -95,7 +95,7 @@ class UpdateCheckTest extends BaseCommandTest {
         $this->assertStringContainsString( 'An error occurred while checking for update', trim( $tester->getDisplay() ) );
     }
 
-    public function testItCanHandleAnEmptyGithubReleaseWithDefaultToken() {
+    public function test_it_can_handle_empty_release_with_default_token() {
         PHPMockery::mock( 'App\Commands\Self', 'json_decode' )->andReturn( [
             'github-oauth' => [
                 'github.com' => 'my-token',

@@ -2,8 +2,9 @@
 
 namespace Tests\Feature\Commands;
 
-use App\Commands\GlobalDocker\Portainer;
+use App\Commands\BaseCommand;
 use App\Runners\CommandRunner;
+use App\Commands\GlobalDocker\Portainer;
 
 class PortainerTest extends BaseCommandTest {
 
@@ -15,7 +16,7 @@ class PortainerTest extends BaseCommandTest {
         $this->runner = $this->mock( CommandRunner::class );
     }
 
-    public function testItOpensPortainerUrl() {
+    public function test_it_opens_portainer_url() {
         $this->runner->shouldReceive( 'run' )
                      ->once()
                      ->with( 'which xdg-open' )
@@ -37,7 +38,7 @@ class PortainerTest extends BaseCommandTest {
         $command = $this->app->make( Portainer::class );
         $tester  = $this->runCommand( $command, [] );
 
-        $this->assertSame( 0, $tester->getStatusCode() );
+        $this->assertSame( BaseCommand::EXIT_SUCCESS, $tester->getStatusCode() );
         $this->assertStringContainsString( 'Launching Portainer at ' . Portainer::PORTAINER_URL, $tester->getDisplay() );
     }
 
