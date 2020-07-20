@@ -40,7 +40,9 @@ abstract class BaseCommandTester extends TestCase {
         $tester = new CommandTester( $command );
         $tester->setInputs( $interactiveInput );
 
-        $tester->execute( $arguments );
+        $tester->execute( $arguments, [
+            'interactive' => true,
+        ] );
 
         return $tester;
     }
