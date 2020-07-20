@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Listeners;
 
-use Symfony\Component\Finder\Finder;
 use Tests\TestCase;
 use Filebase\Database;
 use Filebase\Document;
 use App\Services\Update\Updater;
+use Symfony\Component\Finder\Finder;
 use App\Listeners\MigrationListener;
 use App\Services\Migrations\Migrator;
 use Illuminate\Console\Events\CommandStarting;

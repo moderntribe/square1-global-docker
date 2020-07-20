@@ -3,40 +3,40 @@
 namespace App\Providers;
 
 use App\Bootstrap;
-use App\Commands\Config\ComposeCopy;
-use App\Commands\Config\ConfigCopy;
-use App\Commands\GlobalDocker\Logs;
-use App\Commands\GlobalDocker\Restart;
-use App\Commands\GlobalDocker\Start;
-use App\Commands\GlobalDocker\Stop;
-use App\Commands\LocalDocker\Test;
-use App\Commands\Self\SelfUpdate;
-use App\Commands\Self\UpdateCheck;
+use RuntimeException;
+use Filebase\Database;
 use App\Contracts\Runner;
-use App\Listeners\MigrationListener;
-use App\Recorders\ResultRecorder;
-use App\Services\Certificate\Handler as CertHandler;
-use App\Services\Certificate\Ca;
-use App\Services\Certificate\Trust\LinuxTrustStore;
-use App\Services\Certificate\Trust\Strategies\Linux;
-use App\Services\Certificate\Trust\Strategies\MacOs;
+use App\Services\HomeDir;
 use App\Contracts\Trustable;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
+use App\Services\Certificate\Ca;
+use App\Services\Update\Updater;
+use App\Commands\Self\SelfUpdate;
+use App\Recorders\ResultRecorder;
+use App\Services\OperatingSystem;
+use App\Commands\LocalDocker\Test;
+use App\Commands\Self\UpdateCheck;
+use Illuminate\Support\Collection;
+use App\Commands\Config\ConfigCopy;
+use App\Commands\GlobalDocker\Logs;
+use App\Commands\GlobalDocker\Stop;
+use App\Commands\Config\ComposeCopy;
+use App\Commands\GlobalDocker\Start;
+use App\Listeners\MigrationListener;
 use App\Services\Docker\Dns\Factory;
 use App\Services\Docker\Dns\Handler;
-use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Docker\Local\Config;
-use App\Services\HomeDir;
-use App\Services\OperatingSystem;
-use App\Services\Update\Updater;
-use Filebase\Database;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
+use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
-use RuntimeException;
 use Symfony\Component\Config\FileLocator;
+use Illuminate\Contracts\Foundation\Application;
+use App\Services\Docker\Dns\OsSupport\BaseSupport;
+use App\Services\Certificate\Handler as CertHandler;
+use App\Services\Certificate\Trust\LinuxTrustStore;
+use App\Services\Certificate\Trust\Strategies\Linux;
+use App\Services\Certificate\Trust\Strategies\MacOs;
 
 /**
  * Class AppServiceProvider
@@ -52,9 +52,11 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function boot() {
-
+        $bootstrap = $this->app->make( Bootstrap::class );
+        $bootstrap->boot();
     }
 
     /**

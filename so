@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-define('LARAVEL_START', microtime(true));
+define( 'LARAVEL_START', microtime( true ) );
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +15,9 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-$autoloader = require file_exists(__DIR__.'/vendor/autoload.php') ?  __DIR__.'/vendor/autoload.php' : __DIR__.'/../../autoload.php';
+$autoloader = require file_exists( __DIR__ . '/vendor/autoload.php' ) ? __DIR__ . '/vendor/autoload.php' : __DIR__ . '/../../autoload.php';
 
-$app = require_once __DIR__.'/bootstrap/app.php';
+$app = require_once __DIR__ . '/bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -30,24 +30,12 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 |
 */
 
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make( Illuminate\Contracts\Console\Kernel::class );
 
 $status = $kernel->handle(
     $input = new Symfony\Component\Console\Input\ArgvInput,
     new Symfony\Component\Console\Output\ConsoleOutput
 );
-
-/*
-|--------------------------------------------------------------------------
-| Boot prerequisites
-|--------------------------------------------------------------------------
-|
-| The bootstrap object is run before any other commands to set up the
-| environment.
-|
-*/
-$bootstrap = $app->make( App\Bootstrap::class );
-$bootstrap->boot();
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +48,6 @@ $bootstrap->boot();
 |
 */
 
-$kernel->terminate($input, $status);
+$kernel->terminate( $input, $status );
 
-exit($status);
+exit( $status );
