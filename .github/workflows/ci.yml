@@ -1,24 +1,25 @@
-name: CI
+name: cilocal
 
 on: ['push', 'pull_request']
 
 jobs:
-  ci:
+  run:
     runs-on: ubuntu-latest
-    container: 'shivammathur/node:latest'
-
+    name: PHP 7.3 Test
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - uses: actions/checkout@v2
-
-      - name: PHP version
-        run: /usr/bin/php -v | /usr/bin/php7.3 -v | /usr/bin/php7.2 -v
-
-      - name: Install composer
-        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+          extensions: dom, fileinfo, mbstring, openssl, zip, zlib, xml
+          tools: prestissimo
+          coverage: pcov
 
       - name: Install Composer dependencies
-        run: /usr/bin/php /usr/local/bin/composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
+        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
 
-      - name: PHPUnit
-        run: /usr/bin/php vendor/bin/phpunit -c ./phpunit.xml.dist
+      - name: PHPUnit Testing
+        run: script -e -c vendor/bin/phpunit -c ./phpunit.xml.dist --debug
