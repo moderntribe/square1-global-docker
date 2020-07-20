@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Exception;
-use App\Bootstrap;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 
