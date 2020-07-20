@@ -1,26 +1,42 @@
-name: cilocal
+name: CI
 
 on: ['push', 'pull_request']
 
 jobs:
-  run:
-    runs-on: ubuntu-latest
-    name: PHP 7.3 Test
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: ['7.2', '7.3', '7.4']
+        dependency-version: [prefer-stable]
+
+    name: CI - PHP ${{ matrix.php }}
+
     steps:
+
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup PHP
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.3
+          php-version: ${{ matrix.php }}
           extensions: dom, fileinfo, mbstring, openssl, zip, zlib, xml
           tools: prestissimo
           coverage: pcov
 
       - name: Install Composer dependencies
-        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
+        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest --optimize-autoloader
 
+      # Github workflows/actions have no tty, the script command captures the output as a work around
       - name: PHPUnit Testing
         run: script -e -c vendor/bin/phpunit
 
