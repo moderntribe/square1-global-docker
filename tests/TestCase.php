@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Exception;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 
@@ -14,7 +15,7 @@ abstract class TestCase extends BaseTestCase
 
         try {
             Storage::disk( 'local' )->deleteDirectory( 'tests' );
-        } catch ( \Exception $e ) {
+        } catch ( Exception $e ) {
 
         }
     }

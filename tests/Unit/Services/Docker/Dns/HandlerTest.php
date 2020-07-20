@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services\Docker\Dns;
 
 use Tests\TestCase;
+use RuntimeException;
 use App\Commands\GlobalDocker\Start;
 use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Dns\Resolvers\Dhcp;
@@ -50,7 +51,7 @@ class HandlerTest extends TestCase {
     }
 
     public function testItThrowsAnExceptionOnInvalidOs() {
-        $this->expectException( \RuntimeException::class );
+        $this->expectException( RuntimeException::class );
 
         $this->os = $this->mock( NullOs::class );
 

@@ -1,6 +1,7 @@
 <?php declare( strict_types=1 );
 
 use App\Services\Migrations\Migration;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Refresh the configuration directory.
@@ -28,7 +29,7 @@ final class RefreshConfig extends Migration {
      *
      * @return bool If the migration was successful
      */
-    public function up( \Symfony\Component\Console\Output\OutputInterface $output ): bool {
+    public function up( OutputInterface $output ): bool {
         if ( $this->bypass ) {
             return false;
         }

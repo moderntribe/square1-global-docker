@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services\Docker\Local;
 
 use Tests\TestCase;
+use RuntimeException;
 use App\Runners\CommandRunner;
 use TitasGailius\Terminal\Response;
 use App\Services\Docker\Local\Config;
@@ -24,7 +25,7 @@ class ConfigExceptionTest extends TestCase {
     }
 
     public function test_it_throws_exception_on_invalid_project_root() {
-        $this->expectException( \RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $this->expectExceptionMessage( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
 
         Storage::disk( 'local' )->put( 'tests/squareone/dev/docker/docker-compose.yml', '' );
@@ -42,7 +43,7 @@ class ConfigExceptionTest extends TestCase {
     public function test_it_throws_exception_on_invalid_docker_compose_file() {
         $invalidPath = storage_path( 'tests/invalid-squareone-project' );
 
-        $this->expectException( \RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $this->expectExceptionMessage( 'Unable to find /dev/docker/docker-compose.yml or ./squareone.yml in ' . $invalidPath
                                        . '. Are you sure this is a SquareOne Project?' );
 

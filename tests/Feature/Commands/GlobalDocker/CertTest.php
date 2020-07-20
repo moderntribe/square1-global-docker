@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands\GlobalDocker;
 
+use InvalidArgumentException;
 use App\Commands\GlobalDocker\Cert;
 use App\Commands\GlobalDocker\Restart;
 use App\Services\Certificate\Handler;
@@ -38,7 +39,7 @@ class CertTest extends BaseCommandTest {
     }
 
     public function test_it_throws_exeception_on_invalid_domain() {
-        $this->expectException( \InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
 
         $invalidDomain = 'squareone';
 

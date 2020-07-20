@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Commands\Self\UpdateCheck;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Console\Events\CommandFinished;
 
@@ -59,7 +60,7 @@ class UpdateCheckListener {
      * @param  \Illuminate\Console\Events\CommandFinished  $event
      */
     protected function runUpdate( CommandFinished $event ): void {
-        Artisan::call( \App\Commands\Self\UpdateCheck::class, [
+        Artisan::call( UpdateCheck::class, [
             '--only-new' => true,
         ], $event->output );
     }

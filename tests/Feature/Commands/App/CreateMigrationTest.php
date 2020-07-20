@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands\App;
 
+use stdClass;
 use App\Commands\App\CreateMigration;
 use App\Services\Migrations\MigrationCreator;
 use Illuminate\Filesystem\Filesystem;
@@ -24,7 +25,7 @@ class CreateMigrationTest extends BaseCommandTest {
     }
 
     public function test_it_runs_migration_creator() {
-        $migration          = new \stdClass();
+        $migration          = new stdClass();
         $migration->path    = storage_path( 'tests/migrations/test_migration.php' );
         $migration->content = 'temp content';
 

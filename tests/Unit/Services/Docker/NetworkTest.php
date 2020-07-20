@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\Docker;
 
+use Mockery;
 use App\Runners\CommandRunner;
 use App\Services\Docker\Network;
 use App\Services\OperatingSystem;
@@ -68,7 +69,7 @@ class NetworkTest extends TestCase {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
 
-        $mock = \Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
+        $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
         $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getLinuxGatewayIP' )->once()->andReturn( '172.1.20.0' );
 
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
@@ -78,7 +79,7 @@ class NetworkTest extends TestCase {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::MAC_OS );
 
-        $mock = \Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
+        $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
         $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getMacOSGatewayIP' )->once()->andReturn( '172.1.20.0' );
 
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );

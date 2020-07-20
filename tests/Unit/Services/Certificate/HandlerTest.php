@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services\Certificate;
 
 use Tests\TestCase;
+use InvalidArgumentException;
 use App\Services\Certificate\Ca;
 use App\Services\Certificate\Certificate;
 use App\Services\Certificate\Handler;
@@ -64,7 +65,7 @@ class HandlerTest extends TestCase {
     }
 
     public function test_it_throws_execption_with_invalid_domain() {
-        $this->expectException( \InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
 
         $handler = new Handler( $this->ca, $this->certificate, $this->filesystem, $this->certFolder );
 

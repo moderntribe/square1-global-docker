@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands\Self;
 
+use RuntimeException;
 use App\Services\Phar;
 use Filebase\Document;
 use App\Commands\Self\SelfUpdate;
@@ -19,7 +20,7 @@ class SelfUpdateTest extends BaseCommandTest {
     }
 
     public function testItWontRunWithoutaPhar() {
-        $this->expectException( \RuntimeException::class );
+        $this->expectException( RuntimeException::class );
 
         $command = $this->app->make( SelfUpdate::class );
         $this->runCommand( $command, [] );

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Commands\LocalDocker\Start;
 use App\Commands\GlobalDocker\Start as GlobalStart;
 use App\Commands\LocalDocker\Composer;
 use App\Commands\Open;
@@ -163,7 +164,7 @@ class StartTest extends BaseCommandTest {
                    'url' => 'https://squareone.tribe',
                ] );
 
-        $command = $this->app->make( \App\Commands\LocalDocker\Start::class );
+        $command = $this->app->make( Start::class );
 
         // Run command pass a git token when requested.
         $tester = $this->runCommand( $command, [ '--browser' => true, '--path' => storage_path( 'tests' ) ], [
@@ -327,7 +328,7 @@ class StartTest extends BaseCommandTest {
                    'url' => 'https://squareone.tribe',
                ] );
 
-        $command = $this->app->make( \App\Commands\LocalDocker\Start::class );
+        $command = $this->app->make( Start::class );
 
         // Run command pass a git token when requested.
         $tester = $this->runCommand( $command, [ '--browser' => true, '--path' => storage_path( 'tests' ) ], [
@@ -490,7 +491,7 @@ class StartTest extends BaseCommandTest {
                    'url' => 'https://squareone.tribe',
                ] );
 
-        $command = $this->app->make( \App\Commands\LocalDocker\Start::class );
+        $command = $this->app->make( Start::class );
 
         // Run command pass a git token when requested.
         $tester = $this->runCommand( $command, [ '--browser' => true, '--path' => storage_path( 'tests' ) ], [

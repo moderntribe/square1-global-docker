@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Listeners;
 
+use ArrayIterator;
 use Tests\TestCase;
 use Filebase\Database;
 use Filebase\Document;
@@ -47,7 +48,7 @@ class MigrationListenerTest extends TestCase {
         $this->finder->shouldReceive( 'in' )->once()->andReturnSelf();
         $this->finder->shouldReceive( 'getIterator' )
                      ->once()
-                     ->andReturn( new \ArrayIterator( [
+                     ->andReturn( new ArrayIterator( [
                          'mock migration file found 1',
                          'mock migration file found 2',
                      ] ) );
@@ -99,7 +100,7 @@ class MigrationListenerTest extends TestCase {
         $this->finder->shouldReceive( 'in' )->once()->andReturnSelf();
         $this->finder->shouldReceive( 'getIterator' )
                      ->once()
-                     ->andReturn( new \ArrayIterator( [
+                     ->andReturn( new ArrayIterator( [
                          'mock migration file found 1',
                          'mock migration file found 2',
                      ] ) );

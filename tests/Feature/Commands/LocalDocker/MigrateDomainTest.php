@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands\LocalDocker;
 
+use Exception;
 use App\Commands\LocalDocker\MigrateDomain;
 use App\Commands\LocalDocker\Wp;
 use App\Exceptions\SystemExitException;
@@ -97,7 +98,7 @@ class MigrateDomainTest extends LocalDockerCommand {
     }
 
     public function test_it_throws_exeception_on_invalid_site_url() {
-        $this->expectException( \Exception::class );
+        $this->expectException( Exception::class );
         $this->expectExceptionMessage( 'Invalid siteurl found in options table:' );
 
         $this->wpCommand->shouldReceive( 'call' )
@@ -138,7 +139,7 @@ class MigrateDomainTest extends LocalDockerCommand {
     }
 
     public function test_it_throws_exception_on_matching_domains() {
-        $this->expectException( \Exception::class );
+        $this->expectException( Exception::class );
         $this->expectExceptionMessage( 'Error: Source and target domains match:' );
 
         $this->wpCommand->shouldReceive( 'call' )

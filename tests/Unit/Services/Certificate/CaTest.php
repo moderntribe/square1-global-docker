@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\Certificate;
 
+use RuntimeException;
 use App\Runners\CommandRunner;
 use App\Services\Certificate\Ca;
 use App\Services\Certificate\Trust\Strategies\Linux;
@@ -61,7 +62,7 @@ class CaTest extends TestCase {
     }
 
     public function test_it_throws_exception_when_ca_exists() {
-        $this->expectException( \RuntimeException::class );
+        $this->expectException( RuntimeException::class );
 
         $savePath = storage_path( 'tests/ca' );
 

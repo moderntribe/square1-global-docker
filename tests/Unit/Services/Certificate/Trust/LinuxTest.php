@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services\Certificate\Trust;
 
 use Tests\TestCase;
+use RuntimeException;
 use App\Runners\CommandRunner;
 use Illuminate\Filesystem\Filesystem;
 use App\Services\Certificate\Trust\LinuxTrustStore;
@@ -339,7 +340,7 @@ class LinuxTest extends TestCase {
     }
 
     public function test_it_throws_exception_on_invalid_flavor() {
-        $this->expectException( \RuntimeException::class );
+        $this->expectException( RuntimeException::class );
 
         $this->filesystem->shouldReceive( 'exists' )
                          ->once()

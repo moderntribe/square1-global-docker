@@ -2,6 +2,8 @@
 
 namespace App\Services\Migrations;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * Class Migration
  *
@@ -33,6 +35,6 @@ abstract class Migration {
      *
      * @return bool If the migration was successful
      */
-    abstract public function up( \Symfony\Component\Console\Output\OutputInterface $output ): bool;
+    abstract public function up( OutputInterface $output ): bool;
 
 }
