@@ -14,9 +14,6 @@ jobs:
       - name: PHP version
         run: /usr/bin/php -v | /usr/bin/php7.3 -v | /usr/bin/php7.2 -v
 
-      - name: Docker
-        run: docker -v
-
       - name: Install composer
         run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
