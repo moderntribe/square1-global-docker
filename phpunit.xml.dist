@@ -22,6 +22,7 @@
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="true"/>
         <env name="CACHE_DRIVER" value="array"/>
+        <env name="HOME" value="/github/home"/>
         <env name="PHP_IDE_CONFIG" value="serverName=localhost"/>
     </php>
 </phpunit>
