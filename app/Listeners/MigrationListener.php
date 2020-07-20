@@ -85,6 +85,11 @@ class MigrationListener {
      * @return bool
      */
     protected function shouldRun( ?string $command = '' ): bool {
+        // Don't run during tests unless specified with the ALLOW_MIGRATION environment variable.
+        if ( 'testing' === env( 'APP_ENV' ) && '1' != env( 'ALLOW_MIGRATION' ) ) {
+            return false;
+        }
+
         if ( empty( $command ) ) {
             return false;
         }

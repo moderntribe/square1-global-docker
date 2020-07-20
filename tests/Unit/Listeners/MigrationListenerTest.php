@@ -23,6 +23,9 @@ class MigrationListenerTest extends TestCase {
     public function setUp(): void {
         parent::setUp();
 
+        // Force the listener to fire during tests.
+        putenv( 'ALLOW_MIGRATION=1' );
+
         $this->finder   = $this->mock( Finder::class );
         $this->migrator = $this->mock( Migrator::class );
         $this->updater  = $this->mock( Updater::class );

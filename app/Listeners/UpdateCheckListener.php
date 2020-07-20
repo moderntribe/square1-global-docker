@@ -37,6 +37,11 @@ class UpdateCheckListener {
      * @return bool
      */
     protected function shouldRun( ?string $command = '' ): bool {
+        // Don't run during tests unless specified with the ALLOW_UPDATE_CHECK environment variable.
+        if ( 'testing' === env( 'APP_ENV' ) && '1' != env( 'ALLOW_UPDATE_CHECK' ) ) {
+            return false;
+        }
+
         if ( empty( $command ) ) {
             return false;
         }

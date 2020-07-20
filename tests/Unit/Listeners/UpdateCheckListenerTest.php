@@ -8,6 +8,13 @@ use Tests\TestCase;
 
 class UpdateCheckListenerTest extends TestCase {
 
+    public function setUp(): void {
+        parent::setUp();
+
+        // Force the listener to fire during tests.
+        putenv( 'ALLOW_UPDATE_CHECK=1' );
+    }
+
     public function test_it_returns_false_when_no_command_is_provided() {
         $listener = new UpdateCheckListener();
         $event    = $this->mock( CommandFinished::class );

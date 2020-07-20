@@ -16,6 +16,8 @@ final class RefreshConfig extends Migration {
      * RefreshConfig constructor.
      */
     public function __construct() {
+        parent::__construct();
+
         $this->filesystem = new Illuminate\Filesystem\Filesystem();
     }
 
@@ -27,6 +29,10 @@ final class RefreshConfig extends Migration {
      * @return bool If the migration was successful
      */
     public function up( \Symfony\Component\Console\Output\OutputInterface $output ): bool {
+        if ( $this->bypass ) {
+            return false;
+        }
+
         $output->writeln( '<question>★ Starting migration!</question>' );
 
         $configDir     = config( 'squareone.config-dir' );
@@ -42,13 +48,17 @@ final class RefreshConfig extends Migration {
         $this->backUpFile( $override );
         $this->backUpFile( $mysql );
 
-        $output->writeln( sprintf( '<info>★ Copying updated %s</info>', $dockerCompose ) );
+        if ( $this->filesystem->exists( $configDir . '/global') ) {
+            $output->writeln( sprintf( '<info>★ Copying updated %s</info>', $dockerCompose ) );
 
-        $this->filesystem->copy( storage_path( 'global/docker-compose.yml' ), $dockerCompose );
+            $this->filesystem->copy( storage_path( 'global/docker-compose.yml' ), $dockerCompose );
 
-        $output->writeln( sprintf( '<info>★ Copying updated %s</info>', $mysql ) );
+            $output->writeln( sprintf( '<info>★ Copying updated %s</info>', $mysql ) );
 
-        return (bool) $this->filesystem->copy( storage_path( 'global/mysql/mysql.cnf' ), $mysql );
+            return (bool) $this->filesystem->copy( storage_path( 'global/mysql/mysql.cnf' ), $mysql );
+        }
+
+        return false;
     }
 
     private function backUpFile( string $path ) {
