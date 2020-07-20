@@ -37,7 +37,7 @@ jobs:
         run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest
 
       - name: PHPUnit Testing
-        run: vendor/bin/phpunit
+        run: ./vendor/bin/phpunit -c ./phpunit.xml.dist
 
       - name: Build
         run: php so app:build --build-version=0.0
