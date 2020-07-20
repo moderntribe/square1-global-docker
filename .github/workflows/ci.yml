@@ -1,47 +1,25 @@
-name: CI
+name: cilocal
 
 on: ['push', 'pull_request']
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        php: [7.3]
-        dependency-version: [prefer-stable]
-
-    name: CI - OS ${{ matrix.os }} PHP ${{ matrix.php }} (${{ matrix.dependency-version }})
-
+  run:
+    runs-on: ubuntu-latest
+    name: PHP 7.3 Test
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.composer/cache/files
-          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
-
-      - name: Set up PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: curl, dom, fileinfo, intl, mbstring, openssl, pcntl, pcre, phar, zip, zlib, xml
+          php-version: 7.3
+          extensions: curl, dom, fileinfo, intl, mbstring, openssl, pcntl, pcre, zip, zlib, xml
           tools: prestissimo
           coverage: pcov
-          ini-values: phar.readonly=Off
 
       - name: Install Composer dependencies
-        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest
+        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
 
       - name: PHPUnit Testing
-        run: php vendor/bin/phpunit -c ./phpunit.xml.dist --coverage-text --coverage-clover=coverage.xml
-
-      - name: Build
-        run: php so app:build --build-version=0.0
-
-      - name: Build Check
-        run: php builds/so --version
+        run: vendor/bin/phpunit -c ./phpunit.xml.dist --debug
