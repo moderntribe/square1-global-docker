@@ -34,7 +34,7 @@ jobs:
           coverage: pcov
 
       - name: Install Composer dependencies
-        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest --optimize-autoloader
+        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest
 
       - name: PHPUnit Testing
         run: vendor/bin/phpunit
