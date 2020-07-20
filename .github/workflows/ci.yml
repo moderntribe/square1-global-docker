@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        php: [7.2, 7.3, 7.4]
+        php: [7.3]
         dependency-version: [prefer-stable]
 
     name: CI - OS ${{ matrix.os }} PHP ${{ matrix.php }} (${{ matrix.dependency-version }})

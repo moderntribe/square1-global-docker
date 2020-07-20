@@ -53,6 +53,7 @@ class Bootstrap {
      * Run all pre flight checks.
      */
     public function boot(): void {
+        dd ( $this->configDir );
         $this->maybeCopyGlobalConfig();
         $this->createDirectories();
     }
