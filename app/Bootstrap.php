@@ -55,8 +55,6 @@ class Bootstrap {
     public function boot(): void {
         $this->maybeCopyGlobalConfig();
         $this->createDirectories();
-
-        dd ( scandir( $this->configDir ) );
     }
 
     /**
