@@ -40,5 +40,9 @@ return [
             'driver' => 'file',
             'path'   => env( 'HOME' ) . '/.config/squareone/cache',
         ],
+
+        'none' => [
+            'driver' => 'null',
+        ],
     ],
 ];
