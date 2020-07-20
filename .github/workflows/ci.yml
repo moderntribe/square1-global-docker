@@ -23,3 +23,9 @@ jobs:
 
       - name: PHPUnit Testing
         run: script -e -c vendor/bin/phpunit
+
+      - name: Build
+        run: php so app:build --build-version=0.0
+
+      - name: Build Check
+        run: php builds/so --version
