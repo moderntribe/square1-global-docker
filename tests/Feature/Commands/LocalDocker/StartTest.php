@@ -21,7 +21,7 @@ use Tests\Feature\Commands\BaseCommandTest;
 
 class StartTest extends BaseCommandTest {
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         Storage::disk( 'local' )->makeDirectory( 'tests/dev/docker' );

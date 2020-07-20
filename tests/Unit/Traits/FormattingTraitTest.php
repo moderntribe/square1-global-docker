@@ -9,13 +9,13 @@ class FormattingTraitTest extends TestCase {
 
     private $formatter;
 
-    public function setUp(): void {
+    protected function setUp(): void {
         parent::setUp();
 
         $this->formatter = $this->getMockForTrait( FormattingTrait::class );
     }
 
-    public function tearDown(): void {
+    protected function tearDown(): void {
         parent::tearDown();
 
         $this->formatter = null;
