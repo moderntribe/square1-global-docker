@@ -7,9 +7,9 @@ use App\Commands\App\CreateMigration;
 use App\Services\Migrations\MigrationCreator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class CreateMigrationTest extends BaseCommandTest {
+class CreateMigrationTest extends BaseCommandTester {
 
     private $creator;
     private $filesystem;

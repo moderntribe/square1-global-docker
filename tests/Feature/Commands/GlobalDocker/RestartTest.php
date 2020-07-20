@@ -5,9 +5,9 @@ namespace Tests\Feature\Commands\GlobalDocker;
 use App\Commands\DockerCompose;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\Facades\Artisan;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class RestartTest extends BaseCommandTest {
+class RestartTest extends BaseCommandTester {
 
     private $dockerCompose;
 

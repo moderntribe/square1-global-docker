@@ -7,9 +7,9 @@ use App\Commands\GlobalDocker\Cert;
 use App\Commands\GlobalDocker\Restart;
 use App\Services\Certificate\Handler;
 use Illuminate\Support\Facades\Artisan;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class CertTest extends BaseCommandTest {
+class CertTest extends BaseCommandTester {
 
     protected $handler;
     protected $restart;

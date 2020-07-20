@@ -6,9 +6,9 @@ use App\Commands\GlobalDocker\MyAdmin;
 use App\Commands\Open;
 use App\Runners\CommandRunner;
 use Illuminate\Support\Facades\Artisan;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class MyAdminTest extends BaseCommandTest {
+class MyAdminTest extends BaseCommandTester {
 
     private $runner;
 

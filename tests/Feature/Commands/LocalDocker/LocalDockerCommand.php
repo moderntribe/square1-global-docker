@@ -4,9 +4,9 @@ namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
 use App\Services\Docker\Local\Config;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class LocalDockerCommand extends BaseCommandTest {
+class LocalDockerCommand extends BaseCommandTester {
 
     protected $project;
     protected $composeFile;

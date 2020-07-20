@@ -11,7 +11,7 @@ use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use phpmock\mockery\PHPMockery;
 
-class CreateTest extends BaseCommandTest {
+class CreateTest extends BaseCommandTester {
 
     private $projectCreator;
     private $runner;

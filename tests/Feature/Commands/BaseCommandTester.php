@@ -12,7 +12,7 @@ use Symfony\Component\Console\Application as ConsoleApplication;
  *
  * @package Tests\Feature\Commands
  */
-abstract class BaseCommandTest extends TestCase {
+abstract class BaseCommandTester extends TestCase {
 
     protected function setUp(): void {
         parent::setUp();

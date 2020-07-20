@@ -4,9 +4,9 @@ namespace Tests\Feature\Commands\GlobalDocker;
 
 use App\Commands\GlobalDocker\StopAll;
 use App\Runners\CommandRunner;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class StopAllTest extends BaseCommandTest {
+class StopAllTest extends BaseCommandTester {
 
     protected function setUp(): void {
         parent::setUp();

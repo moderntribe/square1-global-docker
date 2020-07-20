@@ -6,9 +6,9 @@ use App\Commands\DockerCompose;
 use App\Commands\GlobalDocker\Start;
 use App\Services\Docker\Dns\Handler;
 use Illuminate\Support\Facades\Artisan;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class StartTest extends BaseCommandTest {
+class StartTest extends BaseCommandTester {
 
     protected $resolveHandler;
     protected $dockerCompose;

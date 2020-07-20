@@ -7,13 +7,13 @@ use App\Services\Phar;
 use Filebase\Document;
 use App\Commands\Self\SelfUpdate;
 use App\Services\Update\Updater;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class SelfUpdateTest extends BaseCommandTest {
+class SelfUpdateTest extends BaseCommandTester {
 
     public function testItWontRunWithoutaPhar() {
         $this->expectException( RuntimeException::class );

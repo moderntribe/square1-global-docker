@@ -6,7 +6,7 @@ use App\Commands\BaseCommand;
 use App\Runners\CommandRunner;
 use App\Commands\GlobalDocker\Portainer;
 
-class PortainerTest extends BaseCommandTest {
+class PortainerTest extends BaseCommandTester {
 
     private $runner;
 

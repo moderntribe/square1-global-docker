@@ -4,9 +4,9 @@ namespace Tests\Feature\Commands\GlobalDocker;
 
 use App\Runners\CommandRunner;
 use App\Commands\GlobalDocker\Status;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class StatusTest extends BaseCommandTest {
+class StatusTest extends BaseCommandTester {
 
     protected function setUp(): void {
         parent::setUp();

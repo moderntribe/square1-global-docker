@@ -4,9 +4,9 @@ namespace Tests\Feature\Commands\Config;
 
 use App\Commands\Config\ComposeCopy;
 use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class ComposeCopyTest extends BaseCommandTest {
+class ComposeCopyTest extends BaseCommandTester {
 
     public function setUp(): void {
         parent::setUp();

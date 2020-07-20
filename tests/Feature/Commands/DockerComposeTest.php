@@ -7,7 +7,7 @@ use App\Runners\CommandRunner;
 use App\Services\Docker\Network;
 use Symfony\Component\Process\Process;
 
-class DockerComposeTest extends BaseCommandTest {
+class DockerComposeTest extends BaseCommandTester {
 
     private $runner;
 

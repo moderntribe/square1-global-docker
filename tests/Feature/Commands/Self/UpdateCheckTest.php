@@ -7,9 +7,9 @@ use App\Services\Config\Github;
 use App\Services\Update\Updater;
 use Filebase\Document;
 use phpmock\mockery\PHPMockery;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class UpdateCheckTest extends BaseCommandTest {
+class UpdateCheckTest extends BaseCommandTester {
 
     private $release;
     private $updater;

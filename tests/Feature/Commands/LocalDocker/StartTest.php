@@ -15,10 +15,10 @@ use Illuminate\Filesystem\Filesystem;
 use App\Commands\LocalDocker\Composer;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 use App\Commands\GlobalDocker\Start as GlobalStart;
 
-class StartTest extends BaseCommandTest {
+class StartTest extends BaseCommandTester {
 
     protected function setUp(): void {
         parent::setUp();

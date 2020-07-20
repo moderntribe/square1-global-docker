@@ -5,9 +5,9 @@ namespace Tests\Feature\Commands\GlobalDocker;
 use App\Commands\DockerCompose;
 use App\Commands\GlobalDocker\Logs;
 use Illuminate\Support\Facades\Artisan;
-use Tests\Feature\Commands\BaseCommandTest;
+use Tests\Feature\Commands\BaseCommandTester;
 
-class LogsTest extends BaseCommandTest {
+class LogsTest extends BaseCommandTester {
 
     private $dockerCompose;
 
