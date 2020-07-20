@@ -57,6 +57,8 @@ class AppServiceProvider extends ServiceProvider {
     public function boot() {
         $bootstrap = $this->app->make( Bootstrap::class );
         $bootstrap->boot();
+
+        $this->initConfig();
     }
 
     /**
@@ -66,8 +68,6 @@ class AppServiceProvider extends ServiceProvider {
      *
      */
     public function register() {
-        $this->initConfig();
-
         $this->app->singleton( ResultRecorder::class );
         //$this->app->singleton( Config::class );
 
