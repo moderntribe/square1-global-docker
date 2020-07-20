@@ -17,8 +17,6 @@ abstract class TestCase extends BaseTestCase
         // Initialize Yaml config after the application is booted
         $provider = new AppServiceProvider( $this->app );
         $provider->initConfig();
-
-        var_dump( config() );
     }
 
     protected function tearDown(): void {

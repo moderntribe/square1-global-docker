@@ -25,6 +25,8 @@ class StartTest extends BaseCommandTest {
         parent::setUp();
 
         Storage::disk( 'local' )->makeDirectory( 'tests/dev/docker' );
+
+        var_dump( config() );
     }
 
     public function test_it_can_start_a_project_with_standard_default_env_file() {
