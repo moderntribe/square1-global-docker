@@ -6,7 +6,7 @@
 
 Status: **Beta**
 
-![CI](https://github.com/moderntribe/square1-global-docker/workflows/CI/badge.svg) [![Coverage](badges/coverage.svg)](https://github.com/defunctl/square1-global-docker/actions?query=workflow%3ACI)
+![CI](https://github.com/moderntribe/square1-global-docker/workflows/CI/badge.svg) [![Coverage](badges/coverage.svg)](https://github.com/moderntribe/square1-global-docker/actions?query=workflow%3ACI)
 
 ![so list](./docs/img/so.svg)
 
