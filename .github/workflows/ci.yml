@@ -29,7 +29,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, zip
+          extensions: curl, dom, fileinfo, intl, mbstring, openssl, zip, zlib, xml
           tools: prestissimo
           coverage: pcov
 
@@ -37,7 +37,7 @@ jobs:
         run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest
 
       - name: PHPUnit Testing
-        run: ./vendor/bin/phpunit -c ./phpunit.xml.dist
+        run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
       - name: Build
         run: php so app:build --build-version=0.0
