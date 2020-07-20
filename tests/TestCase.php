@@ -11,14 +11,6 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function setUp(): void {
-        parent::setUp();
-
-        // Bootstrap SO
-        $bootstrap = $this->app->make( Bootstrap::class );
-        $bootstrap->boot();
-    }
-
     public function tearDown(): void {
         parent::tearDown();
 
