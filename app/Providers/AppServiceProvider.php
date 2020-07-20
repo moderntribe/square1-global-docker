@@ -55,10 +55,10 @@ class AppServiceProvider extends ServiceProvider {
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function boot() {
+        $this->initConfig();
+
         $bootstrap = $this->app->make( Bootstrap::class );
         $bootstrap->boot();
-
-        $this->initConfig();
     }
 
     /**
