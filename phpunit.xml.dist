@@ -3,7 +3,10 @@
          backupStaticAttributes="false"
          bootstrap="vendor/autoload.php"
          colors="true"
-         processIsolation="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Feature">
@@ -21,7 +24,7 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="true"/>
-        <env name="CACHE_DRIVER" value="none"/>
+        <env name="CACHE_DRIVER" value="array"/>
         <env name="PHP_IDE_CONFIG" value="serverName=localhost"/>
     </php>
 </phpunit>
