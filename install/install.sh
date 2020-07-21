@@ -22,6 +22,7 @@ install_homebrew() {
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
     sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/squareone.autocompletion
+    curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o ~/.squareone_completion && echo "source ~/.squareone_completion" >> ~/.zshrc
   else
     sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/squareone.autocompletion
   fi
