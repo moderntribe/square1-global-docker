@@ -84,7 +84,7 @@ class Factory {
         }
 
         if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
-            $resolvers->push( new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvers/tribe' ) );
+            $resolvers->push( new ResolvConf( $this->runner, $this->filesystem, '/etc/resolver/tribe' ) );
 
             return new MacOs( $resolvers );
         }

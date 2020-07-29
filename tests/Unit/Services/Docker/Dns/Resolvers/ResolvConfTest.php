@@ -69,7 +69,7 @@ class ResolvConfTest extends TestCase {
         $this->assertFalse( $dhcp->enabled() );
     }
 
-    public function test_it_is_dsiabled_with_missing_resolv_conf() {
+    public function test_it_is_disabled_with_missing_resolv_conf() {
         $this->filesystem->shouldReceive( 'get' )
                          ->with( $this->file )
                          ->once()

@@ -10,7 +10,7 @@ use LaravelZero\Framework\Commands\Command;
 class ResolvConf extends BaseResolver {
 
     /**
-     * The path to the custom resolv file.
+     * The path to the custom resolv file dependant on the operating system in use.
      *
      * e.g. resolv.conf.head, /etc/resolvconf/resolv.conf.d/head
      *
