@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class RefreshConfig extends Migration {
 
     /**
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var \Symfony\Component\Filesystem\Filesystem;
      */
     private $filesystem;
 
@@ -19,7 +19,7 @@ final class RefreshConfig extends Migration {
     public function __construct() {
         parent::__construct();
 
-        $this->filesystem = new Illuminate\Filesystem\Filesystem();
+        $this->filesystem = new Symfony\Component\Filesystem\Filesystem();
     }
 
     /**
@@ -36,37 +36,47 @@ final class RefreshConfig extends Migration {
 
         $output->writeln( '<question>★ Starting migration!</question>' );
 
-        $configDir     = config( 'squareone.config-dir' );
-        $squareoneYml  = $configDir . '/squareone.yml';
-        $dockerCompose = $configDir . '/global/docker-compose.yml';
-        $override      = $configDir . '/global/docker-compose.override.yml';
-        $mysql         = $configDir . '/global/mysql/mysql.cnf';
+        $configDir = config( 'squareone.config-dir' );
+        $global    = $configDir . '/global';
 
-        $output->writeln( sprintf( '<info>★ Backing up data in %s</info>', $configDir ) );
+        if ( $this->filesystem->exists( $global ) ) {
+            $timestamp = strtotime( 'now' );
+            $backup    = $global . '-' . $timestamp . '.backup';
 
-        $this->backUpFile( $squareoneYml );
-        $this->backUpFile( $dockerCompose );
-        $this->backUpFile( $override );
-        $this->backUpFile( $mysql );
+            $output->writeln( sprintf( '<info>★ Backing up data global folder to %s</info>', $backup ) );
 
-        if ( $this->filesystem->exists( $configDir . '/global') ) {
-            $output->writeln( sprintf( '<info>★ Copying updated %s</info>', $dockerCompose ) );
+            $this->rename( $global, $timestamp );
 
-            $this->filesystem->copy( storage_path( 'global/docker-compose.yml' ), $dockerCompose );
+            $output->writeln( sprintf( '<info>★ Copying new global folder to %s</info>', $global ) );
 
-            $output->writeln( sprintf( '<info>★ Copying updated %s</info>', $mysql ) );
+            $newGlobal = storage_path( 'global' );
 
-            return (bool) $this->filesystem->copy( storage_path( 'global/mysql/mysql.cnf' ), $mysql );
+            $this->filesystem->mirror( $newGlobal, $global );
+
+            $certs       = $global . '/certs';
+            $certsBackup = $backup . '/certs';
+
+            $output->writeln( sprintf( '<info>★ Transferring existing certificates to %s</info>', $certs ) );
+
+            if ( $this->filesystem->exists( $certsBackup ) ) {
+                $this->filesystem->mirror( $certsBackup, $certs );
+            }
+
+            $output->writeln( '<error>★ IMPORTANT: run so global:stop-all. If you run into database issues, see https://agency.tri.be/wiki/view/SquareOne_Local_Environment#Updating_Database_from_MySQL_to_MariaDB</error>' );
         }
 
-        return false;
+        return true;
     }
 
-    private function backUpFile( string $path ) {
-        $timestamp = strtotime( 'now' );
-
+    /**
+     * Rename a file or directory.
+     *
+     * @param  string  $path
+     * @param  int     $timestamp
+     */
+    private function rename( string $path, int $timestamp ) {
         if ( $this->filesystem->exists( $path ) ) {
-            $this->filesystem->move( $path, $path . '-' . $timestamp . '.backup' );
+            $this->filesystem->rename( $path, $path . '-' . $timestamp . '.backup' );
         }
     }
 
