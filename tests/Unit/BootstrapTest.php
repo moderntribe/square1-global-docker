@@ -26,9 +26,18 @@ class BootstrapTest extends TestCase {
                    ->with( storage_path( 'tests/defaults' ) )
                    ->andReturnFalse();
 
+        $filesystem->shouldReceive( 'exists' )
+                   ->once()
+                   ->with(  storage_path( 'tests/store' ) )
+                   ->andReturnFalse();
+
         $filesystem->shouldReceive( 'mkdir' )
                    ->once()
                    ->with( storage_path( 'tests/defaults' ), 0755 );
+
+        $filesystem->shouldReceive( 'mkdir' )
+                   ->once()
+                   ->with( storage_path( 'tests/store' ), 0755 );
 
         $bootstrap = new Bootstrap( $configDir, $filesystem );
 
