@@ -86,9 +86,7 @@ class Config {
     public function getProjectRoot(): string {
         if ( empty( $this->projectRoot ) ) {
 
-            $loop = true;
-
-            while ( true === $loop ) {
+            while ( true ) {
 
                 // Check if we're in a submodule first
                 $response = $this->runner->with( [
@@ -128,6 +126,7 @@ class Config {
                 }
 
                 $this->projectRoot = trim( $response );
+
                 break;
             }
 
