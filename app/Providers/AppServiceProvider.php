@@ -104,19 +104,19 @@ class AppServiceProvider extends ServiceProvider {
 
         $this->app->when( Start::class )
                   ->needs( '$dockerComposeFile' )
-                  ->give( config( 'squareone.docker.compose' ) );
+                  ->give( $this->getGlobalDockerCompose() );
 
         $this->app->when( Stop::class )
                   ->needs( '$dockerComposeFile' )
-                  ->give( config( 'squareone.docker.compose' ) );
+                  ->give( $this->getGlobalDockerCompose() );
 
         $this->app->when( Restart::class )
                   ->needs( '$dockerComposeFile' )
-                  ->give( config( 'squareone.docker.compose' ) );
+                  ->give( $this->getGlobalDockerCompose() );
 
         $this->app->when( Logs::class )
                   ->needs( '$dockerComposeFile' )
-                  ->give( config( 'squareone.docker.compose' ) );
+                  ->give( $this->getGlobalDockerCompose() );
 
         $this->app->when( ConfigCopy::class )
                   ->needs( '$configDir' )
@@ -256,6 +256,20 @@ class AppServiceProvider extends ServiceProvider {
      */
     private function getBinaryPath(): string {
         return realpath( $_SERVER['argv'][0] ) ?: $_SERVER['argv'][0];
+    }
+
+    /**
+     * Return the global docker compose yml file or its override.
+     *
+     * @return string
+     */
+    private function getGlobalDockerCompose(): string {
+        $files = [
+            config( 'squareone.docker.compose-override' ),
+            config( 'squareone.docker.compose' ),
+        ];
+
+        return current( array_filter( $files, 'file_exists' ) );
     }
 
 }
