@@ -36,6 +36,7 @@ class Bootstrap {
      */
     protected $directories = [
         'defaults',
+        'store',
     ];
 
     /**
