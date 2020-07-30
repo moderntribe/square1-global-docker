@@ -86,29 +86,50 @@ class Config {
     public function getProjectRoot(): string {
         if ( empty( $this->projectRoot ) ) {
 
-            $response = $this->runner->with( [
-                'path' => $this->path,
-            ] )->run( 'git -C {{ $path }} rev-parse --show-toplevel' );
+            $loop = true;
 
-            if ( ! $response->ok() ) {
-                throw new RuntimeException( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
+            while ( true === $loop ) {
+
+                // Check if we're in a submodule first
+                $response = $this->runner->with( [
+                    'path' => $this->path,
+                ] )->run( 'git -C {{ $path }} rev-parse --show-superproject-working-tree' );
+
+                if ( empty( trim( (string) $response ) ) ) {
+                    $response = $this->runner->with( [
+                        'path' => $this->path,
+                    ] )->run( 'git -C {{ $path }} rev-parse --show-toplevel' );
+                }
+
+                if ( ! $response->ok() ) {
+                    throw new RuntimeException( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
+                }
+
+                $response = trim( (string) $response );
+
+                // If these files exist, this is probably a SquareOne project.
+                $squareOneFiles = [
+                    "{$response}/dev/docker/docker-compose.yml",
+                    "{$response}/squareone.yml",
+                ];
+
+                $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
+
+                if ( empty( $squareOneFiles ) ) {
+                    $this->path = dirname( $response );
+
+                    // Throw an error if we reach the top of the filesystem.
+                    if ( '/' === $this->path ) {
+                        throw new RuntimeException( sprintf( 'Unable to find /dev/docker/docker-compose.yml or ./squareone.yml in %s. Are you sure this is a SquareOne Project?',
+                            $response ) );
+                    }
+
+                    continue;
+                }
+
+                $this->projectRoot = trim( $response );
+                break;
             }
-
-            $response = trim( (string) $response );
-
-            // If these files exist, this is probably a SquareOne project.
-            $squareOneFiles = [
-                "{$response}/dev/docker/docker-compose.yml",
-                "{$response}/squareone.yml",
-            ];
-
-            $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
-
-            if ( empty( $squareOneFiles ) ) {
-                throw new RuntimeException( sprintf( 'Unable to find /dev/docker/docker-compose.yml or ./squareone.yml in %s. Are you sure this is a SquareOne Project?', $response ) );
-            }
-
-            $this->projectRoot = trim( $response );
 
         }
 
