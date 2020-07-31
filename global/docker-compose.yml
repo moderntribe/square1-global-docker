@@ -25,7 +25,7 @@ services:
       proxy:
         ipv4_address: 172.20.10.250
   mysql:
-    image: mariadb
+    image: mariadb:10.5
     container_name: tribe-mysql
     volumes:
       - '${TRIBE_MYSQL_DATA_DIR:-~/mysql_data}:/var/lib/mysql'
