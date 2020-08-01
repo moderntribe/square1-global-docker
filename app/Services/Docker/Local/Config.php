@@ -113,15 +113,9 @@ class Config {
 
                 $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
 
+                // Check the directory above and continue the loop.
                 if ( empty( $squareOneFiles ) ) {
                     $this->path = dirname( $response );
-
-                    // Throw an error if we reach the top of the filesystem.
-                    if ( '/' === $this->path ) {
-                        throw new RuntimeException( sprintf( 'Unable to find /dev/docker/docker-compose.yml or ./squareone.yml in %s. Are you sure this is a SquareOne Project?',
-                            $response ) );
-                    }
-
                     continue;
                 }
 
