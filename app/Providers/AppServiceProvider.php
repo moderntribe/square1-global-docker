@@ -105,19 +105,19 @@ class AppServiceProvider extends ServiceProvider {
 
         $this->app->when( Start::class )
                   ->needs( '$globalDirectory' )
-                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
+                  ->give( config( 'squareone.docker.config-dir' ) );
 
         $this->app->when( Stop::class )
                   ->needs( '$globalDirectory' )
-                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
+                  ->give( config( 'squareone.docker.config-dir' ) );
 
         $this->app->when( Restart::class )
                   ->needs( '$globalDirectory' )
-                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
+                  ->give( config( 'squareone.docker.config-dir' ) );
 
         $this->app->when( Logs::class )
                   ->needs( '$globalDirectory' )
-                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
+                  ->give( config( 'squareone.docker.config-dir' ) );
 
         $this->app->when( ConfigCopy::class )
                   ->needs( '$configDir' )
