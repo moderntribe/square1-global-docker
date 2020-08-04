@@ -37,12 +37,12 @@ class Stop extends BaseLocalDocker {
     public function handle( Config $config ): void {
         $this->info( sprintf( '➜ Stopping project %s...', $config->getProjectName() ) );
 
+        chdir( $config->getDockerDir() );
+
         Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'down',
+	        '--project-name',
+	        $config->getProjectName(),
+	        'down',
         ] );
 
         $this->info( 'Done.' );

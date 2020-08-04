@@ -36,12 +36,10 @@ class Composer extends BaseLocalDocker {
      */
     public function handle( Config $config ): void {
         $params = [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'exec',
-            'php-fpm',
+	        '--project-name',
+	        $config->getProjectName(),
+	        'exec',
+	        'php-fpm',
             $this->arguments()['command'],
         ];
 
@@ -49,6 +47,8 @@ class Composer extends BaseLocalDocker {
             '-d',
             '/application/www',
         ] );
+
+        chdir( $config->getDockerDir() );
 
         Artisan::call( DockerCompose::class, $params );
 

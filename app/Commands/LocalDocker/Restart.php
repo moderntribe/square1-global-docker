@@ -37,12 +37,12 @@ class Restart extends BaseLocalDocker {
     public function handle( Config $config ): void {
         $this->info( sprintf( '➜ Restarting project %s...', $config->getProjectName() ) );
 
+        chdir( $config->getDockerDir() );
+
         Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'restart',
+	        '--project-name',
+	        $config->getProjectName(),
+	        'restart',
         ] );
 
         $this->info( 'Done.' );

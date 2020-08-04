@@ -37,16 +37,16 @@ class Shell extends BaseLocalDocker {
     public function handle( Config $config ): void {
         $this->info( sprintf( '➜ Launching shell for %s...', $config->getProjectName() ) );
 
+        chdir( $config->getDockerDir() );
+
         $result = Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'exec',
-            '--user',
-            $this->option( 'user' ),
-            'php-fpm',
-            '/bin/bash',
+	        '--project-name',
+	        $config->getProjectName(),
+	        'exec',
+	        '--user',
+	        $this->option( 'user' ),
+	        'php-fpm',
+	        '/bin/bash',
         ] );
 
         if ( self::EXIT_ERROR === $result ) {

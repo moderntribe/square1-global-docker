@@ -166,9 +166,9 @@ class ConfigTest extends TestCase {
 
         $config = new Config( $this->runner );
 
-        $compose = $config->getComposeFile();
+        $compose = $config->getDockerDir();
 
-        $this->assertSame( storage_path( 'tests/squareone/dev/docker/docker-compose.yml' ), $compose );
+        $this->assertSame( storage_path( 'tests/squareone/dev/docker' ), $compose );
     }
 
     public function test_it_finds_docker_compose_override_yml() {
@@ -189,9 +189,9 @@ class ConfigTest extends TestCase {
 
         $config = new Config( $this->runner );
 
-        $compose = $config->getComposeFile();
+        $compose = $config->getDockerDir();
 
-        $this->assertSame( storage_path( 'tests/squareone/dev/docker/docker-compose.override.yml' ), $compose );
+        $this->assertSame( storage_path( 'tests/squareone/dev/docker' ), $compose );
     }
 
     public function test_it_gets_a_project_name() {

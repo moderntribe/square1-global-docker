@@ -37,13 +37,13 @@ class Logs extends BaseLocalDocker {
     public function handle( Config $config ): void {
         $this->info( sprintf( '➜ Displaying logs for %s. Press command/ctrl + c to quit', $config->getProjectName() ) );
 
+        chdir( $config->getDockerDir() );
+
         Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'logs',
-            '-f',
+	        '--project-name',
+	        $config->getProjectName(),
+	        'logs',
+	        '-f',
         ] );
     }
 

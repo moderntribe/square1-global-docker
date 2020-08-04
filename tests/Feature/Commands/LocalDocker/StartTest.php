@@ -34,7 +34,7 @@ class StartTest extends BaseCommandTester {
 
         $config->shouldReceive( 'getProjectName' )->times( 4 )->andReturn( 'squareone' );
         $config->shouldReceive( 'getProjectRoot' )->times( 5 )->andReturn( storage_path( 'tests' ) );
-        $config->shouldReceive( 'getComposeFile' )->twice()->andReturn( storage_path( 'tests/dev/docker/docker-compose.yml' ) );
+        $config->shouldReceive( 'getDockerDir' )->twice()->andReturn( storage_path( 'tests/dev/docker' ) );
         $config->shouldReceive( 'getProjectUrl' )->once()->andReturn( 'https://squareone.tribe' );
         $config->shouldReceive( 'setPath' )
                ->once()
@@ -125,8 +125,6 @@ class StartTest extends BaseCommandTester {
                ->with( DockerCompose::class, [
                    '--project-name',
                    'squareone',
-                   '--file',
-                   storage_path( 'tests/dev/docker/docker-compose.yml' ),
                    'up',
                    '-d',
                    '--force-recreate',
@@ -138,8 +136,6 @@ class StartTest extends BaseCommandTester {
                ->with( DockerCompose::class, [
                    '--project-name',
                    'squareone',
-                   '--file',
-                   storage_path( 'tests/dev/docker/docker-compose.yml' ),
                    'exec',
                    'php-fpm',
                    'composer',
@@ -187,7 +183,7 @@ class StartTest extends BaseCommandTester {
 
         $config->shouldReceive( 'getProjectName' )->times( 4 )->andReturn( 'squareone' );
         $config->shouldReceive( 'getProjectRoot' )->times( 4 )->andReturn( storage_path( 'tests' ) );
-        $config->shouldReceive( 'getComposeFile' )->twice()->andReturn( storage_path( 'tests/dev/docker/docker-compose.yml' ) );
+        $config->shouldReceive( 'getDockerDir' )->twice()->andReturn( storage_path( 'tests/dev/docker' ) );
         $config->shouldReceive( 'getProjectUrl' )->once()->andReturn( 'https://squareone.tribe' );
         $config->shouldReceive( 'setPath' )
                ->once()
@@ -289,8 +285,6 @@ class StartTest extends BaseCommandTester {
                ->with( DockerCompose::class, [
                    '--project-name',
                    'squareone',
-                   '--file',
-                   storage_path( 'tests/dev/docker/docker-compose.yml' ),
                    'up',
                    '-d',
                    '--force-recreate',
@@ -302,8 +296,6 @@ class StartTest extends BaseCommandTester {
                ->with( DockerCompose::class, [
                    '--project-name',
                    'squareone',
-                   '--file',
-                   storage_path( 'tests/dev/docker/docker-compose.yml' ),
                    'exec',
                    'php-fpm',
                    'composer',
@@ -351,7 +343,7 @@ class StartTest extends BaseCommandTester {
 
         $config->shouldReceive( 'getProjectName' )->times( 4 )->andReturn( 'squareone' );
         $config->shouldReceive( 'getProjectRoot' )->times( 4 )->andReturn( storage_path( 'tests' ) );
-        $config->shouldReceive( 'getComposeFile' )->twice()->andReturn( storage_path( 'tests/dev/docker/docker-compose.yml' ) );
+        $config->shouldReceive( 'getDockerDir' )->twice()->andReturn( storage_path( 'tests/dev/docker' ) );
         $config->shouldReceive( 'getProjectUrl' )->once()->andReturn( 'https://squareone.tribe' );
         $config->shouldReceive( 'setPath' )
                ->once()
@@ -452,8 +444,6 @@ class StartTest extends BaseCommandTester {
                ->with( DockerCompose::class, [
                    '--project-name',
                    'squareone',
-                   '--file',
-                   storage_path( 'tests/dev/docker/docker-compose.yml' ),
                    'up',
                    '-d',
                    '--force-recreate',
@@ -465,8 +455,6 @@ class StartTest extends BaseCommandTester {
                ->with( DockerCompose::class, [
                    '--project-name',
                    'squareone',
-                   '--file',
-                   storage_path( 'tests/dev/docker/docker-compose.yml' ),
                    'exec',
                    'php-fpm',
                    'composer',

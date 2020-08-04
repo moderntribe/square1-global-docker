@@ -38,11 +38,9 @@ class Wp extends BaseLocalDocker {
      */
     public function handle( Config $config ) {
         $params = [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'exec',
+	        '--project-name',
+	        $config->getProjectName(),
+	        'exec',
         ];
 
         if ( $this->option( 'notty' ) ) {
@@ -76,6 +74,8 @@ class Wp extends BaseLocalDocker {
         }
 
         $params = array_merge( $params, $env, [ 'php-fpm' ], $exec, $this->argument( 'args' ) );
+
+        chdir( $config->getDockerDir() );
 
         return Artisan::call( DockerCompose::class, $params );
     }

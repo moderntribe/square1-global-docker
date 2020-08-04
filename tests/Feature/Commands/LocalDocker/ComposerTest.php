@@ -10,14 +10,12 @@ class ComposerTest extends LocalDockerCommand {
 
     public function test_it_runs_local_composer_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
-        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
         $this->dockerCompose = $this->mock( DockerCompose::class );
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             'php-fpm',
             'composer',

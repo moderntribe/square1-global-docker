@@ -10,13 +10,11 @@ class ShellTest extends LocalDockerCommand {
 
     public function test_it_calls_local_shell_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
-        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             '--user',
             'squareone',
@@ -36,13 +34,11 @@ class ShellTest extends LocalDockerCommand {
 
     public function test_it_shows_user_alternative_command_on_old_docker_images() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
-        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             '--user',
             'squareone',

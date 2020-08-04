@@ -10,13 +10,11 @@ class StopTest extends LocalDockerCommand {
 
     public function test_it_calls_local_stop_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
-        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'down',
         ] );
 

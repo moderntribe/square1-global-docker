@@ -59,15 +59,13 @@ class Test extends BaseLocalDocker {
      */
     public function handle( Config $config ): void {
         $params = [
-            '--project-name',
-            $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
-            'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
-            '--env',
-            "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
+	        '--project-name',
+	        $config->getProjectName(),
+	        'exec',
+	        '--env',
+	        'COMPOSE_INTERACTIVE_NO_CLI=1',
+	        '--env',
+	        "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
         ];
 
         if ( $this->option( 'notty' ) ) {
@@ -98,6 +96,8 @@ class Test extends BaseLocalDocker {
                 '/application/www/dev/tests',
             ];
         }
+
+        chdir( $config->getDockerDir() );
 
         // Clean codeception first.
         if ( ! $this->option( 'noclean' ) ) {

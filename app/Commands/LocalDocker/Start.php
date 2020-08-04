@@ -79,16 +79,20 @@ class Start extends BaseLocalDocker {
 
         $this->syncVmTime( $runner );
 
+        $workdir = getcwd();
+
+        chdir( $config->getDockerDir() );
+
         // Start this project
         Artisan::call( DockerCompose::class, [
             '--project-name',
             $config->getProjectName(),
-            '--file',
-            $config->getComposeFile(),
             'up',
             '-d',
             '--force-recreate',
         ] );
+
+        chdir( $workdir );
 
         // Install hirak/prestissimo to speed up composer installs
         $this->prestissimo( $config, $filesystem );
@@ -159,11 +163,12 @@ class Start extends BaseLocalDocker {
         $global = $composerDirectory . '/composer.lock';
 
         if ( $filesystem->missing( $global ) ) {
+
+            chdir( $config->getDockerDir() );
+
             Artisan::call( DockerCompose::class, [
                 '--project-name',
                 $config->getProjectName(),
-                '--file',
-                $config->getComposeFile(),
                 'exec',
                 'php-fpm',
                 'composer',

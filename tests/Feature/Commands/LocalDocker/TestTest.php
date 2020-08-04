@@ -10,13 +10,11 @@ class TestTest extends LocalDockerCommand {
 
     public function test_it_calls_local_test_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
-        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
@@ -35,8 +33,6 @@ class TestTest extends LocalDockerCommand {
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
@@ -69,13 +65,11 @@ class TestTest extends LocalDockerCommand {
 
     public function test_it_calls_local_test_command_with_options() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
-        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
@@ -96,8 +90,6 @@ class TestTest extends LocalDockerCommand {
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
-            '--file',
-            $this->composeFile,
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',

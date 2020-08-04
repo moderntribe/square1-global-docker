@@ -130,17 +130,12 @@ class Config {
     }
 
     /**
-     * Get the docker-compose.yml file to pass to docker-compose.
+     * Get the directory of the docker-compose.yml file.
      *
      * @return string
      */
-    public function getComposeFile(): string {
-        $files = [
-            "{$this->getProjectRoot()}/dev/docker/docker-compose.override.yml",
-            "{$this->getProjectRoot()}/dev/docker/docker-compose.yml",
-        ];
-
-        return current( array_filter( $files, 'file_exists' ) );
+    public function getDockerDir(): string {
+        return "{$this->getProjectRoot()}/dev/docker";
     }
 
     /**
