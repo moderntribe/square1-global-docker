@@ -21,8 +21,6 @@ class RestartTest extends BaseCommandTester {
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             Restart::PROJECT_NAME,
-            '--file',
-            config( 'squareone.docker.compose' ),
             'restart',
         ] );
 

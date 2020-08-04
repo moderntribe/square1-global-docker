@@ -31,6 +31,7 @@ use Illuminate\Filesystem\Filesystem;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Config\FileLocator;
+use App\Commands\GlobalDocker\BaseGlobalDocker;
 use Illuminate\Contracts\Foundation\Application;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Certificate\Handler as CertHandler;
@@ -103,20 +104,20 @@ class AppServiceProvider extends ServiceProvider {
                   } );
 
         $this->app->when( Start::class )
-                  ->needs( '$dockerComposeFile' )
-                  ->give( $this->getGlobalDockerCompose() );
+                  ->needs( '$globalDirectory' )
+                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
 
         $this->app->when( Stop::class )
-                  ->needs( '$dockerComposeFile' )
-                  ->give( $this->getGlobalDockerCompose() );
+                  ->needs( '$globalDirectory' )
+                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
 
         $this->app->when( Restart::class )
-                  ->needs( '$dockerComposeFile' )
-                  ->give( $this->getGlobalDockerCompose() );
+                  ->needs( '$globalDirectory' )
+                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
 
         $this->app->when( Logs::class )
-                  ->needs( '$dockerComposeFile' )
-                  ->give( $this->getGlobalDockerCompose() );
+                  ->needs( '$globalDirectory' )
+                  ->give( config( 'squareone.docker.config-dir' ) . '/' );
 
         $this->app->when( ConfigCopy::class )
                   ->needs( '$configDir' )
@@ -256,20 +257,6 @@ class AppServiceProvider extends ServiceProvider {
      */
     private function getBinaryPath(): string {
         return realpath( $_SERVER['argv'][0] ) ?: $_SERVER['argv'][0];
-    }
-
-    /**
-     * Return the global docker compose yml file or its override.
-     *
-     * @return string
-     */
-    private function getGlobalDockerCompose(): string {
-        $files = [
-            config( 'squareone.docker.compose-override' ),
-            config( 'squareone.docker.compose' ),
-        ];
-
-        return current( array_filter( $files, 'file_exists' ) );
     }
 
 }

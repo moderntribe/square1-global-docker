@@ -34,11 +34,11 @@ class Stop extends BaseGlobalDocker {
     public function handle(): void {
         $this->info( '➜ Stopping global docker containers...' );
 
+        chdir( $this->globalDirectory );
+
         Artisan::call( DockerCompose::class, [
             '--project-name',
             self::PROJECT_NAME,
-            '--file',
-            $this->dockerComposeFile,
             'down',
         ] );
 

@@ -33,11 +33,11 @@ class Logs extends BaseGlobalDocker {
      */
     public function handle(): void {
 
+        chdir( $this->globalDirectory );
+
         Artisan::call( DockerCompose::class, [
             '--project-name',
             self::PROJECT_NAME,
-            '--file',
-            $this->dockerComposeFile,
             'logs',
             '-f',
         ] );

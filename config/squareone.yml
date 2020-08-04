@@ -25,7 +25,7 @@ docker:
   compose: "{{'docker.config-dir'}}/docker-compose.yml"
   compose-override: "{{'docker.config-dir'}}/docker-compose.override.yml"
   cert-ca: "tribeCA.pem"
-  certs-folder: "{{'config-dir'}}/global/certs"
+  certs-folder: "{{'docker.config-dir'}}/certs"
   cert-expiry: 825
   phpmyadmin-port: 8080
 

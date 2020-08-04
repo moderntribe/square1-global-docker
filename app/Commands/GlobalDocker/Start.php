@@ -42,11 +42,11 @@ class Start extends BaseGlobalDocker {
             $this->enableDnsResolvers( $resolveHandler );
         }
 
+        chdir( $this->globalDirectory );
+
         Artisan::call( DockerCompose::class, [
             '--project-name',
             self::PROJECT_NAME,
-            '--file',
-            $this->dockerComposeFile,
             'up',
             '--remove-orphans',
             '-d',

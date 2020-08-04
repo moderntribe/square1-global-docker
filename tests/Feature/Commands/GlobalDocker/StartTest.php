@@ -22,8 +22,6 @@ class StartTest extends BaseCommandTester {
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             Start::PROJECT_NAME,
-            '--file',
-            config( 'squareone.docker.compose' ),
             'up',
             '--remove-orphans',
             '-d',

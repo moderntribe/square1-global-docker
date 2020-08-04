@@ -18,17 +18,17 @@ abstract class BaseGlobalDocker extends BaseCommand {
      *
      * @var string
      */
-    protected $dockerComposeFile;
+    protected $globalDirectory;
 
     /**
      * BaseGlobalDocker constructor.
      *
-     * @param  string  $dockerComposeFile  The path to the global docker compose file.
+     * @param  string  $globalDirectory  The path to the global docker directory.
      */
-    public function __construct( string $dockerComposeFile ) {
+    public function __construct( string $globalDirectory ) {
         parent::__construct();
 
-        $this->dockerComposeFile = $dockerComposeFile;
+        $this->globalDirectory = $globalDirectory;
     }
 
 }

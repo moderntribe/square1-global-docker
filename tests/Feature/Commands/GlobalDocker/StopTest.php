@@ -21,8 +21,6 @@ class StopTest extends BaseCommandTester {
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             Stop::PROJECT_NAME,
-            '--file',
-            config( 'squareone.docker.compose' ),
             'down',
         ] );
 

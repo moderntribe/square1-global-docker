@@ -34,11 +34,11 @@ class Restart extends BaseGlobalDocker {
     public function handle(): void {
         $this->info( '➜ Restarting global docker containers...' );
 
+        chdir( $this->globalDirectory );
+
         Artisan::call( DockerCompose::class, [
             '--project-name',
             self::PROJECT_NAME,
-            '--file',
-            $this->dockerComposeFile,
             'restart',
         ] );
 

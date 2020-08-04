@@ -21,8 +21,6 @@ class LogsTest extends BaseCommandTester {
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             Logs::PROJECT_NAME,
-            '--file',
-            config( 'squareone.docker.compose' ),
             'logs',
             '-f',
         ] );
