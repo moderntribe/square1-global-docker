@@ -62,6 +62,16 @@ final class RefreshConfig extends Migration {
                 $this->filesystem->mirror( $certsBackup, $certs );
             }
 
+            $dockerComposeOverride = $backup . '/docker-compose.override.yml';
+
+            if ( $this->filesystem->exists( $dockerComposeOverride ) ) {
+                $output->writeln( sprintf( '<info>★ Found docker-compose.override.yml, copying to %s</info>', $global ) );
+
+                $this->filesystem->copy( $dockerComposeOverride, $global . '/docker-compose.override.yml' );
+
+                $output->writeln( '<error>★ Make sure you have not overridden the mysql mariadb image in your docker-compose.override.yml!</error>' );
+            }
+
             $output->writeln( '<error>★ IMPORTANT: run so global:stop-all. If you run into database issues, see https://agency.tri.be/wiki/view/SquareOne_Local_Environment#Updating_Database_from_MySQL_to_MariaDB</error>' );
         }
 
