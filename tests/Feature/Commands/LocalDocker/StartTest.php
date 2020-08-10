@@ -128,6 +128,7 @@ class StartTest extends BaseCommandTester {
                    'up',
                    '-d',
                    '--force-recreate',
+                   '--remove-orphans',
                ] );
 
         // Assert prestissimo is installed in the php-fpm container
@@ -162,7 +163,7 @@ class StartTest extends BaseCommandTester {
         $command = $this->app->make( Start::class );
 
         // Run command pass a git token when requested.
-        $tester = $this->runCommand( $command, [ '--browser' => true, '--path' => storage_path( 'tests' ) ], [
+        $tester = $this->runCommand( $command, [ '--browser' => true, '--path' => storage_path( 'tests' ), '--remove-orphans' => true ], [
             'Enter your license key for WP_PLUGIN_ACF_KEY (input is hidden)'    => '123456',
             'Enter your license key for WP_PLUGIN_GF_KEY (input is hidden)'     => '123456',
             'Enter your license key for WP_PLUGIN_GF_TOKEN (input is hidden)'   => '123456',

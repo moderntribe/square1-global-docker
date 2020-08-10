@@ -30,8 +30,9 @@ class Start extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'start {--b|browser : Automatically open the project in your browser}
-                                  {--p|path=   : Path to a specific local project folder}';
+    protected $signature = 'start {--b|browser      : Automatically open the project in your browser}
+                                  {--p|path=        : Path to a specific local project folder}
+                                  {--remove-orphans : Remove containers for services not in the compose file}';
 
     /**
      * The description of the command.
@@ -83,14 +84,20 @@ class Start extends BaseLocalDocker {
 
         chdir( $config->getDockerDir() );
 
-        // Start this project
-        Artisan::call( DockerCompose::class, [
+        $args = [
             '--project-name',
             $config->getProjectName(),
             'up',
             '-d',
             '--force-recreate',
-        ] );
+        ];
+
+        if ( $this->option('remove-orphans') ) {
+            $args[] = '--remove-orphans';
+        }
+
+        // Start this project
+        Artisan::call( DockerCompose::class, $args );
 
         chdir( $workdir );
 

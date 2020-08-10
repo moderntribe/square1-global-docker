@@ -16,13 +16,14 @@ class StopTest extends LocalDockerCommand {
             '--project-name',
             $this->project,
             'down',
+            '--remove-orphans',
         ] );
 
         Artisan::swap( $this->dockerCompose );
 
         $command = $this->app->make( Stop::class );
 
-        $tester = $this->runCommand( $command );
+        $tester = $this->runCommand( $command, [ '--remove-orphans' => true ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
         $this->assertStringContainsString( 'Stopping project squareone...', $tester->getDisplay() );

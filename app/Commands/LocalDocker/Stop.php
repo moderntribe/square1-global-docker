@@ -18,7 +18,7 @@ class Stop extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'stop';
+    protected $signature = 'stop {--remove-orphans : Remove containers for services not in the compose file}';
 
     /**
      * The description of the command.
@@ -39,11 +39,17 @@ class Stop extends BaseLocalDocker {
 
         chdir( $config->getDockerDir() );
 
-        Artisan::call( DockerCompose::class, [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'down',
-        ] );
+        $args = [
+            '--project-name',
+            $config->getProjectName(),
+            'down',
+        ];
+
+        if ( $this->option( 'remove-orphans' ) ) {
+            $args[] = '--remove-orphans';
+        }
+
+        Artisan::call( DockerCompose::class, $args );
 
         $this->info( 'Done.' );
     }
