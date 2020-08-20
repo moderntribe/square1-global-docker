@@ -26,7 +26,7 @@ enable_bash_autocomplete() {
 }
 
 symlink_sq1() {
-  sudo ln -s ${SCRIPTDIR}/../bin/so /usr/local/bin/sodev
+  sudo ln -s ${SCRIPTDIR}/../so /usr/local/bin/sodev
 }
 
 # OSX
