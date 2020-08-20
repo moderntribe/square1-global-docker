@@ -71,8 +71,10 @@ class Bootstrap extends BaseLocalDocker {
             return self::EXIT_ERROR;
         }
 
-        $this->task( 'Starting docker containers', call_user_func( [ $this, 'startContainers' ] ) );
+        $bootstrapper->renameObjectCache( $config->getProjectRoot() );
+
         $this->task( 'Bootstrapping project', call_user_func( [ $this, 'bootstrap' ], $config, $bootstrapper ) );
+        $this->task( 'Starting docker containers', call_user_func( [ $this, 'startContainers' ] ) );
         $this->task( 'Installing WordPress', call_user_func( [ $this, 'installWordpress' ], $config, $email, $username, $password ) );
 
         $bootstrapper->restoreObjectCache( $config->getProjectRoot() );
@@ -106,8 +108,7 @@ class Bootstrap extends BaseLocalDocker {
     public function bootstrap( Config $config, ProjectBootstrapper $bootstrapper ): void {
         $projectRoot = $config->getProjectRoot();
 
-        $bootstrapper->renameObjectCache( $projectRoot )
-                     ->createDatabases( $config->getProjectName() );
+        $bootstrapper->createDatabases( $config->getProjectName() );
 
         $result = $bootstrapper->createLocalConfig( $projectRoot );
 
