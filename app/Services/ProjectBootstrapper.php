@@ -52,9 +52,9 @@ class ProjectBootstrapper {
      *
      * @param  string  $projectRoot
      *
-     * @return $this
+     * @return \App\Services\ProjectBootstrapper
      */
-    public function renameObjectCache( string $projectRoot ) {
+    public function renameObjectCache( string $projectRoot ): self {
         $objectCache = $projectRoot . '/wp-content/object-cache.php';
 
         if ( $this->filesystem->exists( $objectCache ) ) {
@@ -69,9 +69,9 @@ class ProjectBootstrapper {
      *
      * @param  string  $projectRoot
      *
-     * @return $this
+     * @return \App\Services\ProjectBootstrapper
      */
-    public function restoreObjectCache( string $projectRoot ) {
+    public function restoreObjectCache( string $projectRoot ): self {
         $objectCache = $projectRoot . '/wp-content/object-cache.bak.php';
 
         if ( $this->filesystem->exists( $objectCache ) ) {
@@ -86,9 +86,9 @@ class ProjectBootstrapper {
      *
      * @param  string  $projectName
      *
-     * @return $this
+     * @return \App\Services\ProjectBootstrapper
      */
-    public function createDatabases( string $projectName ) {
+    public function createDatabases( string $projectName ): self {
         $projectName = str_replace( '-', '_', $projectName );
 
         // Create the WordPress database
@@ -138,10 +138,10 @@ class ProjectBootstrapper {
      * @param  string  $projectRoot
      * @param  string  $projectDomain
      *
-     * @return \App\Services\ProjectBootstrapper|void
+     * @return \App\Services\ProjectBootstrapper
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function createLocalConfigJson( string $projectRoot, string $projectDomain ) {
+    public function createLocalConfigJson( string $projectRoot, string $projectDomain ): self {
         $files = [
             $projectRoot . '/local-config-sample.json',
             $projectRoot . '/wp-content/themes/core/local-config-sample.json',
@@ -150,7 +150,7 @@ class ProjectBootstrapper {
         $file = array_filter( $files, 'file_exists' );
 
         if ( empty( $file ) ) {
-            return;
+            return $this;
         }
 
         $file = current( $file );
@@ -173,8 +173,10 @@ class ProjectBootstrapper {
      *
      * @param  string                                             $projectRoot
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     *
+     * @return \App\Services\ProjectBootstrapper
      */
-    public function buildFrontend( string $projectRoot, OutputInterface $output ) {
+    public function buildFrontend( string $projectRoot, OutputInterface $output ): self {
         $isThemeBuild = $projectRoot . '/wp-content/themes/core/package.json';
 
         $output->writeln( 'Building frontend assets, this will take a while...' );
@@ -197,6 +199,8 @@ class ProjectBootstrapper {
 
             $this->runner->run( $command )->throw();
         }
+
+        return $this;
     }
 
 }
