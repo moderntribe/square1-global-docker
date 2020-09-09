@@ -102,8 +102,6 @@ class Certificate {
      * @return bool
      */
     protected function createExt( string $file, string $domain ): bool {
-        $testDomain = $this->getTestDomain( $domain );
-
         $content = 'authorityKeyIdentifier=keyid,issuer' . PHP_EOL;
         $content .= 'basicConstraints=CA:FALSE' . PHP_EOL;
         $content .= 'keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment' . PHP_EOL;
@@ -111,21 +109,8 @@ class Certificate {
         $content .= '[alt_names]' . PHP_EOL;
         $content .= "DNS.1 = {$domain}" . PHP_EOL;
         $content .= "DNS.2 = *.{$domain}" . PHP_EOL;
-        $content .= "DNS.3 = {$testDomain}" . PHP_EOL;
-        $content .= "DNS.4 = *.{$testDomain}" . PHP_EOL;
 
         return (bool) $this->filesystem->put( $file, $content );
-    }
-
-    /**
-     * Build a test domain from the main domain.
-     *
-     * @param  string  $domain  The domain
-     *
-     * @return string The domain with "test" injected before the TLD.
-     */
-    protected function getTestDomain( string $domain ): string {
-        return str_replace( '.tribe', 'test.tribe', $domain );
     }
 
 }

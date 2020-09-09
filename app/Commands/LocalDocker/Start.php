@@ -187,7 +187,7 @@ class Start extends BaseLocalDocker {
     }
 
     /**
-     * Check if the proper CA / local certificates have been created.
+     * Check if the proper CA / local and test domain certificates have been created.
      *
      * @codeCoverageIgnore
      *
@@ -200,7 +200,10 @@ class Start extends BaseLocalDocker {
             $certificateHandler->createCa();
         }
 
-        $certificateHandler->createCertificate( $config->getProjectName() . '.tribe' );
+        $projectName = $config->getProjectName();
+
+        $certificateHandler->createCertificate( $projectName . '.tribe' );
+        $certificateHandler->createCertificate( $projectName . 'test.tribe' );
     }
 
     /**

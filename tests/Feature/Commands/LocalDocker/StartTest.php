@@ -43,7 +43,8 @@ class StartTest extends BaseCommandTester {
 
         $certHandler = $this->mock( Handler::class );
         $certHandler->shouldReceive( 'caExists' )->once()->andReturnTrue();
-        $certHandler->shouldReceive( 'createCertificate' )->once();
+        $certHandler->shouldReceive( 'createCertificate' )->once()->with( 'squareone.tribe' );
+        $certHandler->shouldReceive( 'createCertificate' )->once()->with( 'squareonetest.tribe' );
 
         $env = $this->mock( Env::class );
 
@@ -193,7 +194,8 @@ class StartTest extends BaseCommandTester {
 
         $certHandler = $this->mock( Handler::class );
         $certHandler->shouldReceive( 'caExists' )->once()->andReturnTrue();
-        $certHandler->shouldReceive( 'createCertificate' )->once();
+        $certHandler->shouldReceive( 'createCertificate' )->once()->with( 'squareone.tribe' );
+        $certHandler->shouldReceive( 'createCertificate' )->once()->with( 'squareonetest.tribe' );
 
         $env = $this->mock( Env::class );
 
@@ -353,7 +355,8 @@ class StartTest extends BaseCommandTester {
 
         $certHandler = $this->mock( Handler::class );
         $certHandler->shouldReceive( 'caExists' )->once()->andReturnTrue();
-        $certHandler->shouldReceive( 'createCertificate' )->once();
+        $certHandler->shouldReceive( 'createCertificate' )->once()->with( 'squareone.tribe' );
+        $certHandler->shouldReceive( 'createCertificate' )->once()->with( 'squareonetest.tribe' );
 
         $env = $this->mock( Env::class );
 
