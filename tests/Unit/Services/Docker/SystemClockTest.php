@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Services;
+namespace Tests\Unit\Services\Docker;
 
 use Tests\TestCase;
 use App\Runners\CommandRunner;
