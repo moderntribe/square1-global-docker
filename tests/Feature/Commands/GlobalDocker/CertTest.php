@@ -17,7 +17,7 @@ class CertTest extends BaseCommandTester {
         parent::setUp();
 
         $this->handler = $this->mock( Handler::class );
-        $this->clock = $this->mock( SystemClock::class );
+        $this->clock   = $this->mock( SystemClock::class );
     }
 
     public function test_it_creates_certificate() {
