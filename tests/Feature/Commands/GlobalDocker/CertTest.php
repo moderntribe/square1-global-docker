@@ -4,29 +4,27 @@ namespace Tests\Feature\Commands\GlobalDocker;
 
 use InvalidArgumentException;
 use App\Commands\GlobalDocker\Cert;
-use App\Commands\GlobalDocker\Restart;
+use App\Services\Docker\SystemClock;
 use App\Services\Certificate\Handler;
-use Illuminate\Support\Facades\Artisan;
 use Tests\Feature\Commands\BaseCommandTester;
 
 class CertTest extends BaseCommandTester {
 
     protected $handler;
-    protected $restart;
+    protected $clock;
 
     protected function setUp(): void {
         parent::setUp();
 
         $this->handler = $this->mock( Handler::class );
-        $this->restart = $this->mock( Restart::class );
-        Artisan::swap( $this->restart );
+        $this->clock = $this->mock( SystemClock::class );
     }
 
     public function test_it_creates_certificate() {
         $domain = 'squareone.tribe';
 
         $this->handler->shouldReceive( 'createCertificate' )->with( $domain )->once();
-        $this->restart->shouldReceive( 'call' )->with( Restart::class )->once();
+        $this->clock->shouldReceive( 'sync' )->once();
 
         $command = $this->app->make( Cert::class );
         $tester  = $this->runCommand( $command, [
@@ -35,7 +33,6 @@ class CertTest extends BaseCommandTester {
 
         $this->assertSame( 0, $tester->getStatusCode() );
         $this->assertStringContainsString( 'Generating a certificate for ' . $domain, $tester->getDisplay() );
-        $this->assertStringContainsString( 'Restarting global docker', $tester->getDisplay() );
     }
 
     public function test_it_throws_exeception_on_invalid_domain() {

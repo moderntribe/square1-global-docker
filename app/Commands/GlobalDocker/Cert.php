@@ -3,8 +3,8 @@
 namespace App\Commands\GlobalDocker;
 
 use InvalidArgumentException;
+use App\Services\Docker\SystemClock;
 use App\Services\Certificate\Handler;
-use Illuminate\Support\Facades\Artisan;
 use LaravelZero\Framework\Commands\Command;
 
 /**
@@ -36,9 +36,11 @@ class Cert extends Command {
      *
      * @param  \App\Services\Certificate\Handler  $certificateHandler
      *
+     * @param  \App\Services\Docker\SystemClock   $clock
+     *
      * @return void
      */
-    public function handle( Handler $certificateHandler ): void {
+    public function handle( Handler $certificateHandler, SystemClock $clock ): void {
         $domain = $this->argument( 'domain' );
 
         if ( ! $this->option( 'wildcard' ) && ! $this->validateDomain( $domain ) ) {
@@ -49,9 +51,8 @@ class Cert extends Command {
             $certificateHandler->createCertificate( $domain );
         } );
 
-        $this->task( '➜ Restarting global docker', function () {
-            return Artisan::call( Restart::class );
-        } );
+        // Run the SystemClock sync in order to trigger the nginx proxy to find the new certificate
+        $clock->sync();
     }
 
     /**

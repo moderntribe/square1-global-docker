@@ -4,11 +4,11 @@ namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\Open;
 use App\Services\Config\Env;
-use App\Runners\CommandRunner;
 use App\Commands\DockerCompose;
 use App\Services\Config\Github;
 use App\Commands\LocalDocker\Start;
 use Illuminate\Console\OutputStyle;
+use App\Services\Docker\SystemClock;
 use App\Services\Certificate\Handler;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
@@ -105,15 +105,9 @@ class StartTest extends BaseCommandTester {
                    ->with( storage_path( 'tests/dev/docker/composer/composer.lock' ) )
                    ->andReturnTrue();
 
-
-        $runner = $this->mock( CommandRunner::class );
-        $runner->shouldReceive( 'throw' )->once()->andReturn( $runner );
-
         // Assert vm time sync runs.
-        $runner->shouldReceive( 'run' )
-               ->with( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
-               ->once()
-               ->andReturn( $runner );
+        $clock = $this->mock( SystemClock::class );
+        $clock->shouldReceive( 'sync' )->once();
 
         // Assert global would start.
         Artisan::shouldReceive( 'call' )
@@ -267,15 +261,9 @@ class StartTest extends BaseCommandTester {
                    ->with( storage_path( 'tests/dev/docker/composer/composer.lock' ) )
                    ->andReturnTrue();
 
-
-        $runner = $this->mock( CommandRunner::class );
-        $runner->shouldReceive( 'throw' )->once()->andReturn( $runner );
-
         // Assert vm time sync runs.
-        $runner->shouldReceive( 'run' )
-               ->with( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
-               ->once()
-               ->andReturn( $runner );
+        $clock = $this->mock( SystemClock::class );
+        $clock->shouldReceive( 'sync' )->once();
 
         // Assert global would start.
         Artisan::shouldReceive( 'call' )
@@ -427,15 +415,9 @@ class StartTest extends BaseCommandTester {
                    ->with( storage_path( 'tests/dev/docker/composer/composer.lock' ) )
                    ->andReturnTrue();
 
-
-        $runner = $this->mock( CommandRunner::class );
-        $runner->shouldReceive( 'throw' )->once()->andReturn( $runner );
-
         // Assert vm time sync runs.
-        $runner->shouldReceive( 'run' )
-               ->with( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
-               ->once()
-               ->andReturn( $runner );
+        $clock = $this->mock( SystemClock::class );
+        $clock->shouldReceive( 'sync' )->once();
 
         // Assert global would start.
         Artisan::shouldReceive( 'call' )
