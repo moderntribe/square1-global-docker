@@ -1,0 +1,18 @@
+<?php declare( strict_types=1 );
+
+use App\Services\Migrations\Migration;
+
+final class {{ class }} extends Migration {
+
+    /**
+     * Run the Migration
+     *
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     *
+     * @return bool If the migration was successful
+     */
+	public function up( \Symfony\Component\Console\Output\OutputInterface $output ): bool {
+		return true;
+	}
+
+}

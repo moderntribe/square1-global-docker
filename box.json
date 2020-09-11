@@ -1,35 +1,49 @@
 {
-  "alias": "so.phar",
-  "chmod": "0755",
-  "compactors": [],
-  "directories": ["bin", "brew", "config", "global", "src"],
-  "files": ["CONTRIBUTING.md", "LICENSE.md", "README.md", "VERSION"],
-  "finder": [
-    {
-      "exclude": [
-        "bamarni",
-        "behat",
-        "phpunit",
-        "php_codesniffer",
-        "php-vcr",
-        "prophecy",
-        "test",
-        "tests",
-        "Test",
-        "Tests",
-        "Tester"
-      ],
-      "in": "vendor",
-      "name": "*.php"
-    },
-    {
-      "in": "vendor/consolidation/annotated-command/src",
-      "name": "*.php"
-    }
-  ],
-  "git-commit": "git-commit",
-  "git-version": "git-version",
-  "output": "so.phar",
-  "main": "bin/so",
-  "stub": true
+    "directories": [
+        "app",
+        "bootstrap",
+        "config",
+        "storage",
+        "vendor"
+    ],
+    "files": [
+        "composer.json"
+    ],
+    "finder": [
+        {
+            "exclude": [
+                "docs",
+                "bamarni",
+                "behat",
+                "doctrine",
+                "myclabs",
+                "hamcrest",
+                "fzaninotto",
+                "phpunit",
+                "phpspec",
+                "php_codesniffer",
+                "phpdocumentor",
+                "phar-io",
+                "prophecy",
+                "sebastian",
+                "mockery",
+                "test",
+                "tests",
+                "Test",
+                "Tests",
+                "Tester",
+                "theseer",
+                "webmozart",
+                "vendor/nunomaduro/collision/src/Adapters/Laravel/Commands/TestCommand.php"
+            ],
+            "in": "vendor"
+        }
+    ],
+    "php-scoper": null,
+    "exclude-composer-files": false,
+    "compression": "GZ",
+    "compactors": [
+        "KevinGH\\Box\\Compactor\\Php",
+        "KevinGH\\Box\\Compactor\\Json"
+    ]
 }

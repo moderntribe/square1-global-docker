@@ -1,0 +1,4 @@
+# The default .env file from https://github.com/moderntribe/square-one
+WP_PLUGIN_ACF_KEY=''
+WP_PLUGIN_GF_KEY=''
+WP_PLUGIN_GF_TOKEN=''

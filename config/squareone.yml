@@ -9,20 +9,23 @@
 ---
 
 # Config directory
-squareone:
-  config-dir: '${env.HOME}/.config/squareone'
+config-dir: "{{ env('HOME') }}/.config/squareone"
+
+# Remote configurations
+remote:
+  docker-compose: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/global/docker-compose.yml"
+  squareone-yml: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/squareone.yml"
 
 # Docker
 docker:
-  config-dir: '${squareone.config-dir}/global/docker'
-  workdir: '/application/www'
-  network: 'global_proxy'
-  mysql: 'tribe-mysql:db'
-  compose: '${docker.config-dir}/docker-compose.yml'
-  compose-override: '${docker.config-dir}/docker-compose.override.yml'
-  cert-sh: '${docker.config-dir}/cert.sh'
-  cert-ca: 'tribeCA.pem'
-  certs-folder: '${squareone.config-dir}/global/certs'
+  config-dir: "{{'config-dir'}}/global"
+  workdir: "/application/www"
+  network: "global_proxy"
+  mysql: "tribe-mysql:db"
+  compose: "{{'docker.config-dir'}}/docker-compose.yml"
+  compose-override: "{{'docker.config-dir'}}/docker-compose.override.yml"
+  cert-ca: "tribeCA.pem"
+  certs-folder: "{{'docker.config-dir'}}/certs"
   cert-expiry: 825
   phpmyadmin-port: 8080
 
@@ -30,62 +33,22 @@ docker:
 local-docker:
   # Files to look for to determine if this is a Square One local
   files:
-    - 'local-config-sample.json'
-    - 'build-process.php'
-    - 'squareone.yml'
-  compose-override: 'docker-compose.override.yml'
+    - "local-config-sample.json"
+    - "build-process.php"
+    - "squareone.yml"
+  compose-override: "docker-compose.override.yml"
   # path to the composer cache directory (relative to the docker directory)
-  composer-cache: 'composer/cache'
+  composer-cache: "composer/cache"
   # path to the composer auth file (relative to the docker directory)
-  composer-auth: 'composer/auth.json'
+  composer-auth: "composer/auth.json"
 
 # Global Command Options
 options:
   project-path:
-    name: 'project-path'
-    shortcut: 'p'
-    description: 'Path to a SquareOne project'
+    name: "project-path"
+    shortcut: "p"
+    description: "Path to a SquareOne project"
 
 # Automated Testing
 tests:
-  php-container: 'php-fpm'
-  xdebug-overrides:
-    - '-o "modules: config: WPBrowser: cookies: cookie-1: Name: XDEBUG_SESSION"'
-    - '-o "modules: config: WPBrowser: cookies: cookie-1: Value: PHPSTORM"'
-    - '-o "modules: config: WPWebDriver: xdebug_enabled: true"'
-
-# ResolverHandler
-resolver:
-  Darwin:
-    dir: '/etc/resolver/'
-    file: 'tribe'
-  Linux:
-      Arch:
-        dir: '/etc/'
-        file: 'resolv.conf.head'
-      Debian:
-        dir: '/etc/resolvconf/resolv.conf.d/'
-        file: 'head'
-      Ubuntu:
-        dir: '${resolver.Linux.Debian.dir}'
-        file: '${resolver.Linux.Debian.file}'
-      Manjaro:
-        dir: '${resolver.Linux.Arch.dir}'
-        file: '${resolver.Linux.Arch.file}'
-
-# CA Certificate
-# For MAC OS, this is currently handled in cert.sh
-certificate:
-  Linux:
-    Arch:
-      dir: '/etc/ca-certificates/trust-source/anchors/'
-      command: 'trust extract-compat'
-    Debian:
-      dir: '/usr/local/share/ca-certificate/'
-      command: 'update-ca-certificates'
-    Ubuntu:
-      dir: '${certificate.Linux.Debian.dir}'
-      command: '${certificate.Linux.Debian.command}'
-    Manjaro:
-      dir: '${certificate.Linux.Arch.dir}'
-      command: '${certificate.Linux.Arch.command}'
+  php-container: "php-tests"

@@ -12,11 +12,10 @@ We use Pull Requests to develop conversations around ideas, and turn ideas into 
 2. Pull Requests should attempt to solve a single, clearly defined problem.
 3. Everyone should submit Pull Requests early, so everyone on the team is aware of the direction you are taking.
 4. Ensure any install or build dependencies are removed before submitting the Pull Request.
-5. Update the `changelog.md` with details of changes. Our changelog contains changes by month.
 6. Modern Tribe will review and address pull requests based on our business needs.
 
 ## Coding Conventions
 
 ## Support
 
-Usage of SquareOne CLI is not actively supported by Modern Tribe outside of client contracts. Pull requests and suggestions are welcome and will be addressed based on business need.
+Usage of SquareOne Docker CLI is not actively supported by Modern Tribe outside of client contracts. Pull requests and suggestions are welcome and will be addressed based on business need.

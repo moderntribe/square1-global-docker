@@ -1,4 +1,4 @@
-_so()
+_so.phar()
 {
     local cur script coms opts com
     COMPREPLY=()
@@ -21,15 +21,23 @@ _so()
 
     # completing for an option
     if [[ ${cur} == --* ]] ; then
-        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --simulate --progress-delay --define --project-path"
+        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --env"
 
         case "$com" in
+
+            bootstrap)
+            opts="${opts} "
+            ;;
 
             composer)
             opts="${opts} "
             ;;
 
-            gulp)
+            create)
+            opts="${opts} --remote --no-bootstrap"
+            ;;
+
+            docker-compose)
             opts="${opts} "
             ;;
 
@@ -49,16 +57,20 @@ _so()
             opts="${opts} "
             ;;
 
+            open)
+            opts="${opts} "
+            ;;
+
             restart)
             opts="${opts} "
             ;;
 
             shell)
-            opts="${opts} "
+            opts="${opts} --user"
             ;;
 
             start)
-            opts="${opts} --browser"
+            opts="${opts} --browser --path"
             ;;
 
             stop)
@@ -66,11 +78,11 @@ _so()
             ;;
 
             test)
-            opts="${opts} --xdebug --no-clean"
+            opts="${opts} --xdebug --container --noclean --notty"
             ;;
 
             wp)
-            opts="${opts} --xdebug --return --format"
+            opts="${opts} --xdebug --notty"
             ;;
 
             config:compose-copy)
@@ -82,7 +94,7 @@ _so()
             ;;
 
             global:cert)
-            opts="${opts} "
+            opts="${opts} --wildcard"
             ;;
 
             global:logs)
@@ -90,6 +102,10 @@ _so()
             ;;
 
             global:myadmin)
+            opts="${opts} "
+            ;;
+
+            global:portainer)
             opts="${opts} "
             ;;
 
@@ -113,8 +129,24 @@ _so()
             opts="${opts} "
             ;;
 
+            schedule:finish)
+            opts="${opts} "
+            ;;
+
+            schedule:run)
+            opts="${opts} "
+            ;;
+
+            self:update)
+            opts="${opts} "
+            ;;
+
             self:update-check)
-            opts="${opts} --show-existing --no-show-existing"
+            opts="${opts} --force --only-new"
+            ;;
+
+            vendor:publish)
+            opts="${opts} --force --all --provider --tag"
             ;;
 
         esac
@@ -127,7 +159,7 @@ _so()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="composer gulp help list logs migrate-domain restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:restart global:start global:status global:stop global:stop-all self:update-check"
+        coms="bootstrap composer create docker-compose help list logs migrate-domain open restart shell start stop test wp config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
@@ -136,4 +168,5 @@ _so()
     fi
 }
 
-complete -o default -F _so so
+complete -o default -F _so.phar so.phar
+complete -o default -F _so.phar so
