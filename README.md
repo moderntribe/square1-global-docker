@@ -4,7 +4,7 @@
 > based on the [SquareOne](https://github.com/moderntribe/square-one) framework. This is an internal Modern Tribe project, 
 > while you may use it, it's heavily based on our internal tools and workflow and many features will not work out of the box.
 
-Status: **Beta**
+Status: **Stable**
 
 ![CI](https://github.com/moderntribe/square1-global-docker/workflows/CI/badge.svg) [![Coverage](badges/coverage.svg)](https://github.com/moderntribe/square1-global-docker/actions?query=workflow%3ACI)
 
