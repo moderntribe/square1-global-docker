@@ -30,7 +30,8 @@ abstract class BaseResolver implements Resolvable {
     /**
      * BaseResolver constructor.
      *
-     * @param  \App\Contracts\Runner  $runner
+     * @param  \App\Contracts\Runner              $runner
+     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      */
     public function __construct( Runner $runner, Filesystem $filesystem ) {
         $this->runner     = $runner;
