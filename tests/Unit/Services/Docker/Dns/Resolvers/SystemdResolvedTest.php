@@ -117,7 +117,7 @@ class SystemdResolvedTest extends TestCase {
             'system-resolved-conf' => '/etc/systemd/resolved.conf',
         ] )->once()->andReturnSelf();
 
-        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ custom-resolved-conf }} {{ system-resolved-conf }}' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ $custom-resolved-conf }} {{ $system-resolved-conf }}' )->once()->andReturnSelf();
 
         $this->runner->shouldReceive( 'throw' )->times( 3 )->andReturnSelf();
 
