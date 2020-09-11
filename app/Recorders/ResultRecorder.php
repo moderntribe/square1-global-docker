@@ -9,4 +9,6 @@ use Illuminate\Support\Collection;
  *
  * @package App\Recorders
  */
-class ResultRecorder extends Collection {}
+class ResultRecorder extends Collection {
+
+}

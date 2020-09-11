@@ -29,8 +29,8 @@ class Writer {
     /**
      * Writer constructor.
      *
-     * @param   \App\Contracts\Runner  $runner
-     * @param   Filesystem             $filesystem
+     * @param  \App\Contracts\Runner  $runner
+     * @param  Filesystem             $filesystem
      */
     public function __construct( Runner $runner, Filesystem $filesystem ) {
         $this->runner     = $runner;
@@ -70,4 +70,5 @@ class Writer {
 
         return true;
     }
+
 }

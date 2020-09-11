@@ -9,4 +9,6 @@ use Exception;
  *
  * Throw when you'd like to stop application processing.
  */
-class SystemExitException extends Exception {}
+class SystemExitException extends Exception {
+
+}

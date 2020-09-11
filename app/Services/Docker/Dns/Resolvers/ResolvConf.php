@@ -3,9 +3,9 @@
 namespace App\Services\Docker\Dns\Resolvers;
 
 use App\Contracts\Runner;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class ResolvConf extends BaseResolver {
 

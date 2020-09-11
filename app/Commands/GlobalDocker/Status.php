@@ -2,8 +2,8 @@
 
 namespace App\Commands\GlobalDocker;
 
-use App\Commands\BaseCommand;
 use App\Contracts\Runner;
+use App\Commands\BaseCommand;
 
 /**
  * Global docker status command
@@ -36,9 +36,10 @@ class Status extends BaseCommand {
     public function handle( Runner $runner ): void {
 
         $runner->output( $this )
-                     ->run( 'docker ps' )
-                     ->throw();
+               ->run( 'docker ps' )
+               ->throw();
 
         $this->info( 'Done.' );
     }
+
 }

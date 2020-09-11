@@ -57,7 +57,7 @@ class Github extends BaseConfig {
     /**
      * Save the default auth.json.
      *
-     * @param   string  $token The GitHub oAuth token.
+     * @param  string  $token  The GitHub oAuth token.
      *
      * @return bool
      */
@@ -68,11 +68,12 @@ class Github extends BaseConfig {
     /**
      * Copy the default auth.json to the local project's composer volume.
      *
-     * @param   string  $composerVolume The path to the composer volume.
+     * @param  string  $composerVolume  The path to the composer volume.
      *
      * @return bool
      */
     public function copy( string $composerVolume ): bool {
         return (bool) $this->filesystem->copy( $this->authFile, $composerVolume . self::AUTH_FILE );
     }
+
 }

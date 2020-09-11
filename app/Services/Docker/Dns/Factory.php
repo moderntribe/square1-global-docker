@@ -3,16 +3,16 @@
 namespace App\Services\Docker\Dns;
 
 use App\Contracts\Runner;
+use App\Services\OperatingSystem;
+use Illuminate\Support\Collection;
+use Illuminate\Filesystem\Filesystem;
+use App\Services\Docker\Dns\Resolvers\Dhcp;
 use App\Services\Docker\Dns\OsSupport\Linux;
 use App\Services\Docker\Dns\OsSupport\MacOs;
 use App\Services\Docker\Dns\OsSupport\NullOs;
-use App\Services\Docker\Dns\Resolvers\Dhcp;
 use App\Services\Docker\Dns\Resolvers\ResolvConf;
-use App\Services\Docker\Dns\Resolvers\SystemdResolved;
-use App\Services\OperatingSystem;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
+use App\Services\Docker\Dns\Resolvers\SystemdResolved;
 
 /**
  * Handles adding the docker name server across multiple systems

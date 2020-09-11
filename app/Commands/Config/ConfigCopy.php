@@ -2,8 +2,8 @@
 
 namespace App\Commands\Config;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Filesystem\Filesystem;
 use LaravelZero\Framework\Commands\Command;
 
 /**
@@ -30,8 +30,8 @@ class ConfigCopy extends Command {
     /**
      * ConfigCopy constructor.
      *
-     * @param  string  $configDir  The path to the SquareOne configuration directory.
-     * @param  string  $downloadUrl The URL to the squareone.yml file in the GitHub repo.
+     * @param  string  $configDir    The path to the SquareOne configuration directory.
+     * @param  string  $downloadUrl  The URL to the squareone.yml file in the GitHub repo.
      */
     public function __construct( string $configDir, string $downloadUrl ) {
         parent::__construct();

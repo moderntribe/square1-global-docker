@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Contracts\Runner;
 use RuntimeException;
+use App\Contracts\Runner;
 
 /**
  * Class BrowserLauncher

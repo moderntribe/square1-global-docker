@@ -114,6 +114,7 @@ class ProjectCreator {
         $content = str_replace( 'square1', $project, $content );
 
         $this->filesystem->put( $file, $content );
+
         return $this;
     }
 

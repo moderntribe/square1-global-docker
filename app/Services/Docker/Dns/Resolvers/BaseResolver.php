@@ -2,8 +2,8 @@
 
 namespace App\Services\Docker\Dns\Resolvers;
 
-use App\Contracts\Resolvable;
 use App\Contracts\Runner;
+use App\Contracts\Resolvable;
 use Illuminate\Filesystem\Filesystem;
 
 /**

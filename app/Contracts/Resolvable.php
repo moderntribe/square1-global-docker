@@ -31,4 +31,5 @@ interface Resolvable {
      * @param  \LaravelZero\Framework\Commands\Command  $command
      */
     public function enable( Command $command ): void;
+
 }

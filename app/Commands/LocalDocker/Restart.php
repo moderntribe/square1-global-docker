@@ -40,9 +40,9 @@ class Restart extends BaseLocalDocker {
         chdir( $config->getDockerDir() );
 
         Artisan::call( DockerCompose::class, [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'restart',
+            '--project-name',
+            $config->getProjectName(),
+            'restart',
         ] );
 
         $this->info( 'Done.' );

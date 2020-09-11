@@ -58,12 +58,12 @@ class Cert extends Command {
     /**
      * Check if this is a valid domain
      *
-     * @param  string  $domain The domain
+     * @param  string  $domain  The domain
      *
      * @return bool
      */
     protected function validateDomain( string $domain ): bool {
-        return !!preg_match('/^(?:[a-z0-9](?:[a-z0-9-æøå]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/isu', $domain);
+        return ! ! preg_match( '/^(?:[a-z0-9](?:[a-z0-9-æøå]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/isu', $domain );
     }
 
 }

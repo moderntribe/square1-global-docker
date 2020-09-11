@@ -2,8 +2,8 @@
 
 namespace App\Commands\GlobalDocker;
 
-use App\Commands\BaseCommand;
 use App\Contracts\Runner;
+use App\Commands\BaseCommand;
 
 /**
  * Global docker stop-all command
@@ -37,9 +37,10 @@ class StopAll extends BaseCommand {
         $this->info( '➜ Stopping all docker containers...' );
 
         $runner->output( $this )
-                     ->run( 'docker stop $(docker ps -aq)' )
-                     ->throw();
+               ->run( 'docker stop $(docker ps -aq)' )
+               ->throw();
 
         $this->info( 'Done.' );
     }
+
 }

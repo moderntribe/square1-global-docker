@@ -34,7 +34,7 @@ class Installer {
      */
     public function __construct( Filesystem $filesystem, Phar $phar ) {
         $this->filesystem = $filesystem;
-        $this->phar = $phar;
+        $this->phar       = $phar;
     }
 
     /**

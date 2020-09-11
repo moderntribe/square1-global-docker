@@ -92,7 +92,7 @@ class Start extends BaseLocalDocker {
             '--force-recreate',
         ];
 
-        if ( $this->option('remove-orphans') ) {
+        if ( $this->option( 'remove-orphans' ) ) {
             $args[] = '--remove-orphans';
         }
 

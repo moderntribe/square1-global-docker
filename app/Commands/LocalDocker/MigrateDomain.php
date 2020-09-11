@@ -2,10 +2,10 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Exceptions\SystemExitException;
+use Exception;
 use App\Recorders\ResultRecorder;
 use App\Services\Docker\Local\Config;
-use Exception;
+use App\Exceptions\SystemExitException;
 use Illuminate\Support\Facades\Artisan;
 
 /**

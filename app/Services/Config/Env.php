@@ -43,7 +43,7 @@ class Env extends BaseConfig {
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function getVars(): array {
-        return Parser::parse( $this->filesystem->get(  $this->envFile ) );
+        return Parser::parse( $this->filesystem->get( $this->envFile ) );
     }
 
     /**

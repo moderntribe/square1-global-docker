@@ -40,13 +40,13 @@ class Shell extends BaseLocalDocker {
         chdir( $config->getDockerDir() );
 
         $result = Artisan::call( DockerCompose::class, [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'exec',
-	        '--user',
-	        $this->option( 'user' ),
-	        'php-fpm',
-	        '/bin/bash',
+            '--project-name',
+            $config->getProjectName(),
+            'exec',
+            '--user',
+            $this->option( 'user' ),
+            'php-fpm',
+            '/bin/bash',
         ] );
 
         if ( self::EXIT_ERROR === $result ) {

@@ -2,9 +2,9 @@
 
 namespace App\Commands\GlobalDocker;
 
-use App\Commands\BaseCommand;
 use App\Commands\Open;
 use App\Contracts\Runner;
+use App\Commands\BaseCommand;
 use Illuminate\Support\Facades\Artisan;
 
 /**

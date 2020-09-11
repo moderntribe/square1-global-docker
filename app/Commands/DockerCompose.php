@@ -3,9 +3,9 @@
 namespace App\Commands;
 
 use App\Contracts\Runner;
+use App\Services\Docker\Network;
 use App\Recorders\ResultRecorder;
 use App\Services\Docker\Local\Config;
-use App\Services\Docker\Network;
 
 /**
  * Docker Compose Facade / Proxy Command

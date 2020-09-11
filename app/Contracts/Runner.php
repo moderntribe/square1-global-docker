@@ -18,12 +18,12 @@ interface Runner {
     /**
      * Execute a given command.
      *
-     * @param  string|array $command The command to run.
-     * @param  callable|null $output
+     * @param  string|array   $command  The command to run.
+     * @param  callable|null  $output
      *
      * @return mixed
      */
-    public function run($command = null, callable $output = null);
+    public function run( $command = null, callable $output = null );
 
     /**
      * Run a given process.
@@ -32,5 +32,6 @@ interface Runner {
      *
      * @return IteratorAggregate
      */
-    public function runProcess(Process $process);
+    public function runProcess( Process $process );
+
 }

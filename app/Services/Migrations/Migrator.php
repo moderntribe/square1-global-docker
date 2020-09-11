@@ -2,15 +2,14 @@
 
 namespace App\Services\Migrations;
 
-use App\Commands\GlobalDocker\Status;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Collection;
 use stdClass;
 use Filebase\Database;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Output\OutputInterface;
+use Illuminate\Support\Collection;
 use Symfony\Component\Finder\Finder;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Foundation\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class Migrator

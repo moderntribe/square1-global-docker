@@ -38,9 +38,9 @@ class Wp extends BaseLocalDocker {
      */
     public function handle( Config $config ) {
         $params = [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'exec',
+            '--project-name',
+            $config->getProjectName(),
+            'exec',
         ];
 
         if ( $this->option( 'notty' ) ) {

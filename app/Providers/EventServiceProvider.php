@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider {
      */
     protected $listen = [
         'Illuminate\Console\Events\CommandFinished' => [
-	        'App\Listeners\UpdateCheckListener',
+            'App\Listeners\UpdateCheckListener',
         ],
         'Illuminate\Console\Events\CommandStarting' => [
             'App\Listeners\MigrationListener',

@@ -33,7 +33,7 @@ class Network {
      * @param  \App\Contracts\Runner  $runner
      */
     public function __construct( OperatingSystem $os, Runner $runner ) {
-        $this->os = $os;
+        $this->os     = $os;
         $this->runner = $runner;
     }
 
@@ -76,4 +76,5 @@ class Network {
 
         return trim( (string) $response );
     }
+
 }

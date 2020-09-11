@@ -44,4 +44,5 @@ class Restart extends BaseGlobalDocker {
 
         $this->info( 'Done.' );
     }
+
 }

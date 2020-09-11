@@ -105,7 +105,7 @@ class Ca {
     /**
      * Trust a CA certificate.
      *
-     * @param  string  $pem The path to the CA certificate.
+     * @param  string  $pem  The path to the CA certificate.
      */
     public function trustCa( string $pem ) {
         $this->trust->trustCa( $pem );

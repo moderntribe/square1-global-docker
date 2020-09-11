@@ -55,13 +55,13 @@ class Dhcp extends BaseResolver {
      */
     public function enable( Command $command ): void {
         if ( ! $this->filesystem->exists( '/etc/dhcp' ) ) {
-            $command->task( '<comment>➜ Creating folder /etc/dhcp</comment>', call_user_func( [ $this, 'createFolder'] ) );
+            $command->task( '<comment>➜ Creating folder /etc/dhcp</comment>', call_user_func( [ $this, 'createFolder' ] ) );
 
         }
 
-        $command->task( '<comment>➜ Adding 127.0.0.1 nameservers to /etc/dhcp/dhclient.conf</comment>', call_user_func( [ $this, 'addNameservers'] ) );
+        $command->task( '<comment>➜ Adding 127.0.0.1 nameservers to /etc/dhcp/dhclient.conf</comment>', call_user_func( [ $this, 'addNameservers' ] ) );
 
-        $command->task( '<comment>➜ Restarting NetworkManager</comment>', call_user_func( [ $this, 'restartNetworkManager'] ) );
+        $command->task( '<comment>➜ Restarting NetworkManager</comment>', call_user_func( [ $this, 'restartNetworkManager' ] ) );
     }
 
     /**

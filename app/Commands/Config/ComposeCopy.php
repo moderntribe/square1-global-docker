@@ -2,8 +2,8 @@
 
 namespace App\Commands\Config;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Filesystem\Filesystem;
 use LaravelZero\Framework\Commands\Command;
 
 /**

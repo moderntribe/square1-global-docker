@@ -40,10 +40,10 @@ class Logs extends BaseLocalDocker {
         chdir( $config->getDockerDir() );
 
         Artisan::call( DockerCompose::class, [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'logs',
-	        '-f',
+            '--project-name',
+            $config->getProjectName(),
+            'logs',
+            '-f',
         ] );
     }
 

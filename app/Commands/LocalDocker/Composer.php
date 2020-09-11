@@ -36,10 +36,10 @@ class Composer extends BaseLocalDocker {
      */
     public function handle( Config $config ): void {
         $params = [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'exec',
-	        'php-fpm',
+            '--project-name',
+            $config->getProjectName(),
+            'exec',
+            'php-fpm',
             $this->arguments()['command'],
         ];
 

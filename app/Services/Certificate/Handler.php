@@ -80,7 +80,7 @@ class Handler {
     /**
      * Check if a certificate exists.
      *
-     * @param  string  $domain The domain name
+     * @param  string  $domain  The domain name
      *
      * @return bool
      */
@@ -108,7 +108,7 @@ class Handler {
     /**
      * Build a certificate path based on a domain name
      *
-     * @param  string  $domain The domain name
+     * @param  string  $domain  The domain name
      *
      * @return string
      */

@@ -3,7 +3,6 @@
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
-use App\Contracts\Runner;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
@@ -59,13 +58,13 @@ class Test extends BaseLocalDocker {
      */
     public function handle( Config $config ): void {
         $params = [
-	        '--project-name',
-	        $config->getProjectName(),
-	        'exec',
-	        '--env',
-	        'COMPOSE_INTERACTIVE_NO_CLI=1',
-	        '--env',
-	        "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
+            '--project-name',
+            $config->getProjectName(),
+            'exec',
+            '--env',
+            'COMPOSE_INTERACTIVE_NO_CLI=1',
+            '--env',
+            "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
         ];
 
         if ( $this->option( 'notty' ) ) {

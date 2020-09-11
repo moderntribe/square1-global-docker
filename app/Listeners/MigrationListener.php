@@ -5,10 +5,10 @@ namespace App\Listeners;
 use Filebase\Document;
 use Composer\Semver\Comparator;
 use App\Services\Update\Updater;
+use Symfony\Component\Finder\Finder;
 use App\Services\Migrations\Migrator;
 use Illuminate\Console\Events\CommandStarting;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Run migrations, if available.

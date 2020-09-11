@@ -2,10 +2,10 @@
 
 namespace App\Commands\App;
 
-use App\Services\Migrations\MigrationCreator;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Illuminate\Filesystem\Filesystem;
 use LaravelZero\Framework\Commands\Command;
+use App\Services\Migrations\MigrationCreator;
 
 /**
  * Create a new migration to be run when the user updates the application.

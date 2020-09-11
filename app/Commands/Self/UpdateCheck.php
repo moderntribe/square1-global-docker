@@ -3,8 +3,8 @@
 namespace App\Commands\Self;
 
 use App\Services\Config\Github;
-use App\Services\Update\Updater;
 use Composer\Semver\Comparator;
+use App\Services\Update\Updater;
 use LaravelZero\Framework\Commands\Command;
 
 /**

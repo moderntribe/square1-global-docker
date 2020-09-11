@@ -2,8 +2,8 @@
 
 namespace App\Commands\Self;
 
-use App\Services\Phar;
 use RuntimeException;
+use App\Services\Phar;
 use App\Services\Update\Updater;
 use LaravelZero\Framework\Commands\Command;
 

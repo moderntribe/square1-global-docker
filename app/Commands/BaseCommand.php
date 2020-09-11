@@ -19,6 +19,6 @@ abstract class BaseCommand extends Command {
     /**
      * Console error code
      */
-    public const EXIT_ERROR   = 1;
+    public const EXIT_ERROR = 1;
 
 }

@@ -34,4 +34,5 @@ class HomeDir {
 
         return empty( $home ) ? null : $home;
     }
+
 }

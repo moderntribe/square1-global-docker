@@ -26,6 +26,7 @@ class Phar {
      * @return \Phar
      */
     public function testPhar( string $file ): \Phar {
-       return new \Phar( $file );
+        return new \Phar( $file );
     }
+
 }

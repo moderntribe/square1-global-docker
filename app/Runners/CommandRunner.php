@@ -15,7 +15,7 @@ class CommandRunner extends Builder implements Runner {
     /**
      * Timeout.
      *
-     * @var \DateTimeInterface|\DateInterval|int|null  $ttl
+     * @var \DateTimeInterface|\DateInterval|int|null $ttl
      */
     protected $timeout = null;
 
