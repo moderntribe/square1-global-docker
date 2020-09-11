@@ -29,7 +29,7 @@ class MyAdminTest extends BaseCommandTester {
                ->andReturn( false );
 
         $this->runner->shouldReceive( 'throw' )
-               ->twice()
+               ->once()
                ->andReturn( $this->runner );
 
         $this->runner->shouldReceive( 'run' )

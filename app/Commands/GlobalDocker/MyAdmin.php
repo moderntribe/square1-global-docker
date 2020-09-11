@@ -45,7 +45,7 @@ class MyAdmin extends BaseCommand {
             $run = $runner->run( $this->getRunCommand() );
 
             if ( ! $run->ok() ) {
-                $runner->run( 'docker rm /tribe-phpmyadmin' )->throw();
+                $runner->run( 'docker rm /tribe-phpmyadmin' );
                 $runner->run( $this->getRunCommand() )->throw();
             }
         }
