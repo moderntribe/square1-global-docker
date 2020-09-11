@@ -113,11 +113,11 @@ class SystemdResolvedTest extends TestCase {
 
     public function test_it_can_be_enabled() {
         $this->runner->shouldReceive( 'with' )->with( [
-            'custom-resolved-conf' => storage_path( 'dns/debian/resolved.conf' ),
-            'system-resolved-conf' => '/etc/systemd/resolved.conf',
+            'custom_resolved_conf' => storage_path( 'dns/debian/resolved.conf' ),
+            'system_resolved_conf' => '/etc/systemd/resolved.conf',
         ] )->once()->andReturnSelf();
 
-        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ $custom-resolved-conf }} {{ $system-resolved-conf }}' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->once()->andReturnSelf();
 
         $this->runner->shouldReceive( 'throw' )->times( 3 )->andReturnSelf();
 
