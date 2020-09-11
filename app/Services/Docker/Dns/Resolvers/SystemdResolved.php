@@ -2,8 +2,8 @@
 
 namespace App\Services\Docker\Dns\Resolvers;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /**
  * Class SystemdResolved
