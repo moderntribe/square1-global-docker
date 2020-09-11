@@ -31,7 +31,7 @@ class ConfigCopyTest extends BaseCommandTester {
         $squareOneContent = file_get_contents( storage_path( 'tests/squareone.yml' ) );
 
         // Assert a number of strings that are likely to never change
-        $this->assertStringContainsString( 'squareone:', $squareOneContent );
+        $this->assertStringContainsString( 'config-dir:', $squareOneContent );
         $this->assertStringContainsString( 'docker:', $squareOneContent );
     }
 
