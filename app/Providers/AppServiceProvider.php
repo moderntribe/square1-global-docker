@@ -31,7 +31,6 @@ use Illuminate\Filesystem\Filesystem;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Config\FileLocator;
-use App\Commands\GlobalDocker\BaseGlobalDocker;
 use Illuminate\Contracts\Foundation\Application;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Certificate\Handler as CertHandler;

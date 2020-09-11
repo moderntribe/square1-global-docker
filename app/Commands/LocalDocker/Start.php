@@ -2,18 +2,17 @@
 
 namespace App\Commands\LocalDocker;
 
-use Exception;
 use M1\Env\Parser;
 use App\Commands\Open;
-use App\Contracts\Runner;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
 use App\Commands\DockerCompose;
-use Illuminate\Support\Facades\Artisan;
+use App\Services\Docker\SystemClock;
 use App\Services\Docker\Local\Config;
 use App\Services\Certificate\Handler;
-use App\Commands\GlobalDocker\Start as GlobalStart;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
+use App\Commands\GlobalDocker\Start as GlobalStart;
 
 /**
  * Local docker start command
@@ -44,18 +43,19 @@ class Start extends BaseLocalDocker {
     /**
      * Execute the console command.
      *
-     * @param  \App\Contracts\Runner              $runner
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \App\Services\Certificate\Handler  $certificateHandler
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      * @param  \App\Services\Config\Github        $github
      * @param  \App\Services\Config\Env           $env
      *
+     * @param  \App\Services\Docker\SystemClock   $clock
+     *
      * @return void
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle( Runner $runner, Config $config, Handler $certificateHandler, Filesystem $filesystem, Github $github, Env $env ): void {
+    public function handle( Config $config, Handler $certificateHandler, Filesystem $filesystem, Github $github, Env $env, SystemClock $clock ): void {
         // Set a custom project path, if provided
         if ( $path = $this->option( 'path' ) ) {
             $config = $config->setPath( $path );
@@ -78,7 +78,7 @@ class Start extends BaseLocalDocker {
 
         $this->checkCertificates( $config, $certificateHandler );
 
-        $this->syncVmTime( $runner );
+        $clock->sync();
 
         $workdir = getcwd();
 
@@ -297,19 +297,6 @@ class Start extends BaseLocalDocker {
         $filesystem->put( $file, $content );
 
         $this->info( sprintf( '.env file created at %s', $file ) );
-    }
-
-    /**
-     * Synchronize VM time with system time.
-     *
-     * @codeCoverageIgnore
-     *
-     * This fixes a time sync bug on Mac OS.
-     *
-     * @param  \App\Contracts\Runner  $runner
-     */
-    protected function syncVmTime( Runner $runner ): void {
-        $runner->run( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )->throw();
     }
 
 }
