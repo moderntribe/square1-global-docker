@@ -3,10 +3,9 @@
 
 namespace Tests\Unit\Services\Docker\Dns\Resolvers;
 
-use App\Commands\GlobalDocker\Start;
-use Mockery;
 use Tests\TestCase;
 use App\Runners\CommandRunner;
+use App\Commands\GlobalDocker\Start;
 use Illuminate\Filesystem\Filesystem;
 use App\Services\Docker\Dns\Resolvers\SystemdResolved;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -113,16 +112,28 @@ class SystemdResolvedTest extends TestCase {
 
     public function test_it_can_be_enabled() {
         $this->runner->shouldReceive( 'with' )->with( [
+            'date'                 => date( 'Ymdis' ),
+            'system_resolved_conf' => '/etc/systemd/resolved.conf',
+        ] )->once()->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ $system_resolved_conf }} {{ $system_resolved_conf }}.backup.{{ $date }}' )->once()->andReturnSelf();
+
+        $this->runner->shouldReceive( 'with' )->with( [
             'custom_resolved_conf' => storage_path( 'dns/debian/resolved.conf' ),
             'system_resolved_conf' => '/etc/systemd/resolved.conf',
         ] )->once()->andReturnSelf();
 
-        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )->with( 'sudo cp -f {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->once()->andReturnSelf();
 
-        $this->runner->shouldReceive( 'throw' )->times( 3 )->andReturnSelf();
+        $this->runner->shouldReceive( 'throw' )->times( 4 )->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )->with( 'sudo ln -fsn /run/systemd/resolve/resolv.conf /etc/resolv.conf' )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )->with( 'sudo systemctl restart systemd-resolved' )->once()->andReturnSelf();
+
+        $this->command->shouldReceive( 'task' )
+                      ->with( '<comment>➜ Backing up /etc/systemd/resolved.conf</comment>', null )
+                      ->once()
+                      ->andReturnTrue();
 
         $this->command->shouldReceive( 'task' )
                       ->with( '<comment>➜ Copying custom /etc/systemd/resolved.conf</comment>', null )

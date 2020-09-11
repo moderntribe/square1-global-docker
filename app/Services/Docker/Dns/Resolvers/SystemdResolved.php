@@ -55,9 +55,20 @@ class SystemdResolved extends BaseResolver {
      * @param  \LaravelZero\Framework\Commands\Command  $command
      */
     public function enable( Command $command ): void {
+        $command->task( '<comment>➜ Backing up /etc/systemd/resolved.conf</comment>', call_user_func( [ $this, 'backupResolvedConf' ] ) );
         $command->task( '<comment>➜ Copying custom /etc/systemd/resolved.conf</comment>', call_user_func( [ $this, 'copyResolvedConf' ] ) );
         $command->task( '<comment>➜ Symlinking /run/systemd/resolve/resolv.conf /etc/resolv.conf</comment>', call_user_func( [ $this, 'symlinkResolvConf' ] ) );
         $command->task( '<comment>➜ Restarting systemd-resolved</comment>', call_user_func( [ $this, 'restartSystemdResolved' ] ) );
+    }
+
+    /**
+     * Back up an existing resolved.conf
+     */
+    public function backupResolvedConf(): void {
+        $this->runner->with( [
+            'date'                 => date( 'Ymdis' ),
+            'system_resolved_conf' => '/etc/systemd/resolved.conf',
+        ] )->run( 'sudo cp {{ $system_resolved_conf }} {{ $system_resolved_conf }}.backup.{{ $date }}' )->throw();
     }
 
     /**
@@ -68,7 +79,7 @@ class SystemdResolved extends BaseResolver {
         $this->runner->with( [
             'custom_resolved_conf' => storage_path( 'dns/debian/resolved.conf' ),
             'system_resolved_conf' => '/etc/systemd/resolved.conf',
-        ] )->run( 'sudo cp {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->throw();
+        ] )->run( 'sudo cp -f {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->throw();
     }
 
     /**
