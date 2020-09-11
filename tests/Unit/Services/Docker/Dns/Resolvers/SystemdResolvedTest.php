@@ -82,7 +82,7 @@ class SystemdResolvedTest extends TestCase {
         $this->filesystem->shouldReceive( 'get' )
                          ->with( '/etc/systemd/resolved.conf' )
                          ->once()
-                         ->andReturn( 'DNS=127.0.0.1 1.1.1.1' );
+                         ->andReturn( "DNS=127.0.0.1 1.1.1.1\r\nFallbackDNS=1.0.0.1\r\nDNSStubListener=no" );
 
         $resolver = new SystemdResolved( $this->runner, $this->filesystem );
 

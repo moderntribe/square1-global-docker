@@ -38,7 +38,7 @@ class SystemdResolved extends BaseResolver {
         try {
             $content = $this->filesystem->get( '/etc/systemd/resolved.conf' );
 
-            if ( str_contains( $content, 'DNS=127.0.0.1' ) ) {
+            if ( str_contains( $content, 'DNS=127.0.0.1' ) && str_contains( $content, 'DNSStubListener=no' ) ) {
                 return true;
             }
 
@@ -73,7 +73,6 @@ class SystemdResolved extends BaseResolver {
 
     /**
      * Symlink resolv.conf to /run/systemd/resolve/resolv.conf to remove stub-resolv.conf.
-     *
      */
     public function symlinkResolvConf(): void {
         $this->runner->run( 'sudo ln -fsn /run/systemd/resolve/resolv.conf /etc/resolv.conf' )->throw();
@@ -81,7 +80,6 @@ class SystemdResolved extends BaseResolver {
 
     /**
      * Restart systemd-resolved.
-     *
      */
     public function restartSystemdResolved(): void {
         $this->runner->run( 'sudo systemctl restart systemd-resolved' )->throw();
