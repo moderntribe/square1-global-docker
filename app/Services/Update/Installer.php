@@ -3,9 +3,9 @@
 namespace App\Services\Update;
 
 use Exception;
+use RuntimeException;
 use App\Services\Phar;
 use Filebase\Document;
-use App\Exceptions\SystemExitException;
 use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -57,7 +57,7 @@ class Installer {
         $command->info( sprintf( 'Successfully updated to %s.', $release->version ) );
 
         // Always kill execution after an upgrade
-        throw new SystemExitException( 'Upgrade complete' );
+        throw new RuntimeException( 'Upgrade complete' );
     }
 
     /**
