@@ -93,39 +93,23 @@ class Config {
                     break;
                 }
 
-                // Check if we're in a submodule first
-                $response = $this->runner->with( [
-                    'path' => $this->path,
-                ] )->run( 'git -C {{ $path }} rev-parse --show-superproject-working-tree' );
+                $path = $this->path ? $this->path : getcwd();
 
-                if ( empty( trim( (string) $response ) ) ) {
-                    $response = $this->runner->with( [
-                        'path' => $this->path,
-                    ] )->run( 'git -C {{ $path }} rev-parse --show-toplevel' );
-                }
-
-                // Can't find the project root using git, check existing path or use the current working directory
-                if ( ! $response->ok() ) {
-                    $response = $this->path ? $this->path : getcwd();
-                }
-
-                $response = trim( (string) $response );
-
-                // If these files exist, this is probably a SquareOne project
+                // If these either of these files exist, this is probably a SquareOne project
                 $squareOneFiles = [
-                    "{$response}/dev/docker/docker-compose.yml",
-                    "{$response}/squareone.yml",
+                    "{$path}/dev/docker/docker-compose.yml",
+                    "{$path}/squareone.yml",
                 ];
 
                 $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
 
                 // Check the directory above and continue the loop
                 if ( empty( $squareOneFiles ) ) {
-                    $this->path = dirname( $response );
+                    $this->path = dirname( $path );
                     continue;
                 }
 
-                $this->projectRoot = trim( $response );
+                $this->projectRoot = trim( $path );
 
                 break;
             }
