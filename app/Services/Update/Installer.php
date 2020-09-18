@@ -5,7 +5,7 @@ namespace App\Services\Update;
 use Exception;
 use App\Services\Phar;
 use Filebase\Document;
-use App\Commands\BaseCommand;
+use App\Services\Terminator;
 use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -27,14 +27,21 @@ class Installer {
     protected $phar;
 
     /**
+     * @var \App\Services\Terminator
+     */
+    protected $terminator;
+
+    /**
      * Installer constructor.
      *
      * @param  \Symfony\Component\Filesystem\Filesystem  $filesystem
      * @param  \App\Services\Phar                        $phar
+     * @param  \App\Services\Terminator                  $terminator
      */
-    public function __construct( Filesystem $filesystem, Phar $phar ) {
+    public function __construct( Filesystem $filesystem, Phar $phar, Terminator $terminator ) {
         $this->filesystem = $filesystem;
         $this->phar       = $phar;
+        $this->terminator = $terminator;
     }
 
     /**
@@ -54,10 +61,8 @@ class Installer {
 
         $this->install( $tempFile, $localFile );
 
-        $command->info( sprintf( 'Successfully updated to %s.', $release->version ) );
-
         // Always kill execution after an upgrade
-        exit ( BaseCommand::EXIT_SUCCESS );
+        $this->terminator->exit( sprintf( 'Successfully updated to %s.', $release->version ) );
     }
 
     /**

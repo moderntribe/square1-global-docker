@@ -3,13 +3,13 @@
 namespace Tests\Unit\Services\Update;
 
 use Exception;
-use App\Services\Phar;
-use Filebase\Document;
-use App\Services\Update\Installer;
-use App\Exceptions\SystemExitException;
-use LaravelZero\Framework\Components\Updater\SelfUpdateCommand;
-use Symfony\Component\Filesystem\Filesystem;
 use Tests\TestCase;
+use Filebase\Document;
+use App\Services\Phar;
+use App\Services\Terminator;
+use App\Services\Update\Installer;
+use Symfony\Component\Filesystem\Filesystem;
+use LaravelZero\Framework\Components\Updater\SelfUpdateCommand;
 
 class InstallerTest extends TestCase {
 
@@ -18,9 +18,6 @@ class InstallerTest extends TestCase {
     }
 
     public function test_it_downloads_a_release() {
-        $this->expectException( SystemExitException::class );
-        $this->expectExceptionMessage( 'Upgrade complete' );
-
         $file     = storage_path( 'tests/so.phar' );
         $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
 
@@ -38,7 +35,9 @@ class InstallerTest extends TestCase {
         $phar->shouldReceive( 'testPhar' )->with( $tempFile )->once();
 
         $command = $this->mock( SelfUpdateCommand::class );
-        $command->shouldReceive( 'info' )->once();
+
+        $terminator = $this->mock( Terminator::class );
+        $terminator->shouldReceive( 'exit' )->with( 'Successfully updated to 5.0.0.' )->once();
 
         $installer = $this->app->make( Installer::class );
 
