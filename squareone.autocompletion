@@ -70,11 +70,11 @@ _so.phar()
             ;;
 
             start)
-            opts="${opts} --browser --path"
+            opts="${opts} --browser --path --remove-orphans"
             ;;
 
             stop)
-            opts="${opts} "
+            opts="${opts} --remove-orphans"
             ;;
 
             test)
