@@ -5,7 +5,6 @@ namespace Tests\Unit\Services\Docker\Local;
 use Tests\TestCase;
 use App\Runners\CommandRunner;
 use phpmock\mockery\PHPMockery;
-use TitasGailius\Terminal\Response;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Storage;
 
