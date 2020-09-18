@@ -88,42 +88,37 @@ class Config {
 
             while ( true ) {
 
-                // Check if we're in a submodule first
-                $response = $this->runner->with( [
-                    'path' => $this->path,
-                ] )->run( 'git -C {{ $path }} rev-parse --show-superproject-working-tree' );
-
-                if ( empty( trim( (string) $response ) ) ) {
-                    $response = $this->runner->with( [
-                        'path' => $this->path,
-                    ] )->run( 'git -C {{ $path }} rev-parse --show-toplevel' );
+                // We've reached the root of the operating system, bail out
+                if ( '/' === $this->path ) {
+                    break;
                 }
 
-                if ( ! $response->ok() ) {
-                    throw new RuntimeException( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
-                }
+                $path = $this->path ? $this->path : getcwd();
 
-                $response = trim( (string) $response );
-
-                // If these files exist, this is probably a SquareOne project.
+                // If these either of these files exist, this is probably a SquareOne project
                 $squareOneFiles = [
-                    "{$response}/dev/docker/docker-compose.yml",
-                    "{$response}/squareone.yml",
+                    "{$path}/dev/docker/docker-compose.yml",
+                    "{$path}/squareone.yml",
                 ];
 
                 $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
 
-                // Check the directory above and continue the loop.
+                // Check the directory above and continue the loop
                 if ( empty( $squareOneFiles ) ) {
-                    $this->path = dirname( $response );
+                    $this->path = dirname( $path );
                     continue;
                 }
 
-                $this->projectRoot = trim( $response );
+                $this->projectRoot = trim( $path );
 
                 break;
             }
 
+        }
+
+        // We couldn't find a SquareOne project
+        if ( empty( $this->projectRoot ) ) {
+            throw new RuntimeException( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
         }
 
         return $this->projectRoot;
