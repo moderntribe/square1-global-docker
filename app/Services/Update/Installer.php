@@ -6,7 +6,6 @@ use Exception;
 use App\Services\Phar;
 use Filebase\Document;
 use App\Services\Terminator;
-use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -47,14 +46,12 @@ class Installer {
     /**
      * Download a file to a temporary location
      *
-     * @param  \Filebase\Document                       $release
-     * @param  string                                   $localFile  The
-     *
-     * @param  \LaravelZero\Framework\Commands\Command  $command
+     * @param  \Filebase\Document  $release    The release document
+     * @param  string              $localFile  The path to the so binary
      *
      * @throws \Exception
      */
-    public function download( Document $release, string $localFile, Command $command ): void {
+    public function download( Document $release, string $localFile ): void {
         $tempFile = $this->filesystem->tempnam( '/tmp', 'so_', '.phar' );
 
         $this->filesystem->copy( $release->download, $tempFile );

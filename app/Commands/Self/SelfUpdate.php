@@ -73,7 +73,7 @@ class SelfUpdate extends Command {
 
         $this->info( sprintf( 'Updating %s to %s...', $this->appName, $release->version ) );
 
-        $updater->update( $release, $this->installedPhar, $this );
+        $updater->update( $release, $this->installedPhar );
     }
 
 }
