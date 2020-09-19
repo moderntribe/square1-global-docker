@@ -13,7 +13,7 @@ config-dir: "{{ env('HOME') }}/.config/squareone"
 
 # Remote configurations
 remote:
-  docker-compose: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/global/docker-compose.yml"
+  docker-compose: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/storage/global/docker-compose.yml"
   squareone-yml: "https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/squareone.yml"
 
 # Docker
