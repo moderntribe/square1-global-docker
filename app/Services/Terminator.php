@@ -12,11 +12,21 @@ namespace App\Services;
 class Terminator {
 
     /**
-     * Terminate the script with exit
+     * Stop execution with an exit code.
+     *
+     * @param  int  $code  0 for success, 1-255 is an error.
+     */
+    public function exitWithCode( int $code = 0 ): void {
+        exit( $code );
+    }
+
+    /**
+     * Stop execution and display a message.
      *
      * @param  string  $message
      */
-    public function exit( string $message ): void {
+    public function exitWithMessage( string $message ): void {
         exit( $message );
     }
+
 }
