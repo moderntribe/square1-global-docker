@@ -5,8 +5,8 @@ namespace Tests\Feature\Commands\Self;
 use RuntimeException;
 use App\Services\Phar;
 use Filebase\Document;
-use App\Commands\Self\SelfUpdate;
 use App\Services\Update\Updater;
+use App\Commands\Self\SelfUpdate;
 use Tests\Feature\Commands\BaseCommandTester;
 
 /**
@@ -26,14 +26,12 @@ class SelfUpdateTest extends BaseCommandTester {
         $release          = $this->mock( Document::class );
         $release->version = '1.0.1';
 
-        $this->mock( Updater::class, function ( $mock ) use ( $release ) {
-            $mock->shouldReceive( 'getLatestReleaseFromGitHub' )->once()->andReturn( $release );
-            $mock->shouldReceive( 'update' )->once();
-        } );
+        $updater = $this->mock( Updater::class );
+        $updater->shouldReceive( 'getLatestReleaseFromGitHub' )->once()->andReturn( $release );
+        $updater->shouldReceive( 'update' )->once();
 
-        $this->mock( Phar::class, function ( $mock ) {
-            $mock->shouldReceive( 'isPhar' )->once()->andReturn( true );
-        } );
+        $phar = $this->mock( Phar::class );
+        $phar->shouldReceive( 'isPhar' )->once()->andReturn( true );
 
         $command = $this->app->make( SelfUpdate::class );
 

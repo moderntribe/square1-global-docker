@@ -13,14 +13,14 @@ use Illuminate\Filesystem\Filesystem;
 class Handler {
 
     /**
-     * The CA certificate object.
+     * The CA certificate instance.
      *
      * @var \App\Services\Certificate\Ca
      */
     protected $ca;
 
     /**
-     * The local certificate object.
+     * The local certificate instance.
      *
      * @var \App\Services\Certificate\Certificate
      */

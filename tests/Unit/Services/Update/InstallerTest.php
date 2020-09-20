@@ -35,9 +35,10 @@ class InstallerTest extends TestCase {
         $phar->shouldReceive( 'testPhar' )->with( $tempFile )->once();
 
         $command = $this->mock( SelfUpdateCommand::class );
+        $command->shouldReceive( 'info' )->with( 'Successfully updated to 5.0.0.' )->once();
 
         $terminator = $this->mock( Terminator::class );
-        $terminator->shouldReceive( 'exit' )->with( 'Successfully updated to 5.0.0.' )->once();
+        $terminator->shouldReceive( 'exitWithCode' )->once();
 
         $installer = $this->app->make( Installer::class );
 

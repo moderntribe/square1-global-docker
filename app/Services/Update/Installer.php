@@ -6,6 +6,7 @@ use Exception;
 use App\Services\Phar;
 use Filebase\Document;
 use App\Services\Terminator;
+use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -44,22 +45,25 @@ class Installer {
     }
 
     /**
-     * Download a file to a temporary location
+     * Download a file to a temporary location.
      *
-     * @param  \Filebase\Document  $release    The release document
-     * @param  string              $localFile  The path to the so binary
+     * @param  \Filebase\Document                       $release    The release document
+     * @param  string                                   $localFile  The path to the so binary
+     * @param  \LaravelZero\Framework\Commands\Command  $command    The command instance
      *
      * @throws \Exception
      */
-    public function download( Document $release, string $localFile ): void {
+    public function download( Document $release, string $localFile, Command $command ): void {
         $tempFile = $this->filesystem->tempnam( '/tmp', 'so_', '.phar' );
 
         $this->filesystem->copy( $release->download, $tempFile );
 
         $this->install( $tempFile, $localFile );
 
+        $command->info( sprintf( 'Successfully updated to %s.', $release->version ) );
+
         // Always kill execution after an upgrade
-        $this->terminator->exit( sprintf( 'Successfully updated to %s.', $release->version ) );
+        $this->terminator->exitWithCode();
     }
 
     /**

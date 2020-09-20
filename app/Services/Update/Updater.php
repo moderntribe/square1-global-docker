@@ -5,6 +5,7 @@ namespace App\Services\Update;
 use Filebase\Database;
 use Filebase\Document;
 use Illuminate\Support\Facades\Http;
+use LaravelZero\Framework\Commands\Command;
 
 /**
  * Class Updater
@@ -103,15 +104,16 @@ class Updater {
     /**
      * Update to the latest released phar.
      *
-     * @param  \Filebase\Document  $release    The release document
-     * @param  string              $localFile  The path to the so binary
+     * @param  \Filebase\Document                       $release    The release document
+     * @param  string                                   $localFile  The path to the so binary
+     * @param  \LaravelZero\Framework\Commands\Command  $command    The command instance
      *
      * @return void
      *
      * @throws \Exception
      */
-    public function update( Document $release, string $localFile ): void {
-        $this->installer->download( $release, $localFile );
+    public function update( Document $release, string $localFile, Command $command ): void {
+        $this->installer->download( $release, $localFile, $command );
     }
 
 }

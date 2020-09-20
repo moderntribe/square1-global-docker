@@ -22,7 +22,7 @@ use App\Services\Docker\Dns\Resolvers\SystemdResolved;
 class Factory {
 
     /**
-     * The operating system object.
+     * The operating system instance.
      *
      * @var \App\Services\OperatingSystem
      */
@@ -70,8 +70,8 @@ class Factory {
                 new SystemdResolved( $this->runner, $this->filesystem )
             );
 
-            // Debian
-            if ( OperatingSystem::DEBIAN === $this->os->getLinuxFlavor() ) {
+            // Debian / Ubuntu
+            if ( OperatingSystem::DEBIAN === $this->os->getLinuxFlavor() || OperatingSystem::UBUNTU === $this->os->getLinuxFlavor()  ) {
                 $resolvers->push( new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvconf/resolv.conf.d/head' ) );
             }
 
