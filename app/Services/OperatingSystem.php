@@ -11,6 +11,9 @@ use M1\Env\Parser;
  */
 class OperatingSystem {
 
+    /**
+     * @see http://0pointer.de/blog/projects/os-release
+     */
     public const OS_RELEASE = '/etc/os-release';
 
     public const MAC_OS  = 'Darwin';
@@ -19,7 +22,6 @@ class OperatingSystem {
     public const DEBIAN  = 'Debian';
     public const MANJARO = 'Manjaro';
     public const UBUNTU  = 'Ubuntu';
-    public const ZORIN   = 'Zorin';
 
     /**
      * Get the Operating System Family
@@ -33,7 +35,7 @@ class OperatingSystem {
     }
 
     /**
-     * Detect a specific Linux flavor
+     * Detect a specific Linux flavor.
      *
      * @return string The Linux flavor
      */
@@ -51,7 +53,6 @@ class OperatingSystem {
             self::DEBIAN,
             self::MANJARO,
             self::UBUNTU,
-            self::ZORIN,
         ];
 
         $flavor = array_filter( $flavors, static function ( $flavor ) use ( $release ) {
@@ -62,7 +63,7 @@ class OperatingSystem {
     }
 
     /**
-     * Read the OS release from the /etc/os-release file
+     * Read the OS release from the /etc/os-release file.
      *
      * @codeCoverageIgnore
      *
@@ -72,8 +73,11 @@ class OperatingSystem {
         if ( is_readable( self::OS_RELEASE ) ) {
             $release = Parser::parse( file_get_contents( self::OS_RELEASE ) );
 
-            if ( ! empty( $release['ID_LIKE'] ) ) {
-                return ucfirst( $release['ID_LIKE'] );
+            // Prefer ID_LIKE over ID
+            $flavor = $release['ID_LIKE'] ?? $release['ID'] ?? '';
+
+            if ( ! empty( $flavor ) ) {
+                return ucfirst( $flavor );
             }
         }
 
@@ -81,14 +85,14 @@ class OperatingSystem {
     }
 
     /**
-     * Fallback to use lsb_release -a
+     * Fallback to use lsb_release.
      *
      * @codeCoverageIgnore
      *
      * @return string|null
      */
     protected function getLsbRelease(): ?string {
-        return shell_exec( 'lsb_release -a' );
+        return shell_exec( 'lsb_release -is' );
     }
 
 }

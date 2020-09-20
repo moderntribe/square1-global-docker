@@ -40,12 +40,6 @@ class OperatingSystemTest extends TestCase {
         $this->assertSame( 'Debian', $this->os->getLinuxFlavor() );
     }
 
-    public function test_zorin_flavor() {
-        $this->os->shouldAllowMockingProtectedMethods()->shouldReceive( 'readOsRelease' )->andReturn( 'Ubuntu' );
-
-        $this->assertSame( 'Ubuntu', $this->os->getLinuxFlavor() );
-    }
-
     public function testShellExecFallback() {
         $this->os->shouldAllowMockingProtectedMethods()->shouldReceive( 'readOsRelease' )->andReturn( '' );
         $this->os->shouldAllowMockingProtectedMethods()->shouldReceive( 'getLsbRelease' )->andReturn( 'Description:	Manjaro Linux' );
