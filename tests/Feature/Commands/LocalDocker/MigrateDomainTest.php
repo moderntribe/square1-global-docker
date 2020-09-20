@@ -180,7 +180,7 @@ class MigrateDomainTest extends LocalDockerCommand {
         $this->assertSame( 1, $tester->getStatusCode() );
     }
 
-    public function test_it_throws_exeception_on_no_confirmation() {
+    public function test_it_throws_exception_on_no_confirmation() {
         $this->expectException( SystemExitException::class );
         $this->expectExceptionMessage( 'Cancelling' );
 
