@@ -65,8 +65,6 @@ class OperatingSystem {
     /**
      * Read the OS release from the /etc/os-release file.
      *
-     * @codeCoverageIgnore
-     *
      * @return string The Linux Flavor.
      */
     protected function readOsRelease(): string {
@@ -86,8 +84,6 @@ class OperatingSystem {
 
     /**
      * Fallback to use lsb_release.
-     *
-     * @codeCoverageIgnore
      *
      * @return string|null
      */
