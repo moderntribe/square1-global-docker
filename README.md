@@ -41,7 +41,7 @@ The following ports should be available:
 ### Operating System Support
 
 - [x] MacOS
-- [x] Linux (Debian, Arch, openSUSE or RedHat based distros)
+- [x] Linux (Debian, Arch, openSUSE or RedHat based distros with systemd)
 - [ ] Windows ¯\_(ツ)_/¯
 
 ### Installation
