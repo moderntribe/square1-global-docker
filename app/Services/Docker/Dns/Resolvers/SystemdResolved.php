@@ -76,10 +76,16 @@ class SystemdResolved extends BaseResolver {
      *
      */
     public function copyResolvedConf(): void {
+        $temp_file = tempnam( '/tmp', 'sq1resolved' );
+
+        $this->filesystem->replace( $temp_file, $this->filesystem->get( storage_path( 'dns/debian/resolved.conf' ) ) );
+
         $this->runner->with( [
-            'custom_resolved_conf' => storage_path( 'dns/debian/resolved.conf' ),
+            'temp_resolved_conf'   => $temp_file,
             'system_resolved_conf' => '/etc/systemd/resolved.conf',
-        ] )->run( 'sudo cp -f {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->throw();
+        ] )->run( 'sudo cp -f {{ $temp_resolved_conf }} {{ $system_resolved_conf }}' )->throw();
+
+        $this->filesystem->delete( $temp_file );
     }
 
     /**

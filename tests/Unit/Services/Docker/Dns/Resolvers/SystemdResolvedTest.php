@@ -5,6 +5,7 @@ namespace Tests\Unit\Services\Docker\Dns\Resolvers;
 
 use Tests\TestCase;
 use App\Runners\CommandRunner;
+use phpmock\mockery\PHPMockery;
 use App\Commands\GlobalDocker\Start;
 use Illuminate\Filesystem\Filesystem;
 use App\Services\Docker\Dns\Resolvers\SystemdResolved;
@@ -116,14 +117,35 @@ class SystemdResolvedTest extends TestCase {
             'system_resolved_conf' => '/etc/systemd/resolved.conf',
         ] )->once()->andReturnSelf();
 
-        $this->runner->shouldReceive( 'run' )->with( 'sudo cp {{ $system_resolved_conf }} {{ $system_resolved_conf }}.backup.{{ $date }}' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'sudo cp {{ $system_resolved_conf }} {{ $system_resolved_conf }}.backup.{{ $date }}' )
+                     ->once()
+                     ->andReturnSelf();
+
+        PHPMockery::mock( 'App\Services\Docker\Dns\Resolvers', 'tempnam' )
+                               ->once()
+                               ->andReturn( '/tmp/sq1resolved_randomstring' );
+
+        $this->filesystem->shouldReceive( 'replace' )
+                         ->once()
+                         ->with( '/tmp/sq1resolved_randomstring', 'resolved.conf content' );
+
+        $this->filesystem->shouldReceive( 'get' )
+                         ->once()
+                         ->with( storage_path( 'dns/debian/resolved.conf' ) )
+                         ->andReturn( 'resolved.conf content' );
 
         $this->runner->shouldReceive( 'with' )->with( [
-            'custom_resolved_conf' => storage_path( 'dns/debian/resolved.conf' ),
+            'temp_resolved_conf'   => '/tmp/sq1resolved_randomstring',
             'system_resolved_conf' => '/etc/systemd/resolved.conf',
         ] )->once()->andReturnSelf();
 
-        $this->runner->shouldReceive( 'run' )->with( 'sudo cp -f {{ $custom_resolved_conf }} {{ $system_resolved_conf }}' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'sudo cp -f {{ $temp_resolved_conf }} {{ $system_resolved_conf }}' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->filesystem->shouldReceive( 'delete' )->with( '/tmp/sq1resolved_randomstring' )->andReturnTrue();
 
         $this->runner->shouldReceive( 'throw' )->times( 4 )->andReturnSelf();
 
