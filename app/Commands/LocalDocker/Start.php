@@ -227,7 +227,7 @@ class Start extends BaseLocalDocker {
      */
     protected function createDefaultEnvFile( Env $env, Filesystem $filesystem ): void {
         if ( ! $env->exists() ) {
-            $this->info( 'We’ll need to set up an .env file to install premium plugins. The default secrets are available here: https://moderntribe.1password.com/vaults/all/allitems/ydscklaxsrcy3l6rwoqoqz4xwa' );
+            $this->info( 'We’ll need to set up an .env file to install premium plugins. The default secrets are available here: https://m.tri.be/soenv10' );
             $file = storage_path( 'defaults/env' );
             $vars = Parser::parse( $filesystem->get( $file ) );
 
