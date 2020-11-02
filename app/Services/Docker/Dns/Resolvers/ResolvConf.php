@@ -7,12 +7,19 @@ use Illuminate\Filesystem\Filesystem;
 use LaravelZero\Framework\Commands\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
+/**
+ * Set resolvers for systems using the resolvconf package.
+ *
+ * @see     https://packages.ubuntu.com/focal/resolvconf
+ *
+ * @package App\Services\Docker\Dns\Resolvers
+ */
 class ResolvConf extends BaseResolver {
 
     /**
      * The path to the custom resolv file dependant on the operating system in use.
      *
-     * e.g. resolv.conf.head, /etc/resolvconf/resolv.conf.d/head
+     * e.g. /etc/resolvconf/resolv.conf.d/head
      *
      * @var string
      */
@@ -21,9 +28,9 @@ class ResolvConf extends BaseResolver {
     /**
      * ResolvConf constructor.
      *
-     * @param  \App\Contracts\Runner              $runner
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     * @param  string                             $file
+     * @param   \App\Contracts\Runner              $runner
+     * @param   \Illuminate\Filesystem\Filesystem  $filesystem
+     * @param   string                             $file
      */
     public function __construct( Runner $runner, Filesystem $filesystem, string $file ) {
         parent::__construct( $runner, $filesystem );
@@ -32,13 +39,19 @@ class ResolvConf extends BaseResolver {
     }
 
     /**
-     * If this os has the proper file, it's supported.
+     * Check if resolvconf is active.
+     *
+     * @see https://packages.ubuntu.com/focal/resolvconf
      *
      * @return bool
      */
     public function supported(): bool {
-        if ( $this->filesystem->exists( '/etc/resolv.conf' ) ) {
-            return true;
+        $response = $this->runner->run( 'systemctl status resolvconf' );
+
+        if ( $response->ok() ) {
+            if ( str_contains( (string) $response, 'active (exited)' ) ) {
+                return true;
+            }
         }
 
         return false;
@@ -56,7 +69,8 @@ class ResolvConf extends BaseResolver {
             if ( str_contains( $content, 'nameserver 127.0.0.1' ) ) {
                 return true;
             }
-        } catch ( FileNotFoundException $exception ) {
+        }
+        catch ( FileNotFoundException $exception ) {
             return false;
         }
 
@@ -64,20 +78,40 @@ class ResolvConf extends BaseResolver {
     }
 
     /**
-     * Enable nameservers for resolv.conf for the current OS.
+     * Enable local nameservers for /etc/resolv.conf.
      *
-     * @param  \LaravelZero\Framework\Commands\Command  $command
+     * @param   \LaravelZero\Framework\Commands\Command  $command
      */
     public function enable( Command $command ): void {
-        $command->task( sprintf( '<comment>➜ Adding 127.0.0.1 nameservers to %s</comment>', $this->file ), call_user_func( [ $this, 'addNameservers' ] ) );
+        $command->task( sprintf( '<comment>➜ Adding 127.0.0.1 nameservers to %s</comment>', $this->file ), call_user_func( [
+            $this,
+            'addNameservers'
+        ] ) );
     }
 
     /**
-     * Add nameservers to the appropriate resolv.conf.head / head / tribe file.
+     * Add nameservers to the appropriate resolvconf head file.
      *
+     * @throws Symfony\Component\Process\Exception\ProcessFailedException
      */
     public function addNameservers(): void {
+        $this->checkDirectory();
         $this->runner->run( 'echo "nameserver 127.0.0.1" | sudo tee ' . $this->file )->throw();
+    }
+
+    /**
+     * Create the resolver directory if it doesn't exist.
+     *
+     * @throws Symfony\Component\Process\Exception\ProcessFailedException
+     */
+    protected function checkDirectory(): void {
+        $directory = $this->filesystem->dirname( $this->file );
+
+        if ( ! $this->filesystem->exists( $directory ) ) {
+            $this->runner->with( [
+                'directory' => $directory
+            ] )->run( 'sudo mkdir -p {{ $directory }}' )->throw();
+        }
     }
 
 }

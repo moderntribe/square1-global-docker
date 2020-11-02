@@ -10,7 +10,9 @@ use App\Services\Docker\Dns\Resolvers\Dhcp;
 use App\Services\Docker\Dns\OsSupport\Linux;
 use App\Services\Docker\Dns\OsSupport\MacOs;
 use App\Services\Docker\Dns\OsSupport\NullOs;
+use App\Services\Docker\Dns\Resolvers\Scutil;
 use App\Services\Docker\Dns\Resolvers\ResolvConf;
+use App\Services\Docker\Dns\Resolvers\Openresolv;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Docker\Dns\Resolvers\SystemdResolved;
 
@@ -46,9 +48,9 @@ class Factory {
     /**
      * Handler constructor.
      *
-     * @param  \App\Services\OperatingSystem      $os
-     * @param  \App\Contracts\Runner              $runner
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+     * @param   \App\Services\OperatingSystem      $os
+     * @param   \App\Contracts\Runner              $runner
+     * @param   \Illuminate\Filesystem\Filesystem  $filesystem
      */
     public function __construct( OperatingSystem $os, Runner $runner, Filesystem $filesystem ) {
         $this->os         = $os;
@@ -59,7 +61,7 @@ class Factory {
     /**
      * The Resolver Factory.
      *
-     * @param  \Illuminate\Support\Collection  $resolvers
+     * @param   \Illuminate\Support\Collection  $resolvers
      *
      * @return \App\Services\Docker\Dns\OsSupport\BaseSupport
      */
@@ -67,24 +69,16 @@ class Factory {
         if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
             $resolvers->push(
                 new Dhcp( $this->runner, $this->filesystem ),
-                new SystemdResolved( $this->runner, $this->filesystem )
+                new SystemdResolved( $this->runner, $this->filesystem ),
+                new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvconf/resolv.conf.d/head' ),
+                new Openresolv( $this->runner, $this->filesystem, '/etc/resolv.conf.head' )
             );
-
-            // Debian / Ubuntu
-            if ( OperatingSystem::DEBIAN === $this->os->getLinuxFlavor() || OperatingSystem::UBUNTU === $this->os->getLinuxFlavor()  ) {
-                $resolvers->push( new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvconf/resolv.conf.d/head' ) );
-            }
-
-            // Arch
-            if ( OperatingSystem::ARCH === $this->os->getLinuxFlavor() ) {
-                $resolvers->push( new ResolvConf( $this->runner, $this->filesystem, '/etc/resolv.conf.head' ) );
-            }
 
             return new Linux( $resolvers );
         }
 
         if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
-            $resolvers->push( new ResolvConf( $this->runner, $this->filesystem, '/etc/resolver/tribe' ) );
+            $resolvers->push( new Scutil( $this->runner, $this->filesystem, '/etc/resolver/tribe' ) );
 
             return new MacOs( $resolvers );
         }
