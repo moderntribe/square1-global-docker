@@ -68,10 +68,10 @@ class Factory {
     public function make( Collection $resolvers ): BaseSupport {
         if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
             $resolvers->push(
-                new Dhcp( $this->runner, $this->filesystem ),
-                new SystemdResolved( $this->runner, $this->filesystem ),
+                new Openresolv( $this->runner, $this->filesystem, '/etc/resolv.conf.head' ),
                 new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvconf/resolv.conf.d/head' ),
-                new Openresolv( $this->runner, $this->filesystem, '/etc/resolv.conf.head' )
+                new Dhcp( $this->runner, $this->filesystem ),
+                new SystemdResolved( $this->runner, $this->filesystem )
             );
 
             return new Linux( $resolvers );
