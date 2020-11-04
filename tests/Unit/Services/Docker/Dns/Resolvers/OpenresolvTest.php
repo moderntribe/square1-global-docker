@@ -6,10 +6,9 @@ use Tests\TestCase;
 use App\Runners\CommandRunner;
 use App\Commands\LocalDocker\Start;
 use Illuminate\Filesystem\Filesystem;
-use App\Services\Docker\Dns\Resolvers\ResolvConf;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Services\Docker\Dns\Resolvers\Openresolv;
 
-class ResolvConfTest extends TestCase {
+class OpenresolvTest extends TestCase {
 
     private $runner;
     private $filesystem;
@@ -25,9 +24,10 @@ class ResolvConfTest extends TestCase {
         $this->command    = $this->mock( Start::class );
     }
 
+
     public function test_it_is_supported() {
         $this->runner->shouldReceive( 'run' )
-                     ->with( 'systemctl status resolvconf' )
+                     ->with( 'resolvconf --version' )
                      ->once()
                      ->andReturnSelf();
 
@@ -37,59 +37,26 @@ class ResolvConfTest extends TestCase {
 
         $this->runner->shouldReceive( '__toString' )
                      ->once()
-                     ->andReturn( 'Sample SystemD Resolved Output... active (exited)' );
+                     ->andReturn( 'openresolv 3.11.0 Copyright (c) 2007-2020 Roy Marples' );
 
-        $resolver = new ResolvConf( $this->runner, $this->filesystem, $this->file );
+        $resolver = new Openresolv( $this->runner, $this->filesystem, $this->file );
 
         $this->assertTrue( $resolver->supported() );
     }
 
     public function test_it_is_not_supported() {
         $this->runner->shouldReceive( 'run' )
-                     ->with( 'systemctl status resolvconf' )
+                     ->with( 'resolvconf --version' )
                      ->once()
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'ok' )
                      ->once()
-                     ->andReturnTrue();
+                     ->andReturnFalse();
 
-        $resolver = new ResolvConf( $this->runner, $this->filesystem, $this->file );
+        $resolver = new Openresolv( $this->runner, $this->filesystem, $this->file );
 
         $this->assertFalse( $resolver->supported() );
-    }
-
-    public function test_it_is_enabled() {
-        $this->filesystem->shouldReceive( 'get' )
-                         ->with( $this->file )
-                         ->once()
-                         ->andReturn( 'nameserver 127.0.0.1' );
-
-        $resolver = new ResolvConf( $this->runner, $this->filesystem, $this->file );
-
-        $this->assertTrue( $resolver->enabled() );
-    }
-
-    public function test_it_is_disabled_with_invalid_nameservers() {
-        $this->filesystem->shouldReceive( 'get' )
-                         ->with( $this->file )
-                         ->once()
-                         ->andReturn( 'nameserver 10.0.0.1' );
-
-        $resolver = new ResolvConf( $this->runner, $this->filesystem, $this->file );
-
-        $this->assertFalse( $resolver->enabled() );
-    }
-
-    public function test_it_is_disabled_with_missing_resolv_conf() {
-        $this->filesystem->shouldReceive( 'get' )
-                         ->with( $this->file )
-                         ->once()
-                         ->andThrow( FileNotFoundException::class );
-
-        $resolver = new ResolvConf( $this->runner, $this->filesystem, $this->file );
-
-        $this->assertFalse( $resolver->enabled() );
     }
 
     public function test_it_can_be_enabled() {
@@ -98,7 +65,12 @@ class ResolvConfTest extends TestCase {
                      ->once()
                      ->andReturnSelf();
 
-        $this->runner->shouldReceive( 'throw' )->twice()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'sudo resolvconf -u' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'throw' )->times( 3 )->andReturnSelf();
 
         $this->filesystem->shouldReceive( 'dirname' )
                          ->once()
@@ -112,7 +84,7 @@ class ResolvConfTest extends TestCase {
 
         $this->runner->shouldReceive( 'with' )
                      ->once()
-                     ->with( [ 'directory' => storage_path( 'tests') ] )
+                     ->with( [ 'directory' => storage_path( 'tests' ) ] )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )
@@ -125,9 +97,13 @@ class ResolvConfTest extends TestCase {
                       ->once()
                       ->andReturnTrue();
 
-        $resolver = new ResolvConf( $this->runner, $this->filesystem, $this->file );
+        $this->command->shouldReceive( 'task' )
+                      ->with( '<comment>➜ Running sudo resolvconf -u</comment>', null )
+                      ->once()
+                      ->andReturnTrue();
+
+        $resolver = new Openresolv( $this->runner, $this->filesystem, $this->file );
 
         $resolver->enable( $this->command );
     }
-
 }

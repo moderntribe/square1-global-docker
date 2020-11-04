@@ -12,7 +12,9 @@ use App\Services\Docker\Dns\OsSupport\Linux;
 use App\Services\Docker\Dns\OsSupport\MacOs;
 use App\Services\Docker\Dns\OsSupport\NullOs;
 use App\Services\Docker\Dns\Resolvers\Dhcp;
+use App\Services\Docker\Dns\Resolvers\Scutil;
 use App\Services\Docker\Dns\Resolvers\ResolvConf;
+use App\Services\Docker\Dns\Resolvers\Openresolv;
 use App\Services\Docker\Dns\Resolvers\SystemdResolved;
 
 class FactoryTest extends TestCase {
@@ -42,17 +44,14 @@ class FactoryTest extends TestCase {
         $this->assertEmpty( $support->resolvers() );
     }
 
-    public function test_it_can_create_an_arch_resolver() {
-        $this->os->shouldReceive( 'getFamily' )->andReturn( 'Linux' );
-        $this->os->shouldReceive( 'getLinuxFlavor' )->andReturn( 'Arch' );
-
-        $factory = new Factory( $this->os, $this->runner, $this->filesystem  );
+    public function test_it_creates_linux_resolvers() {
+        $factory = new Factory( $this->os, $this->runner, $this->filesystem );
 
         $support = $factory->make( $this->collection );
 
         $this->assertInstanceOf( Linux::class, $support );
         $this->assertNotEmpty( $support->resolvers() );
-        $this->assertSame( 3, $this->collection->count() );
+        $this->assertSame( 4, $this->collection->count() );
 
         $this->assertTrue( $this->collection->contains( function ( $instance ) {
             return is_a( $instance, Dhcp::class );
@@ -65,34 +64,13 @@ class FactoryTest extends TestCase {
         $this->assertTrue( $this->collection->contains( function ( $instance ) {
             return is_a( $instance, ResolvConf::class );
         } ) );
-    }
-
-    public function test_it_can_create_a_debian_resolver() {
-        $this->os->shouldReceive( 'getFamily' )->andReturn( 'Linux' );
-        $this->os->shouldReceive( 'getLinuxFlavor' )->andReturn( 'Debian' );
-
-        $factory = new Factory( $this->os, $this->runner, $this->filesystem  );
-
-        $support = $factory->make( $this->collection );
-
-        $this->assertInstanceOf( Linux::class, $support );
-        $this->assertNotEmpty( $support->resolvers() );
-        $this->assertSame( 3, $this->collection->count() );
 
         $this->assertTrue( $this->collection->contains( function ( $instance ) {
-            return is_a( $instance, Dhcp::class );
-        } ) );
-
-        $this->assertTrue( $this->collection->contains( function ( $instance ) {
-            return is_a( $instance, SystemdResolved::class );
-        } ) );
-
-        $this->assertTrue( $this->collection->contains( function ( $instance ) {
-            return is_a( $instance, ResolvConf::class );
+            return is_a( $instance, Openresolv::class );
         } ) );
     }
 
-    public function test_it_can_create_an_macos_resolver() {
+    public function test_it_can_create_an_scutil_resolver() {
         $this->os->shouldReceive( 'getFamily' )->andReturn( 'Darwin' );
 
         $factory = new Factory( $this->os, $this->runner, $this->filesystem );
@@ -104,7 +82,7 @@ class FactoryTest extends TestCase {
         $this->assertSame( 1, $this->collection->count() );
 
         $this->assertTrue( $this->collection->contains( function ( $instance ) {
-            return is_a( $instance, ResolvConf::class );
+            return is_a( $instance, Scutil::class );
         } ) );
     }
 
