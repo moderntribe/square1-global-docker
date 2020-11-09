@@ -24,7 +24,7 @@ Status: **Stable**
 ### Prerequisites
 
 You **must not** have any existing dns, web server or mysql/mariadb services running before installing. Stop any
-MAMP/Valet/Docker services before running the installer.
+MAMP/Valet/Docker/DNSCrypt/dnscrypt-proxy services before running the installer.
 
 The following ports should be available:
 
