@@ -124,7 +124,7 @@ Note: Test run in the `php-tests` container, however older projects may not have
 
 ### Enable/disable xdebug
 
-*Disabling xdebug when you don't need it can improve loading performance, especially on MacOS.*
+**Disabling xdebug when you don't need it can improve loading performance, especially on MacOS.**
 
 1. cd anywhere in your SquareOne project.
 1. show the current status: `so xdebug`
