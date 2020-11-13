@@ -122,6 +122,18 @@ Note: Test run in the `php-tests` container, however older projects may not have
 1. Run tests in a different container: `so test --container=php-fpm -- run integration`.
 1. Run tests with xdebug: `so test -x -- run integration`
 
+### Enable/disable xdebug
+
+**Disabling xdebug when you don't need it can improve loading performance, especially on MacOS.**
+
+Note: This setting is **not persistent**. The default in the php-fpm container is `on`. You'll need to run `so xdebug
+off` each time after starting or restarting projects.
+
+1. cd anywhere in your SquareOne project.
+1. show the current status: `so xdebug`
+1. disable xdebug: `so xdebug off`
+1. enabled xdebug: `so xdebug on`
+
 ### Migrate a production database to your local
 
 If you've exported a project database for a project, we'll attempt to automatically configure it.
