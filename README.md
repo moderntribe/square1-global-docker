@@ -132,7 +132,7 @@ off` each time after starting or restarting projects.
 1. cd anywhere in your SquareOne project.
 1. show the current status: `so xdebug`
 1. disable xdebug: `so xdebug off`
-1. enabled xdebug: `so xdebug on`
+1. enable xdebug: `so xdebug on`
 
 ### Migrate a production database to your local
 
