@@ -30,7 +30,6 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, fileinfo, mbstring, openssl, zip, zlib, xml
-          tools: prestissimo
           coverage: pcov
 
       - name: Install Composer dependencies
