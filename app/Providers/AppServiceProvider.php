@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
 use App\Commands\Config\ConfigCopy;
 use App\Commands\GlobalDocker\Logs;
 use App\Commands\GlobalDocker\Stop;
+use App\Commands\LocalDocker\Share;
 use App\Commands\Config\ComposeCopy;
 use App\Commands\GlobalDocker\Start;
 use App\Listeners\MigrationListener;
@@ -145,6 +146,14 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( SelfUpdate::class )
                   ->needs( '$appName' )
                   ->give( config( 'app.name' ) );
+
+        $this->app->when( Share::class )
+                  ->needs( Database::class )
+                  ->give( function () {
+                      return new Database( [
+                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
+                      ] );
+                  } );
 
         $this->app->when( Updater::class )
                   ->needs( Database::class )
