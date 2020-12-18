@@ -5,6 +5,7 @@ namespace App\Commands\LocalDocker;
 use Filebase\Database;
 use App\Contracts\Runner;
 use App\Services\Docker\Local\Config;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * Share your local environment using ngrok
@@ -49,10 +50,12 @@ class Share extends BaseLocalDocker {
      *
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \App\Contracts\Runner              $runner
+     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      *
      * @return int
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle( Config $config, Runner $runner ): int {
+    public function handle( Config $config, Runner $runner, Filesystem $filesystem ): int {
         $settings = $this->settings->get( 'user_secrets' );
 
         if ( empty( $settings->ngrok_token ) ) {
@@ -69,12 +72,22 @@ class Share extends BaseLocalDocker {
             $settings->save();
         }
 
+        // TODO: perhaps add the plugin path to .gitignore or ask the user to do so?
+
+        $source  = storage_path( 'wordpress/mu-plugins/0-so-ngrok-local.php' );
+        $content = $filesystem->get( $source );
+        $target  = sprintf( '%s/%s', $config->getProjectRoot(), 'wp-content/mu-plugins/0-so-ngrok-local.php' );
+
+        $filesystem->replace( $target, $content );
+
         $runner->with( [
             'domain' => $config->getProjectDomain(),
             'token'  => $settings->ngrok_token,
         ] )->tty( true )
                ->run( 'docker run --rm -it --net global_proxy --link tribe-proxy wernight/ngrok ngrok http --authtoken {{ $token }} -host-header={{ $domain }} tribe-proxy:443' )
                ->throw();
+
+        $filesystem->delete( $target );
 
         return self::EXIT_SUCCESS;
     }
