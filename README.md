@@ -189,7 +189,7 @@ This tool checks for updates automatically, however this is cached for some time
 
 By default, the SquareOne Docker DNS configuration maps all domain names that end with the TLD `.tribe` to itself. You can add additional TLDs as necessary for your projects.
 
-1. Create the file `~/.config/squareone/globaldocker-compose.override.yml`.
+1. Create the file `~/.config/squareone/global/docker-compose.override.yml`.
 1. Add the following entries to the created override file. (These are duplicated from `docker-compose.yml`):
     ```
     version: '2.1'
