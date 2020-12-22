@@ -185,6 +185,38 @@ This tool checks for updates automatically, however this is cached for some time
 1. Check for an uncached update: `so self:update-check --force`.
 1. Update `so` to the latest version with: `so self:update`.
 
+### Add additional Top Level Domains (TLDs)
+
+By default, the SquareOne Docker DNS configuration maps all domain names that end with the TLD `.tribe` to itself. You can add additional TLDs as necessary for your projects.
+
+1. Create the file `~/.config/squareone/globaldocker-compose.override.yml`.
+1. Add the following entries to the created override file. (These are duplicated from `docker-compose.yml`):
+    ```
+    version: '2.1'
+       services:
+         dns-external:
+           command: '--log-facility=/proc/self/fd/2  --no-resolv --server=1.1.1.1 --address=/tribe/127.0.0.1'
+         dns-internal:
+           command: >-
+             --log-facility=/proc/self/fd/2 --no-resolv --server=1.1.1.1 --address=/tribe/172.20.10.100 --address=/mysql.tribe/172.20.10.200 --address=/mailhog.tribe/172.20.10.90
+             --address=/smtp.tribe/172.20.10.90 --address=/portainer.tribe/172.20.10.95 --address=/host.tribe/${HOSTIP:-172.20.10.1}
+    ```
+1. Update the `dns-external` and `dns-internal` `comamnd` values with a new `--address` entry for each TLD you'd like to add.
+1. Restart your global containers.
+
+#### Example adding the TLD `.test`:
+```
+version: '2.1'
+services:
+  dns-external:
+    command: '--log-facility=/proc/self/fd/2  --no-resolv --server=1.1.1.1 --address=/tribe/127.0.0.1 --address=/test/127.0.0.1'
+  dns-internal:
+    command: >-
+      --log-facility=/proc/self/fd/2 --no-resolv --server=1.1.1.1 --address=/tribe/172.20.10.100 --address=/mysql.tribe/172.20.10.200 --address=/mailhog.tribe/172.20.10.90
+      --address=/smtp.tribe/172.20.10.90 --address=/portainer.tribe/172.20.10.95 --address=/host.tribe/${HOSTIP:-172.20.10.1}
+      --address=/test/172.20.10.100
+```
+
 ### Development / Contributing
 
 See [Developer Docs](./docs/dev.md)
