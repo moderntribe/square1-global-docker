@@ -91,6 +91,11 @@ class AppServiceProvider extends ServiceProvider {
             'App\Runners\CommandRunner'
         );
 
+        $this->app->bind(
+            'App\Contracts\File',
+            'App\Services\FileIO'
+        );
+
         $this->app->when( Handler::class )
                   ->needs( BaseSupport::class )
                   ->give( function () {
