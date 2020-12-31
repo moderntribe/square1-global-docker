@@ -14,6 +14,8 @@ use Illuminate\Filesystem\Filesystem;
  */
 class Share extends BaseLocalDocker {
 
+    public const MU_PLUGIN = '0-so-ngrok.local.php';
+
     /**
      * The signature of the command.
      *
@@ -74,9 +76,9 @@ class Share extends BaseLocalDocker {
 
         // TODO: perhaps add the plugin path to .gitignore or ask the user to do so?
 
-        $source  = storage_path( 'wordpress/mu-plugins/0-so-ngrok-local.php' );
+        $source  = storage_path( sprintf( 'wordpress/mu-plugins/%s', self::MU_PLUGIN ) );
         $content = $filesystem->get( $source );
-        $target  = sprintf( '%s/%s', $config->getProjectRoot(), 'wp-content/mu-plugins/0-so-ngrok-local.php' );
+        $target  = sprintf( '%s/%s', $config->getProjectRoot(), sprintf( 'wp-content/mu-plugins/%s', self::MU_PLUGIN ) );
 
         $filesystem->replace( $target, $content );
 

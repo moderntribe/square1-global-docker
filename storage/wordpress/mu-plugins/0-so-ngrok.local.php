@@ -64,22 +64,8 @@ final class Ngrok {
         ob_start( [ $this, 'replace' ] );
     }
 
-    /**
-     * End the buffer and output the HTML
-     *
-     * @action shutdown
-     */
-    public function buffer_end(): void {
-        $html = ob_get_contents();
-        if ( ob_get_length() ) {
-            ob_end_clean();
-        }
-        echo $html;
-    }
-
 }
 
 $instance = new Ngrok( site_url( '/' ) );
 
 add_action( 'wp_loaded', [ $instance, 'buffer_start' ] );
-add_action( 'shutdown', [ $instance, 'buffer_end' ] );
