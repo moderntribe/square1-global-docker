@@ -87,7 +87,7 @@ class FileIO implements File {
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function remove_content( string $path, string $content ) {
-        $this->replace_content( $path, '', $content );
+        $this->replace_content( $path, $content, '' );
     }
 
     /**
