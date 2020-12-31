@@ -115,11 +115,16 @@ class Share extends BaseLocalDocker {
             return;
         }
 
-        $confirm = $this->confirm( 'Your project is missing ".local.php" from your .gitignore. Would you like to add it now?' );
+        $confirm = $this->confirm( 'Your project is missing ".local.php" in your .gitignore. Would you like to add it now?' );
 
         if ( $confirm ) {
-            $file->append_content( $gitIgnore, sprintf( '%s %s', PHP_EOL . PHP_EOL . '# Added by so cli', PHP_EOL . '*.local.php' ) );
-            $this->info( 'Added ".local.php" to .gitignore. Don\'t forget to commit this change!' );
+            $result = $file->append_content( $gitIgnore, sprintf( '%s %s', PHP_EOL . PHP_EOL . '# Added by so cli', PHP_EOL . '*.local.php' ) );
+
+            if ( $result ) {
+                $this->info( 'Added ".local.php" to .gitignore. Don\'t forget to commit this change!' );
+            } else {
+                $this->error( 'Unable to write to .gitignore.' );
+            }
         }
     }
 
