@@ -3,6 +3,7 @@
 namespace App\Commands\LocalDocker;
 
 use Filebase\Database;
+use App\Contracts\File;
 use App\Contracts\Runner;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
@@ -53,11 +54,12 @@ class Share extends BaseLocalDocker {
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \App\Contracts\Runner              $runner
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+     * @param  \App\Contracts\File                $file
      *
      * @return int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle( Config $config, Runner $runner, Filesystem $filesystem ): int {
+    public function handle( Config $config, Runner $runner, Filesystem $filesystem, File $file ): int {
         $settings = $this->settings->get( 'user_secrets' );
 
         if ( empty( $settings->ngrok_token ) ) {
@@ -74,7 +76,7 @@ class Share extends BaseLocalDocker {
             $settings->save();
         }
 
-        // TODO: perhaps add the plugin path to .gitignore or ask the user to do so?
+        $this->checkGitIgnore( $file, $config->getProjectRoot() );
 
         $source  = storage_path( sprintf( 'wordpress/mu-plugins/%s', self::MU_PLUGIN ) );
         $content = $filesystem->get( $source );
@@ -92,6 +94,33 @@ class Share extends BaseLocalDocker {
         $filesystem->delete( $target );
 
         return self::EXIT_SUCCESS;
+    }
+
+    /**
+     * Make sure the mu plugin will be ignored for this project.
+     *
+     * @param  \App\Contracts\File  $file
+     * @param  string               $projectRoot
+     */
+    protected function checkGitIgnore( File $file, string $projectRoot ): void {
+        $gitIgnore = sprintf( '%s/.gitignore', $projectRoot );
+
+        if ( ! $file->exists( $gitIgnore ) ) {
+            return;
+        }
+
+        $hasLocalIgnore = $file->contains( $gitIgnore, '*.local.php' );
+
+        if ( $hasLocalIgnore ) {
+            return;
+        }
+
+        $confirm = $this->confirm( 'Your project is missing ".local.php" from your .gitignore. Would you like to add it now?' );
+
+        if ( $confirm ) {
+            $file->append_content( $gitIgnore, sprintf( '%s %s', PHP_EOL . PHP_EOL . '# Added by so cli', PHP_EOL . '*.local.php' ) );
+            $this->info( 'Added ".local.php" to .gitignore. Don\'t forget to commit this change!' );
+        }
     }
 
 }
