@@ -90,6 +90,13 @@ Stopping projects not in use will free up computer resources.
 the project name/directory and git remote.
 1. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project. 
 
+### Share your local project temporarily on the internet with Ngrok
+
+1. cd anywhere in your SquareOne project.
+1. Run `so share` and follow the on-screen instructions.
+1. Copy the displayed https://...ngrok.io URL to share your local project with someone.
+1. Press "ctrl+c" to stop sharing.
+
 ### Gain terminal access to the php-fpm container
 
 1. cd anywhere in your SquareOne project.
