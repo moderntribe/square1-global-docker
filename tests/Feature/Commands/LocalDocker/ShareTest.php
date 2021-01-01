@@ -200,6 +200,7 @@ class ShareTest extends LocalDockerCommand {
         $tester  = $this->runCommand( $command );
 
         $this->assertSame( 0, $tester->getStatusCode() );
+        $this->assertStringNotContainsString( 'Your project is missing', $tester->getDisplay() );
         $contents = file_get_contents( storage_path( 'tests/share-test/.gitignore' ) );
         $this->assertStringContainsString( '*.local.php', $contents );
     }
