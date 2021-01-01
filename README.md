@@ -97,10 +97,10 @@ the project name/directory and git remote.
 1. Copy the displayed https://...ngrok.io URL to share your local project with someone.
 1. Press "ctrl+c" to stop sharing.
 
-### Gain terminal access to the php-fpm container
+### Gain shell access to the php-fpm container
 
 1. cd anywhere in your SquareOne project.
-1. Run `so shell` to gain a terminal in the container as the `squareone` user
+1. Run `so shell` to gain a shell in the container as the `squareone` user
 1. Alternatively, run `so shell --user=root` to get a terminal as the root user (useful for older projects)
 
 ### Run a WP CLI command in the php-fpm container
