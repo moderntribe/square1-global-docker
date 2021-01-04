@@ -19,9 +19,10 @@ install_homebrew() {
 enable_bash_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
     sudo cp -f ${SCRIPTDIR}/../squareone.autocompletion $(brew --prefix)/etc/bash_completion.d/squareone.dev.autocompletion
-    cp -f ${SCRIPTDIR}/../squareone.autocompletion ~/.squareone_dev_completion && echo "source ~/.squareone_dev_completion" >> ~/.zshrc
+    cp -f ${SCRIPTDIR}/../squareone.autocompletion.zsh ~/.squareone_dev_completion.zsh && echo "source ~/.squareone_dev_completion.zsh" >> ~/.zshrc
   else
     sudo cp -f ${SCRIPTDIR}/../squareone.autocompletion /etc/bash_completion.d/squareone.dev.autocompletion
+    cp -f ${SCRIPTDIR}/../squareone.autocompletion.fish ~/.config/fish/completions/so.dev.fish
   fi
 }
 
