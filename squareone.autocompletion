@@ -65,6 +65,10 @@ _so.phar()
             opts="${opts} "
             ;;
 
+            share)
+            opts="${opts} "
+            ;;
+
             shell)
             opts="${opts} --user"
             ;;
@@ -163,7 +167,7 @@ _so.phar()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="bootstrap composer create docker-compose help list logs migrate-domain open restart shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
+        coms="bootstrap composer create docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
