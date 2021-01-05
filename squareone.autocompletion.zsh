@@ -1,6 +1,6 @@
-#compdef so.phar
+#compdef so
 
-_so.phar()
+_so()
 {
     local state com cur
 
@@ -171,5 +171,4 @@ _so.phar()
     esac
 }
 
-compdef _so.phar so.phar
-compdef _so.phar so
+compdef _so so

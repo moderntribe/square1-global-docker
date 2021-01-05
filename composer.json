@@ -66,7 +66,7 @@
         "post-create-project-cmd": [
             "@php application app:rename"
         ],
-        "autocomplete": "vendor/bin/symfony-autocomplete --aliases=so --shell=bash ./builds/so.phar > squareone.autocompletion && vendor/bin/symfony-autocomplete --aliases=so --shell=fish ./builds/so.phar > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --aliases=so --shell=zsh ./builds/so.phar > squareone.autocompletion.zsh",
+        "autocomplete": "mv -f ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -f ./builds/so ./builds/so.phar",
         "coverage-tests": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text",
         "coverage-text": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text < /dev/tty",
         "coverage-html": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-html coverage < /dev/tty",

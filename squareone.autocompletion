@@ -1,4 +1,4 @@
-_so.phar()
+_so()
 {
     local cur script coms opts com
     COMPREPLY=()
@@ -176,5 +176,4 @@ _so.phar()
     fi
 }
 
-complete -o default -F _so.phar so.phar
-complete -o default -F _so.phar so
+complete -o default -F _so so
