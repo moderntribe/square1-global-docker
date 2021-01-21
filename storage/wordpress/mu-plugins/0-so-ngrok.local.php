@@ -69,3 +69,5 @@ final class Ngrok {
 $instance = new Ngrok( site_url( '/' ) );
 
 add_action( 'wp_loaded', [ $instance, 'buffer_start' ] );
+// prevent infinite redirects on a multisite homepage
+add_filter( 'redirect_canonical', '__return_false', -1 );
