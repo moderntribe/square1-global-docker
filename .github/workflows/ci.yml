@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-18.04]
         php: ['7.2', '7.3', '7.4']
         dependency-version: [prefer-stable]
 
