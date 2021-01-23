@@ -22,6 +22,7 @@ use App\Commands\Config\ConfigCopy;
 use App\Commands\GlobalDocker\Logs;
 use App\Commands\GlobalDocker\Stop;
 use App\Commands\LocalDocker\Share;
+use App\Commands\Config\ConfigList;
 use App\Commands\Config\ComposeCopy;
 use App\Commands\GlobalDocker\Start;
 use App\Listeners\MigrationListener;
@@ -131,6 +132,14 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( ConfigCopy::class )
                   ->needs( '$downloadUrl' )
                   ->give( config( 'squareone.remote.squareone-yml' ) );
+
+        $this->app->when( ConfigList::class )
+                  ->needs( Database::class )
+                  ->give( function () {
+                      return new Database( [
+                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
+                      ] );
+                  } );
 
         $this->app->when( ComposeCopy::class )
                   ->needs( '$composeOverride' )
