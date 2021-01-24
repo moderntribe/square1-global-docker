@@ -2,8 +2,8 @@
 
 namespace App\Services\Update;
 
-use Filebase\Database;
 use Filebase\Document;
+use App\Databases\ReleaseDatabase;
 use Illuminate\Support\Facades\Http;
 use LaravelZero\Framework\Commands\Command;
 
@@ -19,7 +19,7 @@ class Updater {
     /**
      * The release database.
      *
-     * @var \Filebase\Database
+     * @var \App\Databases\ReleaseDatabase
      */
     protected $db;
 
@@ -33,10 +33,10 @@ class Updater {
     /**
      * Updater constructor.
      *
-     * @param  \Filebase\Database              $db  The release database
+     * @param  \App\Databases\ReleaseDatabase  $db  The release database
      * @param  \App\Services\Update\Installer  $installer
      */
-    public function __construct( Database $db, Installer $installer ) {
+    public function __construct( ReleaseDatabase $db, Installer $installer ) {
         $this->db        = $db;
         $this->installer = $installer;
     }

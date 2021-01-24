@@ -2,9 +2,9 @@
 
 namespace App\Commands\LocalDocker;
 
-use Filebase\Database;
 use App\Contracts\File;
 use App\Contracts\Runner;
+use App\Databases\ConfigDatabase;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
 
@@ -34,16 +34,16 @@ class Share extends BaseLocalDocker {
     /**
      * The user's settings database.
      *
-     * @var \Filebase\Database
+     * @var \App\Databases\ConfigDatabase
      */
     protected $settings;
 
     /**
      * Share constructor.
      *
-     * @param  \Filebase\Database  $settings
+     * @param  \App\Databases\ConfigDatabase  $settings
      */
-    public function __construct( Database $settings ) {
+    public function __construct( ConfigDatabase $settings ) {
         parent::__construct();
         $this->settings = $settings;
     }
@@ -60,7 +60,7 @@ class Share extends BaseLocalDocker {
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle( Config $config, Runner $runner, Filesystem $filesystem, File $file ): int {
-        $settings = $this->settings->get( 'user_secrets' );
+        $settings = $this->settings->get( ConfigDatabase::SECRETS );
 
         if ( empty( $settings->ngrok_token ) ) {
             $this->info( 'Ngrok requires a free user account to proxy to https domains. Sign up: https://dashboard.ngrok.com/signup' );

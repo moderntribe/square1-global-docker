@@ -2,8 +2,8 @@
 
 namespace App\Commands\Config;
 
-use Filebase\Database;
 use App\Commands\BaseCommand;
+use App\Databases\ConfigDatabase;
 use App\Services\Docker\Local\Config;
 
 /**
@@ -31,16 +31,16 @@ class ConfigList extends BaseCommand {
     /**
      * The user's settings database.
      *
-     * @var \Filebase\Database
+     * @var \App\Databases\ConfigDatabase
      */
     protected $settings;
 
     /**
      * Share constructor.
      *
-     * @param  \Filebase\Database  $settings
+     * @param  \App\Databases\ConfigDatabase  $settings
      */
-    public function __construct( Database $settings ) {
+    public function __construct( ConfigDatabase $settings ) {
         parent::__construct();
         $this->settings = $settings;
     }
@@ -54,7 +54,7 @@ class ConfigList extends BaseCommand {
      */
     public function handle( Config $config ): int {
         if ( $this->option( 'secrets' ) ) {
-            $settings = $this->settings->get( 'user_secrets' )->toArray();
+            $settings = $this->settings->get( ConfigDatabase::SECRETS )->toArray();
 
             if ( empty( $settings ) ) {
                 $this->error( 'Secret configuration is empty' );
@@ -68,7 +68,7 @@ class ConfigList extends BaseCommand {
         }
 
         if ( $this->option( 'global' ) ) {
-            $settings = $this->settings->get( 'global' )->toArray();
+            $settings = $this->settings->get( ConfigDatabase::GLOBAL )->toArray();
 
             if ( empty( $settings ) ) {
                 $this->error( 'Global configuration is empty' );

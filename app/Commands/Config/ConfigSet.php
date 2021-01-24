@@ -2,14 +2,14 @@
 
 namespace App\Commands\Config;
 
-use Filebase\Database;
 use App\Commands\BaseCommand;
+use App\Databases\ConfigDatabase;
 use App\Services\Docker\Local\Config;
 
 /**
  * Set user config.
  *
- * @TODO Add validation.
+ * @TODO    Add validation.
  *
  * @package App\Commands\Config
  */
@@ -34,16 +34,16 @@ class ConfigSet extends BaseCommand {
     /**
      * The user's settings database.
      *
-     * @var \Filebase\Database
+     * @var \App\Databases\ConfigDatabase
      */
     protected $settings;
 
     /**
      * Share constructor.
      *
-     * @param  \Filebase\Database  $settings
+     * @param  \App\Databases\ConfigDatabase  $settings
      */
-    public function __construct( Database $settings ) {
+    public function __construct( ConfigDatabase $settings ) {
         parent::__construct();
         $this->settings = $settings;
     }
@@ -61,7 +61,7 @@ class ConfigSet extends BaseCommand {
 
         // Set secret config
         if ( $this->option( 'secret' ) ) {
-            $result = $this->setConfig( 'user_secrets', $key, $value );
+            $result = $this->setConfig( ConfigDatabase::SECRETS, $key, $value );
 
             if ( ! $result ) {
                 $this->error( sprintf( 'Unable to save secret for %s', $key ) );
@@ -76,7 +76,7 @@ class ConfigSet extends BaseCommand {
 
         // Set global config
         if ( $this->option( 'global' ) ) {
-            $result = $this->setConfig( 'global', $key, $value );
+            $result = $this->setConfig( ConfigDatabase::GLOBAL, $key, $value );
 
             if ( ! $result ) {
                 $this->error( sprintf( 'Unable to save "%s" to "%s"', $value, $key ) );

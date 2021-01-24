@@ -4,27 +4,23 @@ namespace App\Providers;
 
 use App\Bootstrap;
 use RuntimeException;
-use Filebase\Database;
 use App\Contracts\Runner;
 use App\Services\HomeDir;
 use App\Contracts\Trustable;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
 use App\Services\Certificate\Ca;
-use App\Services\Update\Updater;
 use App\Commands\Self\SelfUpdate;
 use App\Recorders\ResultRecorder;
 use App\Services\OperatingSystem;
+use App\Databases\ConfigDatabase;
 use App\Commands\LocalDocker\Test;
 use App\Commands\Self\UpdateCheck;
 use Illuminate\Support\Collection;
-use App\Commands\Config\ConfigSet;
-use App\Commands\Config\ConfigGet;
+use App\Databases\ReleaseDatabase;
 use App\Commands\Config\ConfigCopy;
 use App\Commands\GlobalDocker\Logs;
 use App\Commands\GlobalDocker\Stop;
-use App\Commands\LocalDocker\Share;
-use App\Commands\Config\ConfigList;
 use App\Commands\Config\ComposeCopy;
 use App\Commands\GlobalDocker\Start;
 use App\Listeners\MigrationListener;
@@ -32,7 +28,6 @@ use App\Services\Docker\Dns\Factory;
 use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
-use App\Commands\Config\ConfigDelete;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Config\FileLocator;
@@ -52,8 +47,7 @@ use App\Services\Certificate\Trust\Strategies\MacOs;
  */
 class AppServiceProvider extends ServiceProvider {
 
-    public const DB_STORE    = 'store';
-    public const USER_CONFIG = 'UserConfig';
+    public const DB_STORE = 'store';
 
     /**
      * Bootstrap any application services.
@@ -61,17 +55,21 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $config = [
-            'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
-        ];
-
-        $this->app->bind( 'Filebase\Database', static function () use ( $config ) {
-            return new Database( $config );
+        $this->app->bind( 'Filebase\Database', static function () {
+            return new ConfigDatabase( [
+                'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
+            ] );
         } );
 
-        $this->app->bind( self::USER_CONFIG, static function () {
-            return new Database( [
+        $this->app->bind( ConfigDatabase::class, static function () {
+            return new ConfigDatabase( [
                 'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
+            ] );
+        } );
+
+        $this->app->bind( ReleaseDatabase::class, static function () {
+            return new ReleaseDatabase( [
+                'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/releases',
             ] );
         } );
     }
@@ -142,30 +140,6 @@ class AppServiceProvider extends ServiceProvider {
                   ->needs( '$downloadUrl' )
                   ->give( config( 'squareone.remote.squareone-yml' ) );
 
-        $this->app->when( ConfigDelete::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return $this->app->make( self::USER_CONFIG );
-                  } );
-
-        $this->app->when( ConfigGet::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return $this->app->make( self::USER_CONFIG );
-                  } );
-
-        $this->app->when( ConfigList::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return $this->app->make( self::USER_CONFIG );
-                  } );
-
-        $this->app->when( ConfigSet::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return $this->app->make( self::USER_CONFIG );
-                  } );
-
         $this->app->when( ComposeCopy::class )
                   ->needs( '$composeOverride' )
                   ->give( config( 'squareone.docker.compose-override' ) );
@@ -185,20 +159,6 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( SelfUpdate::class )
                   ->needs( '$appName' )
                   ->give( config( 'app.name' ) );
-
-        $this->app->when( Share::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return $this->app->make( self::USER_CONFIG );
-                  } );
-
-        $this->app->when( Updater::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return new Database( [
-                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/releases',
-                      ] );
-                  } );
 
         $this->app->when( UpdateCheck::class )
                   ->needs( '$version' )

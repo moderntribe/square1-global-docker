@@ -2,8 +2,8 @@
 
 namespace App\Commands\Config;
 
-use Filebase\Database;
 use App\Commands\BaseCommand;
+use App\Databases\ConfigDatabase;
 use App\Services\Docker\Local\Config;
 
 /**
@@ -34,16 +34,16 @@ class ConfigDelete extends BaseCommand {
     /**
      * The user's settings database.
      *
-     * @var \Filebase\Database
+     * @var \App\Databases\ConfigDatabase
      */
     protected $settings;
 
     /**
      * Share constructor.
      *
-     * @param  \Filebase\Database  $settings
+     * @param  \App\Databases\ConfigDatabase  $settings
      */
-    public function __construct( Database $settings ) {
+    public function __construct( ConfigDatabase $settings ) {
         parent::__construct();
         $this->settings = $settings;
     }
@@ -59,11 +59,11 @@ class ConfigDelete extends BaseCommand {
         $key = $this->argument( 'key' );
 
         if ( $this->option( 'secret' ) ) {
-            $database = 'user_secrets';
+            $database = ConfigDatabase::SECRETS;
         }
 
         if ( $this->option( 'global' ) ) {
-            $database = 'global';
+            $database = ConfigDatabase::GLOBAL;
         }
 
         if ( empty( $database ) ) {
