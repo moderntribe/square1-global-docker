@@ -19,7 +19,7 @@ class ConfigList extends BaseCommand {
      * @var string
      */
     protected $signature = 'config:list {--g|global : List global config}
-                           {--s|secrets : List sensitive config options}';
+                           {--s|secret : List secrets}';
 
     /**
      * The description of the command.
@@ -53,40 +53,22 @@ class ConfigList extends BaseCommand {
      * @return int
      */
     public function handle( Config $config ): int {
-        if ( $this->option( 'secrets' ) ) {
-            $settings = $this->settings->get( ConfigDatabase::SECRETS )->toArray();
-
-            if ( empty( $settings ) ) {
-                $this->error( 'Secret configuration is empty' );
-
-                return self::EXIT_ERROR;
-            }
-
-            $this->line( $this->buildConfigOutput( $settings ) );
-
-            return self::EXIT_SUCCESS;
+        if ( $this->option( 'secret' ) ) {
+            $database = ConfigDatabase::SECRETS;
         }
 
         if ( $this->option( 'global' ) ) {
-            $settings = $this->settings->get( ConfigDatabase::GLOBAL )->toArray();
-
-            if ( empty( $settings ) ) {
-                $this->error( 'Global configuration is empty' );
-
-                return self::EXIT_ERROR;
-            }
-
-            $this->line( $this->buildConfigOutput( $settings ) );
-
-            return self::EXIT_SUCCESS;
+            $database = ConfigDatabase::GLOBAL;
         }
 
-        $project = $config->getProjectName();
+        if ( empty( $database ) ) {
+            $database = $config->getProjectName();
+        }
 
-        $settings = $this->settings->get( $project )->toArray();
+        $settings = $this->settings->get( $database )->toArray();
 
         if ( empty( $settings ) ) {
-            $this->error( sprintf( 'No configuration found for %s', $project ) );
+            $this->error( sprintf( 'No configuration found for "%s"', $database ) );
 
             return self::EXIT_ERROR;
         }
