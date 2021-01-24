@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Bootstrap;
 use RuntimeException;
+use Filebase\Database;
 use App\Contracts\Runner;
 use App\Services\HomeDir;
 use App\Contracts\Trustable;
@@ -55,21 +56,23 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $this->app->bind( 'Filebase\Database', static function () {
+        $basePath = config( 'squareone.config-dir' ) . '/' . self::DB_STORE;
+
+        $this->app->bind( Database::class, static function () use ( $basePath ) {
             return new ConfigDatabase( [
-                'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
+                'dir' => $basePath . '/migrations',
             ] );
         } );
 
-        $this->app->bind( ConfigDatabase::class, static function () {
+        $this->app->bind( ConfigDatabase::class, static function () use ( $basePath ) {
             return new ConfigDatabase( [
-                'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
+                'dir' => $basePath . '/config',
             ] );
         } );
 
-        $this->app->bind( ReleaseDatabase::class, static function () {
+        $this->app->bind( ReleaseDatabase::class, static function () use ( $basePath ) {
             return new ReleaseDatabase( [
-                'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/releases',
+                'dir' => $basePath . '/releases',
             ] );
         } );
     }
