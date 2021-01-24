@@ -18,6 +18,7 @@ use App\Services\OperatingSystem;
 use App\Commands\LocalDocker\Test;
 use App\Commands\Self\UpdateCheck;
 use Illuminate\Support\Collection;
+use App\Commands\Config\ConfigSet;
 use App\Commands\Config\ConfigCopy;
 use App\Commands\GlobalDocker\Logs;
 use App\Commands\GlobalDocker\Stop;
@@ -134,6 +135,14 @@ class AppServiceProvider extends ServiceProvider {
                   ->give( config( 'squareone.remote.squareone-yml' ) );
 
         $this->app->when( ConfigList::class )
+                  ->needs( Database::class )
+                  ->give( function () {
+                      return new Database( [
+                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
+                      ] );
+                  } );
+
+        $this->app->when( ConfigSet::class )
                   ->needs( Database::class )
                   ->give( function () {
                       return new Database( [
