@@ -73,7 +73,7 @@ class ConfigGet extends BaseCommand {
         $value = $this->getConfig( $database, $key );
 
         if ( empty( $value ) ) {
-            $this->error( sprintf( 'Config key "%s" was not found', $key ) );
+            $this->error( sprintf( 'Config key "%s" was not found in "%s"', $key, $database ) );
 
             return self::EXIT_ERROR;
         }
