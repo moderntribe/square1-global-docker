@@ -91,6 +91,8 @@ class ConfigList extends BaseCommand {
             return self::EXIT_ERROR;
         }
 
+        $this->line( $this->buildConfigOutput( $settings ) );
+
         return self::EXIT_SUCCESS;
     }
 
