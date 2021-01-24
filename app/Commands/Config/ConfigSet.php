@@ -79,7 +79,7 @@ class ConfigSet extends BaseCommand {
             return self::EXIT_ERROR;
         }
 
-        $this->info( sprintf( 'Saved "%s" to "%s" for %s', $value, $key, $database ) );
+        $this->info( sprintf( 'Saved "%s" to "%s" in %s', $value, $key, $database ) );
 
         return self::EXIT_SUCCESS;
     }
