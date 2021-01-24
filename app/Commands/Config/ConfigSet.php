@@ -59,47 +59,27 @@ class ConfigSet extends BaseCommand {
         $key   = $this->argument( 'key' );
         $value = $this->argument( 'value' );
 
-        // Set secret config
         if ( $this->option( 'secret' ) ) {
-            $result = $this->setConfig( ConfigDatabase::SECRETS, $key, $value );
-
-            if ( ! $result ) {
-                $this->error( sprintf( 'Unable to save secret for %s', $key ) );
-
-                return self::EXIT_ERROR;
-            }
-
-            $this->info( sprintf( 'Saved secret to %s', $key ) );
-
-            return self::EXIT_SUCCESS;
+            $database = ConfigDatabase::SECRETS;
         }
 
-        // Set global config
         if ( $this->option( 'global' ) ) {
-            $result = $this->setConfig( ConfigDatabase::GLOBAL, $key, $value );
-
-            if ( ! $result ) {
-                $this->error( sprintf( 'Unable to save "%s" to "%s"', $value, $key ) );
-
-                return self::EXIT_ERROR;
-            }
-
-            $this->info( sprintf( 'Saved "%s" to "%s"', $value, $key ) );
-
-            return self::EXIT_SUCCESS;
+            $database = ConfigDatabase::GLOBAL;
         }
 
-        // Set project config for the user
-        $project = $config->getProjectName();
-        $result  = $this->setConfig( $project, $key, $value );
+        if ( empty( $database ) ) {
+            $database = $config->getProjectName();
+        }
+
+        $result  = $this->setConfig( $database, $key, $value );
 
         if ( ! $result ) {
-            $this->error( sprintf( 'Unable to save "%s" to "%s" for %s', $value, $key, $project ) );
+            $this->error( sprintf( 'Unable to save "%s" to "%s" in %s', $value, $key, $database ) );
 
             return self::EXIT_ERROR;
         }
 
-        $this->info( sprintf( 'Saved "%s" to "%s" for %s', $value, $key, $project ) );
+        $this->info( sprintf( 'Saved "%s" to "%s" for %s', $value, $key, $database ) );
 
         return self::EXIT_SUCCESS;
     }
