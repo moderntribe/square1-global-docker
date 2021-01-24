@@ -107,7 +107,11 @@ class ConfigList extends BaseCommand {
         $output = '';
 
         foreach ( $list as $config => $value ) {
-            $output .= "<comment>[$config]</comment> <info>$value</info>" . PHP_EOL;
+            $output .= "<comment>[$config]</comment> <info>$value</info>";
+
+            if ( array_key_last( $list ) !== $config ) {
+                $output .= PHP_EOL;
+            }
         }
 
         return $output;
