@@ -32,6 +32,7 @@ use App\Services\Docker\Dns\Factory;
 use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
+use App\Commands\Config\ConfigDelete;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Config\FileLocator;
@@ -141,6 +142,18 @@ class AppServiceProvider extends ServiceProvider {
                   ->needs( '$downloadUrl' )
                   ->give( config( 'squareone.remote.squareone-yml' ) );
 
+        $this->app->when( ConfigDelete::class )
+                  ->needs( Database::class )
+                  ->give( function () {
+                      return $this->app->make( self::USER_CONFIG );
+                  } );
+
+        $this->app->when( ConfigGet::class )
+                  ->needs( Database::class )
+                  ->give( function () {
+                      return $this->app->make( self::USER_CONFIG );
+                  } );
+
         $this->app->when( ConfigList::class )
                   ->needs( Database::class )
                   ->give( function () {
@@ -148,12 +161,6 @@ class AppServiceProvider extends ServiceProvider {
                   } );
 
         $this->app->when( ConfigSet::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return $this->app->make( self::USER_CONFIG );
-                  } );
-
-        $this->app->when( ConfigGet::class )
                   ->needs( Database::class )
                   ->give( function () {
                       return $this->app->make( self::USER_CONFIG );
