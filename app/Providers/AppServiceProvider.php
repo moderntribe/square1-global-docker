@@ -19,6 +19,7 @@ use App\Commands\LocalDocker\Test;
 use App\Commands\Self\UpdateCheck;
 use Illuminate\Support\Collection;
 use App\Commands\Config\ConfigSet;
+use App\Commands\Config\ConfigGet;
 use App\Commands\Config\ConfigCopy;
 use App\Commands\GlobalDocker\Logs;
 use App\Commands\GlobalDocker\Stop;
@@ -50,21 +51,27 @@ use App\Services\Certificate\Trust\Strategies\MacOs;
  */
 class AppServiceProvider extends ServiceProvider {
 
-    public const DB_STORE = 'store';
+    public const DB_STORE    = 'store';
+    public const USER_CONFIG = 'UserConfig';
 
     /**
      * Bootstrap any application services.
      *
      * @return void
-     *
      */
     public function boot() {
         $config = [
             'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
         ];
 
-        $this->app->bind( 'Filebase\Database', function () use ( $config ) {
+        $this->app->bind( 'Filebase\Database', static function () use ( $config ) {
             return new Database( $config );
+        } );
+
+        $this->app->bind( self::USER_CONFIG, static function () {
+            return new Database( [
+                'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
+            ] );
         } );
     }
 
@@ -137,17 +144,19 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( ConfigList::class )
                   ->needs( Database::class )
                   ->give( function () {
-                      return new Database( [
-                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
-                      ] );
+                      return $this->app->make( self::USER_CONFIG );
                   } );
 
         $this->app->when( ConfigSet::class )
                   ->needs( Database::class )
                   ->give( function () {
-                      return new Database( [
-                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
-                      ] );
+                      return $this->app->make( self::USER_CONFIG );
+                  } );
+
+        $this->app->when( ConfigGet::class )
+                  ->needs( Database::class )
+                  ->give( function () {
+                      return $this->app->make( self::USER_CONFIG );
                   } );
 
         $this->app->when( ComposeCopy::class )
@@ -173,9 +182,7 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( Share::class )
                   ->needs( Database::class )
                   ->give( function () {
-                      return new Database( [
-                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
-                      ] );
+                      return $this->app->make( self::USER_CONFIG );
                   } );
 
         $this->app->when( Updater::class )
