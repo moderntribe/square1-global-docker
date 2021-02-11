@@ -79,6 +79,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Installing dependencies via brew..."
   curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o ${CONFIG_DIR}/packages.txt
   brew install $(<"${CONFIG_DIR}"/packages.txt)
+  echo "Setting the default PHP version to 7.4..."
+  brew link php@7.4 --force
 fi
 
 echo "Creating config folder: ~/.config/squareone"
