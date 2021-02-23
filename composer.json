@@ -63,10 +63,7 @@
             "composer dump-autoload",
             "@autocomplete"
         ],
-        "post-create-project-cmd": [
-            "@php application app:rename"
-        ],
-        "autocomplete": "mv -f ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -f ./builds/so ./builds/so.phar",
+        "autocomplete": "mv -fn ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -fn ./builds/so ./builds/so.phar",
         "coverage-tests": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text",
         "coverage-text": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text < /dev/tty",
         "coverage-html": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-html coverage < /dev/tty",
