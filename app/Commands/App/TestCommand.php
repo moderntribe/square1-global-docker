@@ -16,6 +16,10 @@ class TestCommand extends ZeroTestCommand {
      *
      * @var string
      */
-    protected $signature = 'app:test {--without-tty : Disable output to TTY}';
+    protected $signature = 'app:test
+        {--without-tty : Disable output to TTY}
+        {--parallel : Indicates if the tests should run in parallel}
+        {--recreate-databases : Indicates if the test databases should be re-created}
+    ';
 
 }

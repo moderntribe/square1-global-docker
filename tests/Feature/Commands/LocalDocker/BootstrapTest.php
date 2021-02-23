@@ -128,7 +128,7 @@ class BootstrapTest extends LocalDockerCommand {
         $this->assertSame( BaseCommand::EXIT_SUCCESS, $tester->getStatusCode() );
 
         $this->assertFileExists( storage_path( 'tests/wp-content/object-cache.php' ) );
-        $this->assertFileNotExists( storage_path( 'tests/wp-content/object-cache.bak.php' ) );
+        $this->assertFileDoesNotExist( storage_path( 'tests/wp-content/object-cache.bak.php' ) );
 
         $this->assertFileExists( storage_path( 'tests/local-config.php' ) );
         $this->assertSame( "define( 'TRIBE_GLOMAR', false );", file_get_contents( storage_path( 'tests/local-config.php' ) ) );

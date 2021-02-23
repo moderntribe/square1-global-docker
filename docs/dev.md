@@ -7,7 +7,9 @@ it would be best to start with their documentation.
 
 In order to contribute to this project you must have the following installed:
 
-- php version ^7.2.5.
+- php version ^7.3 (7.4 recommended)
+- The php-intl extension enabled with `extension=intl.so`
+- `phar.readonly=0` set in your php.ini
 - [PCOV](https://github.com/krakjoe/pcov): for calculating test coverage.
 
 ### Development installation
@@ -28,7 +30,7 @@ When not packaged as a phar, there are some additional commands available to you
 
 | Command                    | Description                                                          |
 |----------------------------|----------------------------------------------------------------------|
-| sodev app:build            | Ignore this and use composer build to build a phar.                  |
+| sodev app:build            | Ignore this and use `composer build` to build a phar.                |
 | sodev app:create-migration | Creates a migration class that you can then customize.               |
 | sodev app:install          | Install Laravel Zero [add-ons](https://laravel-zero.com/docs/database). |
 | sodev app:rename           | Renames the application. You shouldn't use this.                     |

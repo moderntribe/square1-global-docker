@@ -8,7 +8,7 @@ function __fish_so_no_subcommand
 end
 
 # global options
-complete -c so -n '__fish_so_no_subcommand' -l help -d 'Display this help message'
+complete -c so -n '__fish_so_no_subcommand' -l help -d 'Display help for the given command. When no command is given display help for the list command'
 complete -c so -n '__fish_so_no_subcommand' -l quiet -d 'Do not output any message'
 complete -c so -n '__fish_so_no_subcommand' -l verbose -d 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'
 complete -c so -n '__fish_so_no_subcommand' -l version -d 'Display this application version'

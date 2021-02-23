@@ -15,28 +15,28 @@
         }
     ],
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.3|^8.0",
         "ext-json": "*",
         "ext-openssl": "*",
         "composer/semver": "^3.0",
-        "guzzlehttp/guzzle": "^6.3.1",
-        "illuminate/http": "^7.0",
-        "illuminate/validation": "^7.18",
+        "guzzlehttp/guzzle": "^6.5.5|^7.0",
+        "illuminate/http": "^8.0",
+        "illuminate/validation": "^8.0",
         "laminas/laminas-text": "^2.7",
-        "laravel-zero/framework": "^7.0",
+        "laravel-zero/framework": "^8.0",
         "m1/env": "^2.2",
         "pragmarx/yaml": "^1.2",
         "symfony/config": "^5.0",
-        "titasgailius/terminal": "^0.4.0",
+        "titasgailius/terminal": "^1.0",
         "tmarois/filebase": "^1.0"
     },
     "require-dev": {
         "bamarni/symfony-console-autocomplete": "^1.3",
         "fzaninotto/faker": "^1.4",
         "jaschilz/php-coverage-badger": "^2.0",
-        "mockery/mockery": "^1.3.1",
+        "mockery/mockery": "dev-master",
         "php-mock/php-mock-mockery": "^1.3",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.3"
     },
     "autoload": {
         "psr-4": {
@@ -53,7 +53,7 @@
         "sort-packages": true,
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.2.5"
+            "php": "7.3"
         }
     },
     "scripts": {
@@ -63,10 +63,7 @@
             "composer dump-autoload",
             "@autocomplete"
         ],
-        "post-create-project-cmd": [
-            "@php application app:rename"
-        ],
-        "autocomplete": "mv -f ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -f ./builds/so ./builds/so.phar",
+        "autocomplete": "mv -fn ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -fn ./builds/so ./builds/so.phar",
         "coverage-tests": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text",
         "coverage-text": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text < /dev/tty",
         "coverage-html": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-html coverage < /dev/tty",

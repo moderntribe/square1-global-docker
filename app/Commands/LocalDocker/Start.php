@@ -148,7 +148,7 @@ class Start extends BaseLocalDocker {
             }
 
             $token =
-                $this->secret( 'We have detected you have not configured a GitHub oAuth token. Please go to https//github.com/settings/tokens/new?scopes=repo and create one or enter an existing token' );
+                $this->secret( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one or enter an existing token' );
 
             // Save the default token to the so config directory.
             $github->save( $token );

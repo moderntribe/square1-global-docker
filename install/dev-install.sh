@@ -47,12 +47,12 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
               No ) exit;;
           esac
       done
-  else
-      brew update
   fi
 
   echo "Installing dependencies via brew..."
   brew install $(<brew/packages.txt)
+  echo "Setting the default PHP version to 7.4..."
+  brew link php@7.4 --force
 fi
 
 echo "Creating config folder: ~/.config/squareone"
