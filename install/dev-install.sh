@@ -47,8 +47,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
               No ) exit;;
           esac
       done
-  else
-      brew update
   fi
 
   echo "Installing dependencies via brew..."
