@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Commands\Self;
 
-use App\Commands\Self\UpdateCheck;
-use App\Services\Config\Github;
-use App\Services\Update\Updater;
 use Filebase\Document;
+use App\Services\Config\Github;
 use phpmock\mockery\PHPMockery;
+use App\Services\Update\Updater;
+use App\Commands\Self\UpdateCheck;
 use Tests\Feature\Commands\BaseCommandTester;
 
 class UpdateCheckTest extends BaseCommandTester {
@@ -26,7 +26,7 @@ class UpdateCheckTest extends BaseCommandTester {
     public function test_it_can_find_a_new_cached_version() {
         $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( date( 'U' ) );
 
-        $this->release->version = '5000';
+        $this->release->version = '5000.0.0';
 
         $this->updater->shouldReceive( 'getCachedRelease' )->once()->andReturn( $this->release );
 
@@ -34,10 +34,11 @@ class UpdateCheckTest extends BaseCommandTester {
         $tester  = $this->runCommand( $command, [] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertEquals( sprintf(
-            'A new version "%s" is available! run "so self:update" to update now.',
-            $this->release->version
-        ), trim( $tester->getDisplay() ) );
+        $this->assertEquals(
+            'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
+            trim( $tester->getDisplay()
+            )
+        );
     }
 
     public function test_it_does_not_find_an_update() {
@@ -59,7 +60,7 @@ class UpdateCheckTest extends BaseCommandTester {
     public function test_it_can_force_an_update() {
         $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( date( 'U' ) );
 
-        $this->release->version = '5000';
+        $this->release->version = '5000.0.0';
 
         $this->updater->shouldReceive( 'getLatestReleaseFromGitHub' )->once()->andReturn( $this->release );
 
@@ -70,10 +71,11 @@ class UpdateCheckTest extends BaseCommandTester {
 
         $this->assertSame( 0, $tester->getStatusCode() );
 
-        $this->assertEquals( sprintf(
-            'A new version "%s" is available! run "so self:update" to update now.',
-            $this->release->version
-        ), trim( $tester->getDisplay() ) );
+        $this->assertEquals(
+            'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
+            trim( $tester->getDisplay()
+            )
+        );
     }
 
     public function test_it_can_handle_empty_release_with_no_default_token() {
