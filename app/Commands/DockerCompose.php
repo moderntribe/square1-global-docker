@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use Throwable;
 use App\Contracts\Runner;
 use App\Services\Docker\Network;
 use App\Recorders\ResultRecorder;
@@ -41,13 +42,14 @@ class DockerCompose extends BaseCommand {
     /**
      * Execute the console command.
      *
-     * @param  \App\Contracts\Runner          $runner    The command runner.
-     * @param  \App\Services\Docker\Network   $network   The network manager.
-     * @param  \App\Recorders\ResultRecorder  $recorder  The command result recorder.
+     * @param  \App\Contracts\Runner              $runner    The command runner.
+     * @param  \App\Services\Docker\Network       $network   The network manager.
+     * @param  \App\Recorders\ResultRecorder      $recorder  The command result recorder.
+     * @param  \App\Services\Docker\Local\Config  $config    The docker configuration.
      *
      * @return int
      */
-    public function handle( Runner $runner, Network $network, ResultRecorder $recorder ) {
+    public function handle( Runner $runner, Network $network, ResultRecorder $recorder, Config $config ): int {
         // Get the entire input passed to this command.
         $command = (string) $this->input;
 
@@ -57,13 +59,28 @@ class DockerCompose extends BaseCommand {
             $tty = false;
         }
 
+        $envVars = [
+            Config::ENV_UID => $config->uid(),
+            Config::ENV_GID => $config->gid(),
+            'HOSTIP'        => $network->getGateWayIP(),
+        ];
+
+        try {
+            $projectEnvVars = [
+                Config::ENV_HOSTNAME       => $config->getProjectDomain(),
+                Config::ENV_HOSTNAME_TESTS => $config->getProjectTestDomain(),
+                Config::ENV_PROJECT_NAME   => $config->getProjectName(),
+                Config::ENV_PROJECT_ROOT   => $config->getProjectRoot(),
+            ];
+
+            $envVars = array_merge( $envVars, $projectEnvVars );
+        } catch ( Throwable $exception ) {
+            // Do nothing, this isn't being run in a project folder
+        }
+
         $response = $runner->output( $this )
                            ->tty( $tty )
-                           ->withEnvironmentVariables( [
-                               Config::ENV_UID => Config::uid(),
-                               Config::ENV_GID => Config::gid(),
-                               'HOSTIP'        => $network->getGateWayIP(),
-                           ] )
+                           ->withEnvironmentVariables( $envVars )
                            ->run( $command );
 
         $recorder->add( $response->process()->getOutput() );

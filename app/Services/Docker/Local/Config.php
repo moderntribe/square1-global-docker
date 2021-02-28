@@ -12,10 +12,14 @@ use App\Contracts\Runner;
  */
 class Config {
 
-    public const ENV_UID     = 'SQ1_UID';
-    public const ENV_GID     = 'SQ1_GID';
-    public const DEFAULT_UID = 1000;
-    public const DEFAULT_GID = 1000;
+    public const ENV_UID            = 'SQ1_UID';
+    public const ENV_GID            = 'SQ1_GID';
+    public const DEFAULT_UID        = 1000;
+    public const DEFAULT_GID        = 1000;
+    public const ENV_HOSTNAME       = 'SQ1_HOSTNAME';
+    public const ENV_HOSTNAME_TESTS = 'SQ1_HOSTNAME_TESTS';
+    public const ENV_PROJECT_ROOT   = 'SQ1_PROJECT_ROOT';
+    public const ENV_PROJECT_NAME   = 'SQ1_PROJECT_NAME';
 
     /**
      * The command runner.
@@ -52,7 +56,7 @@ class Config {
      *
      * @return int
      */
-    public static function uid(): int {
+    public function uid(): int {
         return getmyuid() ?: self::DEFAULT_UID;
     }
 
@@ -61,7 +65,7 @@ class Config {
      *
      * @return int
      */
-    public static function gid(): int {
+    public function gid(): int {
         return getmygid() ?: self::DEFAULT_GID;
     }
 
@@ -162,6 +166,17 @@ class Config {
      */
     public function getProjectDomain( string $tld = 'tribe' ): string {
         return $this->getProjectName() . '.' . $tld;
+    }
+
+    /**
+     * Get the project's test domain
+     *
+     * @param  string  $tld  The top-level domain, e.g. com
+     *
+     * @return string
+     */
+    public function getProjectTestDomain( string $tld = 'tribe' ): string {
+        return $this->getProjectName() . 'test.' . $tld;
     }
 
     /**
