@@ -62,7 +62,9 @@ class Nfsd {
      * @throws \Symfony\Component\Process\Exception\ProcessFailedException
      */
     public function check( string $filePath ): void {
-        $this->runner->with( [ 'path' => $filePath ] )->run( 'nfsd -F {{ $path }} checkexports' )->throw();
+        $this->runner->with( [ 'path' => $filePath ] )
+                     ->run( 'nfsd -F {{ $path }} checkexports' )
+                     ->throw();
     }
 
 }
