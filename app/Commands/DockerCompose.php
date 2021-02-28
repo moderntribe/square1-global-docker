@@ -65,17 +65,30 @@ class DockerCompose extends BaseCommand {
             'HOSTIP'        => $network->getGateWayIP(),
         ];
 
-        try {
-            $projectEnvVars = [
-                Config::ENV_HOSTNAME       => $config->getProjectDomain(),
-                Config::ENV_HOSTNAME_TESTS => $config->getProjectTestDomain(),
-                Config::ENV_PROJECT_NAME   => $config->getProjectName(),
-                Config::ENV_PROJECT_ROOT   => $config->getProjectRoot(),
-            ];
+        // Do not attempt a docker-compose file override with global commands
+        // @TODO This should all be moved to a service and accept override files on top of our defaults.
+        if ( ! str_contains( $command, '--project-name global' ) ) {
+            try {
+                $projectEnvVars = [
+                    Config::ENV_HOSTNAME       => $config->getProjectDomain(),
+                    Config::ENV_HOSTNAME_TESTS => $config->getProjectTestDomain(),
+                    Config::ENV_PROJECT_NAME   => $config->getProjectName(),
+                    Config::ENV_PROJECT_ROOT   => $config->getProjectRoot(),
+                ];
 
-            $envVars = array_merge( $envVars, $projectEnvVars );
-        } catch ( Throwable $exception ) {
-            // Do nothing, this isn't being run in a project folder
+                $envVars = array_merge( $envVars, $projectEnvVars );
+
+                // @TODO storage_path() should be switched to the squareone config dir
+                $composeFiles = [
+                    storage_path( 'docker/services.yml' ),
+                    storage_path( 'docker/volumes/bind.yml' ),
+                ];
+
+                // Override any existing docker-compose.yml files with our own
+                $command = str_replace( 'docker-compose', vsprintf( 'docker-compose -f %s -f %s', $composeFiles ), $command );
+            } catch ( Throwable $exception ) {
+                // Do nothing, this isn't being run in a project folder
+            }
         }
 
         $response = $runner->output( $this )
