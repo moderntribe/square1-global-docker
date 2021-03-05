@@ -108,7 +108,7 @@ class NfsValidator {
 
         if ( ! str_contains( $content, $line ) ) {
             $this->runner->with( [ 'content' => $line, 'path' => self::NFS_CONF ] )
-                         ->run( 'echo "{{ $content }}" | sudo tee -a {{ $path }}' )
+                         ->run( 'echo {{ $content }} | sudo tee -a {{ $path }}' )
                          ->throw();
             $this->restart = true;
         }
