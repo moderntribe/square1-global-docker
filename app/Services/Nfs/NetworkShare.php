@@ -108,7 +108,7 @@ class NetworkShare {
 
         // If we made it this far without thrown exceptions, write the exports configuration.
         $this->runner->with( [ 'path' => self::EXPORTS_FILE_PATH, 'content' => $exports ] )
-                     ->run( 'echo "{{ $content }}" | sudo tee /etc/exports' )
+                     ->run( 'echo {{ $content }} | sudo tee /etc/exports' )
                      ->throw();
 
         $this->nfsd->restart();
