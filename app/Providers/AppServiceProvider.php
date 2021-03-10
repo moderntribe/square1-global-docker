@@ -7,6 +7,7 @@ use RuntimeException;
 use Filebase\Database;
 use App\Contracts\Runner;
 use App\Services\HomeDir;
+use Flintstone\Flintstone;
 use App\Contracts\Trustable;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
@@ -31,6 +32,7 @@ use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
+use Flintstone\Formatter\JsonFormatter;
 use Symfony\Component\Config\FileLocator;
 use Illuminate\Contracts\Foundation\Application;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
@@ -61,8 +63,16 @@ class AppServiceProvider extends ServiceProvider {
             'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
         ];
 
-        $this->app->bind( 'Filebase\Database', function () use ( $config ) {
+        $this->app->bind( 'Filebase\Database', static function () use ( $config ) {
             return new Database( $config );
+        } );
+
+        $this->app->bind( 'Flintstone\Flintstone', function () {
+            return new Flintstone( 'settings', [
+                'dir'       => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/',
+                'ext'       => '.json',
+                'formatter' => $this->app->get( JsonFormatter::class ),
+            ] );
         } );
     }
 
@@ -151,14 +161,6 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( SelfUpdate::class )
                   ->needs( '$appName' )
                   ->give( config( 'app.name' ) );
-
-        $this->app->when( Share::class )
-                  ->needs( Database::class )
-                  ->give( function () {
-                      return new Database( [
-                          'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/config',
-                      ] );
-                  } );
 
         $this->app->when( Updater::class )
                   ->needs( Database::class )

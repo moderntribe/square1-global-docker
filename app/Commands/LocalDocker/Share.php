@@ -2,9 +2,9 @@
 
 namespace App\Commands\LocalDocker;
 
-use Filebase\Database;
 use App\Contracts\File;
 use App\Contracts\Runner;
+use Flintstone\Flintstone;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
 
@@ -34,16 +34,16 @@ class Share extends BaseLocalDocker {
     /**
      * The user's settings database.
      *
-     * @var \Filebase\Database
+     * @var \Flintstone\Flintstone
      */
     protected $settings;
 
     /**
      * Share constructor.
      *
-     * @param  \Filebase\Database  $settings
+     * @param  \Flintstone\Flintstone  $settings
      */
-    public function __construct( Database $settings ) {
+    public function __construct( Flintstone $settings ) {
         parent::__construct();
         $this->settings = $settings;
     }
@@ -60,9 +60,7 @@ class Share extends BaseLocalDocker {
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle( Config $config, Runner $runner, Filesystem $filesystem, File $file ): int {
-        $settings = $this->settings->get( 'user_secrets' );
-
-        if ( empty( $settings->ngrok_token ) ) {
+        if ( empty( $this->settings->get( 'ngrok' ) ) ) {
             $this->info( 'Ngrok requires a free user account to proxy to https domains. Sign up: https://dashboard.ngrok.com/signup' );
             $authToken = $this->secret( 'Enter your authtoken found in your dashboard: https://dashboard.ngrok.com/auth/your-authtoken (input hidden)' );
 
@@ -72,8 +70,7 @@ class Share extends BaseLocalDocker {
                 return self::EXIT_ERROR;
             }
 
-            $settings->ngrok_token = $authToken;
-            $settings->save();
+            $this->settings->set( 'ngrok', $authToken );
         }
 
         $this->checkGitIgnore( $file, $config->getProjectRoot() );
@@ -86,7 +83,7 @@ class Share extends BaseLocalDocker {
 
         $runner->with( [
             'domain' => $config->getProjectDomain(),
-            'token'  => $settings->ngrok_token,
+            'token'  => $this->settings->get( 'ngrok' ),
         ] )->tty( true )
                ->run( 'docker run --rm -it --net global_proxy --link tribe-proxy wernight/ngrok ngrok http --authtoken {{ $token }} -host-header={{ $domain }} tribe-proxy:443' )
                ->throw();
