@@ -19,6 +19,7 @@
         "ext-json": "*",
         "ext-openssl": "*",
         "composer/semver": "^3.0",
+        "fire015/flintstone": "^2.3",
         "guzzlehttp/guzzle": "^6.5.5|^7.0",
         "illuminate/http": "^8.0",
         "illuminate/validation": "^8.0",
