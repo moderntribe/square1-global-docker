@@ -71,12 +71,14 @@ class NetworkShare {
     /**
      * Adds an NFS share.
      *
-     * @param  string  $directory The directory to share.
+     * @param  string  $directory  The directory to share.
+     * @param  int     $uid        The user's user ID.
+     * @param  int     $gid        The user's group ID.
      *
      * @throws \App\Exceptions\SystemExitException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function add( string $directory ): void {
+    public function add( string $directory, int $uid, int $gid ): void {
 
         if ( ! $this->filesystem->exists( $directory ) ) {
             throw new SystemExitException( sprintf( 'Unable to find path: %s', $directory ) );
@@ -92,7 +94,7 @@ class NetworkShare {
         $exports = preg_replace( $regex, '', $exports );
 
         $exports .= "${open}\n";
-        $exports .= sprintf( "%s %s -alldirs -maproot=0:0\n", $directory, $this->network->getGateWayIP() );
+        $exports .= sprintf( "%s %s -alldirs -maproot=%d:%d localhost\n", $directory, $this->network->getGateWayIP(), $uid, $gid );
         $exports .= "${close}\n";
 
         // No changes to the configuration
