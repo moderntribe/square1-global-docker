@@ -56,7 +56,7 @@ class Config {
      *
      * @return int
      */
-    public function uid(): int {
+    public static function uid(): int {
         return getmyuid() ?: self::DEFAULT_UID;
     }
 
@@ -65,7 +65,7 @@ class Config {
      *
      * @return int
      */
-    public function gid(): int {
+    public static function gid(): int {
         return getmygid() ?: self::DEFAULT_GID;
     }
 
