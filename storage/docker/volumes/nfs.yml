@@ -8,5 +8,5 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      device: :${SQ1_PROJECT_ROOT}
-      o: addr=${HOSTIP:-172.20.10.1},vers=3,nolock,noacl,nocto,noatime,nodiratime,actimeo=1
+      device: ":${SQ1_PROJECT_ROOT}"
+      o: addr=host.docker.internal,vers=3,nolock,noacl,nocto,noatime,nodiratime,actimeo=1
