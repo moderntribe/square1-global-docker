@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use Throwable;
 use App\Contracts\Runner;
+use Flintstone\Flintstone;
 use App\Services\Docker\Network;
 use App\Recorders\ResultRecorder;
 use App\Services\Docker\Local\Config;
@@ -49,7 +50,7 @@ class DockerCompose extends BaseCommand {
      *
      * @return int
      */
-    public function handle( Runner $runner, Network $network, ResultRecorder $recorder, Config $config ): int {
+    public function handle( Runner $runner, Network $network, ResultRecorder $recorder, Config $config, Flintstone $settings ): int {
         // Get the entire input passed to this command.
         $command = (string) $this->input;
 
@@ -60,8 +61,8 @@ class DockerCompose extends BaseCommand {
         }
 
         $envVars = [
-            Config::ENV_UID => $config->uid(),
-            Config::ENV_GID => $config->gid(),
+            Config::ENV_UID => Config::uid(),
+            Config::ENV_GID => Config::gid(),
             'HOSTIP'        => $network->getGateWayIP(),
         ];
 
@@ -81,8 +82,18 @@ class DockerCompose extends BaseCommand {
                 // @TODO storage_path() should be switched to the squareone config dir
                 $composeFiles = [
                     storage_path( 'docker/services.yml' ),
-                    storage_path( 'docker/volumes/bind.yml' ),
                 ];
+
+                $volume = $settings->get( 'volume' ) ?: 'bind';
+
+                // @TODO add mutagen
+                switch ( $volume ) {
+                    case 'nfs':
+                        $composeFiles[] = storage_path( 'docker/volumes/nfs.yml' );
+                        break;
+                    default:
+                        $composeFiles[] = storage_path( 'docker/volumes/bind.yml' );
+                }
 
                 // Override any existing docker-compose.yml files with our own
                 $command = str_replace( 'docker-compose', vsprintf( 'docker-compose -f %s -f %s', $composeFiles ), $command );
