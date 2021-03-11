@@ -26,6 +26,7 @@
         "laminas/laminas-text": "^2.7",
         "laravel-zero/framework": "^8.0",
         "m1/env": "^2.2",
+        "nunomaduro/laravel-console-menu": "^3.2",
         "pragmarx/yaml": "^1.2",
         "symfony/config": "^5.0",
         "titasgailius/terminal": "^1.0",
