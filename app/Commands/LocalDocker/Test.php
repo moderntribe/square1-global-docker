@@ -63,9 +63,16 @@ class Test extends BaseLocalDocker {
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
-            '--env',
-            "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
         ];
+
+        if ( $this->option( 'xdebug' ) ) {
+          $params = array_merge( $params, [
+              '--env',
+              "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
+              '--env',
+              self::XDEBUG_ENV,
+          ] );
+        }
 
         if ( $this->option( 'notty' ) ) {
             $params = array_merge( $params, [ '-T' ] );
@@ -75,26 +82,12 @@ class Test extends BaseLocalDocker {
 
         $params = array_merge( $params, [ $container ] );
 
-        if ( $this->option( 'xdebug' ) ) {
-            $exec = [
-                'php',
-                '-dxdebug.remote_autostart=1',
-                '-dxdebug.remote_host=host.tribe',
-                '-dxdebug.remote_enable=1',
-                '/application/www/vendor/bin/codecept',
-                '-c',
-                "/application/www/dev/tests",
-            ];
-        } else {
-            $exec = [
-                'php',
-                '-dxdebug.remote_autostart=0',
-                '-dxdebug.remote_enable=0',
-                '/application/www/vendor/bin/codecept',
-                '-c',
-                '/application/www/dev/tests',
-            ];
-        }
+        $exec = [
+            'php',
+            '/application/www/vendor/bin/codecept',
+            '-c',
+            '/application/www/dev/tests',
+        ];
 
         chdir( $config->getDockerDir() );
 

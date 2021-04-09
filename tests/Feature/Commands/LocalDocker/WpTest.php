@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands\LocalDocker;
 
+use App\Commands\BaseCommand;
 use App\Commands\DockerCompose;
 use App\Commands\LocalDocker\Wp;
 use Illuminate\Support\Facades\Artisan;
@@ -51,12 +52,8 @@ class WpTest extends LocalDockerCommand {
             'exec',
             '-T',
             '--env',
-            'PHP_IDE_CONFIG=serverName=squareone.tribe',
+            BaseCommand::XDEBUG_ENV,
             'php-fpm',
-            'php',
-            '-dxdebug.remote_autostart=1',
-            '-dxdebug.remote_host=host.tribe',
-            '-dxdebug.remote_enable=1',
             '/usr/local/bin/wp',
             '--allow-root',
             'option',

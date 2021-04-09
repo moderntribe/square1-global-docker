@@ -50,28 +50,19 @@ class Wp extends BaseLocalDocker {
         if ( $this->option( 'xdebug' ) ) {
             $env = [
                 '--env',
-                "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
-            ];
-
-            $exec = [
-                'php',
-                '-dxdebug.remote_autostart=1',
-                '-dxdebug.remote_host=host.tribe',
-                '-dxdebug.remote_enable=1',
-                '/usr/local/bin/wp',
-                '--allow-root',
+                self::XDEBUG_ENV,
             ];
         } else {
             $env = [
                 '--env',
                 'WP_CLI_PHP_ARGS',
             ];
-
-            $exec = [
-                '/usr/local/bin/wp',
-                '--allow-root',
-            ];
         }
+
+        $exec = [
+            '/usr/local/bin/wp',
+            '--allow-root',
+        ];
 
         $params = array_merge( $params, $env, [ 'php-fpm' ], $exec, $this->argument( 'args' ) );
 

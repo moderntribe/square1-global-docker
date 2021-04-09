@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Commands\LocalDocker;
 
+use App\Commands\BaseCommand;
 use App\Commands\DockerCompose;
 use App\Commands\LocalDocker\Test;
 use Illuminate\Support\Facades\Artisan;
@@ -18,12 +19,8 @@ class TestTest extends LocalDockerCommand {
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
-            '--env',
-            'PHP_IDE_CONFIG=serverName=squareone.tribe',
             'php-tests',
             'php',
-            '-dxdebug.remote_autostart=0',
-            '-dxdebug.remote_enable=0',
             '/application/www/vendor/bin/codecept',
             '-c',
             '/application/www/dev/tests',
@@ -36,12 +33,8 @@ class TestTest extends LocalDockerCommand {
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
-            '--env',
-            'PHP_IDE_CONFIG=serverName=squareone.tribe',
             'php-tests',
             'php',
-            '-dxdebug.remote_autostart=0',
-            '-dxdebug.remote_enable=0',
             '/application/www/vendor/bin/codecept',
             '-c',
             '/application/www/dev/tests',
@@ -75,12 +68,11 @@ class TestTest extends LocalDockerCommand {
             'COMPOSE_INTERACTIVE_NO_CLI=1',
             '--env',
             'PHP_IDE_CONFIG=serverName=squareone.tribe',
+            '--env',
+            BaseCommand::XDEBUG_ENV,
             '-T',
             'php-fpm',
             'php',
-            '-dxdebug.remote_autostart=1',
-            '-dxdebug.remote_host=host.tribe',
-            '-dxdebug.remote_enable=1',
             '/application/www/vendor/bin/codecept',
             '-c',
             '/application/www/dev/tests',
@@ -95,12 +87,11 @@ class TestTest extends LocalDockerCommand {
             'COMPOSE_INTERACTIVE_NO_CLI=1',
             '--env',
             'PHP_IDE_CONFIG=serverName=squareone.tribe',
+            '--env',
+            BaseCommand::XDEBUG_ENV,
             '-T',
             'php-fpm',
             'php',
-            '-dxdebug.remote_autostart=1',
-            '-dxdebug.remote_host=host.tribe',
-            '-dxdebug.remote_enable=1',
             '/application/www/vendor/bin/codecept',
             '-c',
             '/application/www/dev/tests',

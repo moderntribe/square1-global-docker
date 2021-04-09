@@ -21,4 +21,9 @@ abstract class BaseCommand extends Command {
      */
     public const EXIT_ERROR = 1;
 
+    /**
+     * Environment variable to enable XDEBUG 3.0
+     */
+    public const XDEBUG_ENV = 'XDEBUG_SESSION=PHPSTORM';
+
 }
