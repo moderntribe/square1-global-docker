@@ -3,6 +3,8 @@
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Services\XdebugValidator;
+use App\Traits\XdebugWarningTrait;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Artisan;
  * @package App\Commands\LocalDocker
  */
 class Test extends BaseLocalDocker {
+
+    use XdebugWarningTrait;
 
     /**
      * The signature of the command.
@@ -53,10 +57,11 @@ class Test extends BaseLocalDocker {
      * Execute the console command.
      *
      * @param  \App\Services\Docker\Local\Config  $config
+     * @param  \App\Services\XdebugValidator      $xdebugValidator
      *
      * @return void
      */
-    public function handle( Config $config ): void {
+    public function handle( Config $config, XdebugValidator $xdebugValidator ): void {
         $params = [
             '--project-name',
             $config->getProjectName(),
@@ -66,12 +71,18 @@ class Test extends BaseLocalDocker {
         ];
 
         if ( $this->option( 'xdebug' ) ) {
-          $params = array_merge( $params, [
-              '--env',
-              "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
-              '--env',
-              self::XDEBUG_ENV,
-          ] );
+            $phpIni = $config->getPhpIni();
+
+            if ( ! $xdebugValidator->valid( $phpIni ) ) {
+                $this->outdatedXdebugWarning( $phpIni );
+            }
+
+            $params = array_merge( $params, [
+                '--env',
+                "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
+                '--env',
+                self::XDEBUG_ENV,
+            ] );
         }
 
         if ( $this->option( 'notty' ) ) {

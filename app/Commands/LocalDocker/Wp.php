@@ -3,6 +3,8 @@
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Services\XdebugValidator;
+use App\Traits\XdebugWarningTrait;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Artisan;
  * @package App\Commands\LocalDocker
  */
 class Wp extends BaseLocalDocker {
+
+    use XdebugWarningTrait;
 
     /**
      * The signature of the command.
@@ -33,10 +37,11 @@ class Wp extends BaseLocalDocker {
      * Execute the console command.
      *
      * @param  \App\Services\Docker\Local\Config  $config
+     * @param  \App\Services\XdebugValidator      $xdebugValidator
      *
-     * @return int
+     * @return int|null
      */
-    public function handle( Config $config ) {
+    public function handle( Config $config, XdebugValidator $xdebugValidator ): ?int {
         $params = [
             '--project-name',
             $config->getProjectName(),
@@ -48,6 +53,13 @@ class Wp extends BaseLocalDocker {
         }
 
         if ( $this->option( 'xdebug' ) ) {
+
+            $phpIni = $config->getPhpIni();
+
+            if ( ! $xdebugValidator->valid( $phpIni ) ) {
+                $this->outdatedXdebugWarning( $phpIni );
+            }
+
             $env = [
                 '--env',
                 self::XDEBUG_ENV,
