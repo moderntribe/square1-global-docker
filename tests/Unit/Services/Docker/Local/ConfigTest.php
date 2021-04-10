@@ -134,4 +134,15 @@ class ConfigTest extends TestCase {
         $this->assertSame( storage_path( 'tests/squareone/dev/docker/composer' ), $root );
     }
 
+    public function test_it_gets_a_php_ini_path() {
+        $config = new Config( $this->runner );
+
+        // Mock getcwd() found our tests storage path
+        PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
+
+        $phpIni = $config->getPhpIni();
+
+        $this->assertSame( storage_path( 'tests/squareone/dev/docker/php/php-ini-overrides.ini' ), $phpIni );
+    }
+
 }

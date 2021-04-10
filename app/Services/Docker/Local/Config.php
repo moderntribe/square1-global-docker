@@ -134,6 +134,15 @@ class Config {
     }
 
     /**
+     * Get the path to the the docker php.ini file.
+     *
+     * @return string
+     */
+    public function getPhpIni(): string {
+        return "{$this->getDockerDir()}/php/php-ini-overrides.ini";
+    }
+
+    /**
      * Get the project's name.
      *
      * @return string
