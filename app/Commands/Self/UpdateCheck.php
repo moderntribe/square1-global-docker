@@ -15,6 +15,7 @@ use LaravelZero\Framework\Commands\Command;
 class UpdateCheck extends Command {
 
     public const TIME_BETWEEN_CHECKS = '7 days';
+    public const RELEASES_URL        = 'https://github.com/moderntribe/square1-global-docker/releases/tag/%s';
 
     /**
      * The signature of the command.
@@ -94,7 +95,12 @@ class UpdateCheck extends Command {
         $shouldUpdate = Comparator::greaterThan( $release->version, $this->version );
 
         if ( $shouldUpdate ) {
-            $this->question( sprintf( 'A new version "%s" is available! run "so self:update" to update now.', $release->version ) );
+            $this->question( sprintf(
+                    'A new version "%s" is available! run "so self:update" to update now. See what\'s new: %s',
+                    $release->version,
+                    sprintf( self::RELEASES_URL, $release->version ),
+                )
+            );
         } elseif ( ! $this->option( 'only-new' ) ) {
             $this->info( sprintf( "You're running the latest version: %s", $this->version ) );
         }
