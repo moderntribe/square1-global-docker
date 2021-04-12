@@ -35,7 +35,7 @@ class XdebugValidatorTest extends TestCase {
         $this->assertTrue( $validator->valid( $this->path ) );
     }
 
-    public function test_it_find_invalid_php_ini_configuration() {
+    public function test_it_finds_invalid_php_ini_configuration() {
         $validator = new XdebugValidator( $this->file );
 
         $this->file->expects( 'exists' )->once()->with( $this->path )->andReturnTrue();
