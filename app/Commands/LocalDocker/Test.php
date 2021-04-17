@@ -3,6 +3,8 @@
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Services\XdebugValidator;
+use App\Traits\XdebugWarningTrait;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Artisan;
  * @package App\Commands\LocalDocker
  */
 class Test extends BaseLocalDocker {
+
+    use XdebugWarningTrait;
 
     /**
      * The signature of the command.
@@ -53,19 +57,33 @@ class Test extends BaseLocalDocker {
      * Execute the console command.
      *
      * @param  \App\Services\Docker\Local\Config  $config
+     * @param  \App\Services\XdebugValidator      $xdebugValidator
      *
      * @return void
      */
-    public function handle( Config $config ): void {
+    public function handle( Config $config, XdebugValidator $xdebugValidator ): void {
         $params = [
             '--project-name',
             $config->getProjectName(),
             'exec',
             '--env',
             'COMPOSE_INTERACTIVE_NO_CLI=1',
-            '--env',
-            "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
         ];
+
+        if ( $this->option( 'xdebug' ) ) {
+            $phpIni = $config->getPhpIni();
+
+            if ( ! $xdebugValidator->valid( $phpIni ) ) {
+                $this->outdatedXdebugWarning( $phpIni );
+            }
+
+            $params = array_merge( $params, [
+                '--env',
+                "PHP_IDE_CONFIG=serverName={$config->getProjectName()}.tribe",
+                '--env',
+                self::XDEBUG_ENV,
+            ] );
+        }
 
         if ( $this->option( 'notty' ) ) {
             $params = array_merge( $params, [ '-T' ] );
@@ -75,26 +93,12 @@ class Test extends BaseLocalDocker {
 
         $params = array_merge( $params, [ $container ] );
 
-        if ( $this->option( 'xdebug' ) ) {
-            $exec = [
-                'php',
-                '-dxdebug.remote_autostart=1',
-                '-dxdebug.remote_host=host.tribe',
-                '-dxdebug.remote_enable=1',
-                '/application/www/vendor/bin/codecept',
-                '-c',
-                "/application/www/dev/tests",
-            ];
-        } else {
-            $exec = [
-                'php',
-                '-dxdebug.remote_autostart=0',
-                '-dxdebug.remote_enable=0',
-                '/application/www/vendor/bin/codecept',
-                '-c',
-                '/application/www/dev/tests',
-            ];
-        }
+        $exec = [
+            'php',
+            '/application/www/vendor/bin/codecept',
+            '-c',
+            '/application/www/dev/tests',
+        ];
 
         chdir( $config->getDockerDir() );
 
