@@ -17,37 +17,38 @@ class Yaml extends YamlPackage {
     /**
      * Load yaml files from directory and add to Laravel config.
      *
-     * @param array|string $path
-     * @param string $configKey
+     * @param  array|string  $path
+     * @param  string        $configKey
      *
      * @return Collection
      */
-    public function loadToConfig($path, $configKey): Collection {
+    public function loadToConfig( $path, $configKey ): Collection {
         // @codeCoverageIgnoreStart
-        if (App::configurationIsCached()) {
+        if ( App::configurationIsCached() ) {
             return collect();
         }
         // @codeCoverageIgnoreEnd
 
         $loaded = [];
 
-        if (is_array($path)) {
-            foreach($path as $file) {
-                if ( $this->file->isYamlFile($file) ) {
+        if ( is_array( $path ) ) {
+            foreach ( $path as $file ) {
+                if ( $this->file->isYamlFile( $file ) ) {
                     $loaded[] = $this->loadFile( $file ) ?? [];
                 }
             }
         } else {
-            $loaded[] = $this->file->isYamlFile($path) ? ( $this->loadFile($path) ?? [] ) : [];
+            $loaded[] = $this->file->isYamlFile( $path ) ? ( $this->loadFile( $path ) ?? [] ) : [];
         }
 
         // Properly merge Yaml configs with ability to overwrite items
-        if (!empty($loaded)) {
+        if ( ! empty( $loaded ) ) {
             $loaded = array_replace_recursive( ...$loaded );
         }
 
-        $loaded = Arr::sortRecursive($loaded);
+        $loaded = Arr::sortRecursive( $loaded );
 
-        return $this->resolver->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
+        return $this->resolver->findAndReplaceExecutableCodeToExhaustion( $loaded, $configKey );
     }
+
 }
