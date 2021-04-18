@@ -29,10 +29,21 @@ class DockerCompose extends BaseCommand {
     protected $description = 'Pass through for docker-compose binary';
 
     /**
-     * DockerCompose constructor.
+     * The docker compose binary to use.
+     *
+     * @var string
      */
-    public function __construct() {
+    protected $binary;
+
+    /**
+     * DockerCompose constructor.
+     *
+     * @param  string  $binary
+     */
+    public function __construct( string $binary = 'docker-compose' ) {
         parent::__construct();
+
+        $this->binary = $binary;
 
         // Allow this command to receive any options/arguments
         $this->ignoreValidationErrors();
@@ -47,9 +58,13 @@ class DockerCompose extends BaseCommand {
      *
      * @return int
      */
-    public function handle( Runner $runner, Network $network, ResultRecorder $recorder ) {
+    public function handle( Runner $runner, Network $network, ResultRecorder $recorder ): int {
         // Get the entire input passed to this command.
         $command = (string) $this->input;
+
+        if ( ! str_contains( $this->binary, $command ) ) {
+            $command = str_replace( 'docker-compose', $this->binary, $command );
+        }
 
         $tty = true;
 

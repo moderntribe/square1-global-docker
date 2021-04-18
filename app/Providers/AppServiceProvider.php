@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Bootstrap;
 use RuntimeException;
+use App\Support\Yaml;
 use Filebase\Database;
 use App\Contracts\Runner;
 use App\Services\HomeDir;
 use App\Contracts\Trustable;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
+use App\Commands\DockerCompose;
 use App\Services\Certificate\Ca;
 use App\Services\Update\Updater;
 use App\Commands\Self\SelfUpdate;
@@ -107,6 +109,10 @@ class AppServiceProvider extends ServiceProvider {
 
                       return $factory->make( $this->app->make( Collection::class ) );
                   } );
+
+        $this->app->when( DockerCompose::class )
+                  ->needs( '$binary' )
+                  ->give( config( 'squareone.docker.compose-binary' ) );
 
         $this->app->when( Start::class )
                   ->needs( '$globalDirectory' )
@@ -234,16 +240,11 @@ class AppServiceProvider extends ServiceProvider {
     private function initConfig(): void {
         $files = $this->getConfigFiles();
 
+        // Rebind to use our overloaded Yaml object
+        $this->app->bind( 'pragmarx.yaml', Yaml::class );
         $yaml = $this->app->make( 'pragmarx.yaml' );
 
-        foreach ( $files as $file ) {
-            // Need to make sure it's not an empty .yml file: https://github.com/antonioribeiro/yaml/issues/21
-            $contents = $yaml->parseFile( $file );
-
-            if ( $contents ) {
-                $yaml->loadToConfig( $file, 'squareone' );
-            }
-        }
+        $yaml->loadToConfig( $files, 'squareone' );
     }
 
     /**
@@ -252,11 +253,15 @@ class AppServiceProvider extends ServiceProvider {
      * @return array|string
      */
     private function getConfigFiles() {
-        $paths = [
-            config_path(),
-            ( new HomeDir() )->get() . '/.config/squareone/',
-            getcwd(),
-        ];
+        if ( 'testing' === env( 'APP_ENV' ) ) {
+            $paths = [ config_path() ];
+        } else {
+            $paths = [
+                config_path(),
+                ( new HomeDir() )->get() . '/.config/squareone',
+                getcwd(),
+            ];
+        }
 
         $fileLocator = new FileLocator( $paths );
 
