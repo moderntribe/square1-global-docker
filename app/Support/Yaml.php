@@ -17,15 +17,17 @@ class Yaml extends YamlPackage {
     /**
      * Load yaml files from directory and add to Laravel config.
      *
-     * @param array $path
+     * @param array|string $path
      * @param string $configKey
      *
      * @return Collection
      */
     public function loadToConfig($path, $configKey): Collection {
+        // @codeCoverageIgnoreStart
         if (App::configurationIsCached()) {
             return collect();
         }
+        // @codeCoverageIgnoreEnd
 
         $loaded = [];
 
