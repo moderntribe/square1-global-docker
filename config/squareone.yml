@@ -28,6 +28,7 @@ docker:
   certs-folder: "{{'docker.config-dir'}}/certs"
   cert-expiry: 825
   phpmyadmin-port: 8080
+  compose-binary: "docker-compose"
 
 # Local Docker
 local-docker:
