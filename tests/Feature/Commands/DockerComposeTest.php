@@ -24,7 +24,6 @@ class DockerComposeTest extends BaseCommandTester {
 
         $network = $this->mock( Network::class );
         $network->shouldReceive( 'getGateWayIP' )->with()->once()->andReturn( '172.17.0.1' );
-
     }
 
     public function testItCanProxyDockerComposeCommands() {
@@ -90,6 +89,27 @@ class DockerComposeTest extends BaseCommandTester {
         ] );
 
         $this->assertSame( 1, $tester->getStatusCode() );
+    }
+
+    public function testItCanRunAnAlternateDockerComposerBinary() {
+        $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( "docker compose --project-name test --file '/tmp/docker compose.yml' up" )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
+
+        $command = $this->app->make( DockerCompose::class, [ 'binary' => 'docker compose' ] );
+
+        $tester = $this->runCommand( $command, [
+            '--project-name',
+            'test',
+            '--file',
+            '/tmp/docker-compose.yml',
+            'up',
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
     }
 
 }
