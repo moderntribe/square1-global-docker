@@ -30,6 +30,10 @@ symlink_sq1() {
   sudo ln -s ${SCRIPTDIR}/../so /usr/local/bin/sodev
 }
 
+install_nvm() {
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+}
+
 # OSX
 if [[ "$OSTYPE" == "darwin"* ]]; then
   command -v docker >/dev/null 2>&1
@@ -54,6 +58,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Setting the default PHP version to 7.4..."
   brew link php@7.4 --force
 fi
+
+echo "Installing nvm"
+install_nvm
 
 echo "Creating config folder: ~/.config/squareone"
 create_config_folder

@@ -55,6 +55,10 @@ install_phar() {
   sudo ln -s ${CONFIG_DIR}/bin/so /usr/local/bin/so
 }
 
+install_nvm() {
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+}
+
 # OSX
 if [[ "$OSTYPE" == "darwin"* ]]; then
   command -v docker >/dev/null 2>&1
@@ -80,6 +84,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Setting the default PHP version to 7.4..."
   brew link php@7.4 --force
 fi
+
+echo "Installing nvm"
+install_nvm
 
 echo "Creating config folder: ~/.config/squareone"
 create_config_folder
