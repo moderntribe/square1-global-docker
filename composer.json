@@ -22,10 +22,12 @@
         "guzzlehttp/guzzle": "^6.5.5|^7.0",
         "illuminate/http": "^8.0",
         "illuminate/validation": "^8.0",
+        "laminas/laminas-config": "^3.5",
         "laminas/laminas-text": "^2.7",
         "laravel-zero/framework": "^8.0",
         "m1/env": "^2.2",
         "pragmarx/yaml": "^1.2",
+        "spatie/data-transfer-object": "^2.8",
         "symfony/config": "^5.0",
         "titasgailius/terminal": "^1.0",
         "tmarois/filebase": "^1.0"

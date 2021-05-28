@@ -2,11 +2,11 @@
 
 namespace App\Commands\LocalDocker;
 
-use Filebase\Database;
 use App\Contracts\File;
 use App\Contracts\Runner;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
+use App\Services\Settings\Groups\AllSettings;
 
 /**
  * Share your local environment using ngrok
@@ -31,19 +31,14 @@ class Share extends BaseLocalDocker {
      */
     protected $description = 'Share your local project on a temporary URL using ngrok';
 
-    /**
-     * The user's settings database.
-     *
-     * @var \Filebase\Database
-     */
-    protected $settings;
+    protected AllSettings $settings;
 
     /**
      * Share constructor.
      *
-     * @param  \Filebase\Database  $settings
+     * @param  \App\Services\Settings\Groups\AllSettings  $settings
      */
-    public function __construct( Database $settings ) {
+    public function __construct( AllSettings $settings ) {
         parent::__construct();
         $this->settings = $settings;
     }
@@ -60,9 +55,9 @@ class Share extends BaseLocalDocker {
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle( Config $config, Runner $runner, Filesystem $filesystem, File $file ): int {
-        $settings = $this->settings->get( 'user_secrets' );
+        $token = $this->settings->secrets->ngrok_token;
 
-        if ( empty( $settings->ngrok_token ) ) {
+        if ( empty( $token ) ) {
             $this->info( 'Ngrok requires a free user account to proxy to https domains. Sign up: https://dashboard.ngrok.com/signup' );
             $authToken = $this->secret( 'Enter your authtoken found in your dashboard: https://dashboard.ngrok.com/auth/your-authtoken (input hidden)' );
 
@@ -72,8 +67,8 @@ class Share extends BaseLocalDocker {
                 return self::EXIT_ERROR;
             }
 
-            $settings->ngrok_token = $authToken;
-            $settings->save();
+            $this->settings->secrets->ngrok_token = $authToken;
+            $this->settings->save();
         }
 
         $this->checkGitIgnore( $file, $config->getProjectRoot() );
@@ -86,7 +81,7 @@ class Share extends BaseLocalDocker {
 
         $runner->with( [
             'domain' => $config->getProjectDomain(),
-            'token'  => $settings->ngrok_token,
+            'token'  => $this->settings->secrets->ngrok_token,
         ] )->tty( true )
                ->run( 'docker run --rm -it --net global_proxy --link tribe-proxy wernight/ngrok ngrok http --authtoken {{ $token }} -host-header={{ $domain }} tribe-proxy:443' )
                ->throw();

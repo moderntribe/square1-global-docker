@@ -12,6 +12,7 @@ use App\Contracts\Trustable;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
 use App\Commands\DockerCompose;
+use Laminas\Config\Reader\Json;
 use App\Services\Certificate\Ca;
 use App\Services\Update\Updater;
 use App\Commands\Self\SelfUpdate;
@@ -34,6 +35,11 @@ use Illuminate\Filesystem\Filesystem;
 use App\Commands\GlobalDocker\Restart;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Config\FileLocator;
+use App\Services\Settings\SettingsLoader;
+use App\Services\Settings\SettingsWriter;
+use Laminas\Config\Reader\ReaderInterface;
+use Laminas\Config\Writer\WriterInterface;
+use App\Services\Settings\Groups\AllSettings;
 use Illuminate\Contracts\Foundation\Application;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Certificate\Handler as CertHandler;
@@ -51,6 +57,8 @@ use App\Services\Certificate\Trust\Strategies\MacOs;
 class AppServiceProvider extends ServiceProvider {
 
     public const DB_STORE = 'store';
+
+    protected string $settings_file;
 
     /**
      * Bootstrap any application services.
@@ -77,6 +85,27 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function register() {
         $this->initConfig();
+
+        $this->app->bind(
+            ReaderInterface::class,
+            Json::class,
+        );
+
+        $this->app->bind(
+            WriterInterface::class,
+            \Laminas\Config\Writer\Json::class,
+        );
+
+        $this->app->when( SettingsWriter::class )
+            ->needs( '$file' )
+            ->give( $this->settings_file );
+
+        $this->app->singleton( AllSettings::class, function ( Application $app ) {
+            return new AllSettings(
+                $app->make( SettingsWriter::class ),
+                $app->make( SettingsLoader::class )->load( $this->settings_file )
+            );
+        } );
 
         $this->app->when( Bootstrap::class )
                   ->needs( '$configDir' )
@@ -245,6 +274,8 @@ class AppServiceProvider extends ServiceProvider {
         $yaml = $this->app->make( 'pragmarx.yaml' );
 
         $yaml->loadToConfig( $files, 'squareone' );
+
+        $this->settings_file = config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/settings.json';
     }
 
     /**
