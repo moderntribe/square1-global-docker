@@ -12,7 +12,7 @@ Status: **Stable**
 
 ### Requirements
 
-1. PHP 7.3+ (with php-xml, php-zlib)
+1. PHP 7.4+ (with php-xml, php-zlib)
 1. curl
 1. composer
 1. docker
