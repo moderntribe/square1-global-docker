@@ -12,10 +12,11 @@ use App\Services\Docker\Local\Config;
 use App\Services\Certificate\Handler;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
+use App\Services\Settings\Groups\AllSettings;
 use App\Commands\GlobalDocker\Start as GlobalStart;
 
 /**
- * Local docker start command
+ * Local docker start command.
  *
  * @package App\Commands\LocalDocker
  */
@@ -39,6 +40,14 @@ class Start extends BaseLocalDocker {
      * @var string
      */
     protected $description = 'Starts your local SquareOne project, run anywhere in a project folder';
+
+    protected AllSettings $settings;
+
+    public function __construct( AllSettings $settings ) {
+        parent::__construct();
+
+        $this->settings = $settings;
+    }
 
     /**
      * Execute the console command.
@@ -98,6 +107,13 @@ class Start extends BaseLocalDocker {
 
         // Start this project
         Artisan::call( DockerCompose::class, $args );
+
+        // Disable xdebug
+        if ( ! $this->settings->docker->xdebug ) {
+            Artisan::call( Xdebug::class, [
+                'action' => 'off',
+            ] );
+        }
 
         chdir( $workdir );
 
