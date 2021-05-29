@@ -2,14 +2,15 @@
 
 namespace App\Commands\Settings;
 
+use Illuminate\Support\Arr;
 use App\Commands\BaseCommand;
 use Illuminate\Filesystem\Filesystem;
 use App\Services\Settings\Groups\AllSettings;
 
 /**
- * Open command
+ * The Settings Command.
  *
- * @package App\Commands
+ * @package App\Commands\Settings
  */
 class Settings extends BaseCommand {
 
@@ -19,8 +20,7 @@ class Settings extends BaseCommand {
      * @var string
      */
     protected $signature = 'settings
-                            {setting? : The setting to change in dot.notation}
-                            {--set= : If provided, a new value for the given key}
+                            {--secrets : Show sensitive data}
                             {--reset : Reset settings to the default}';
 
     /**
@@ -28,7 +28,7 @@ class Settings extends BaseCommand {
      *
      * @var string
      */
-    protected $description = 'Stuff';
+    protected $description = 'Displays your current settings file';
 
     protected AllSettings $settings;
 
@@ -46,15 +46,14 @@ class Settings extends BaseCommand {
      * @return int
      */
     public function handle( Filesystem $filesystem ): int {
-        $key   = $this->argument( 'setting' );
-        $value = $this->option( 'set' );
-        $reset = $this->option( 'reset' );
+        $reset   = $this->option( 'reset' );
+        $secrets = $this->option( 'secrets' );
 
         if ( $reset ) {
             $confirm = $this->confirm( 'Are you sure you want to reset your settings to the defaults?' );
 
             if ( ! $confirm ) {
-                $this->info( 'Cancelled.' );
+                $this->info( 'Cancelled' );
 
                 return self::EXIT_SUCCESS;
             }
@@ -62,70 +61,33 @@ class Settings extends BaseCommand {
             $filesystem->delete( $this->settings->writer()->file() );
 
             $this->info( 'Settings reset' );
-
-            return self::EXIT_SUCCESS;
         }
 
-        if ( $key ) {
-            $setting = $this->getSetting( $key );
-
-            if ( ! $setting ) {
-                $this->error( sprintf( '%s does not exist!', $key ) );
-
-                return self::EXIT_ERROR;
-            }
-
-            if ( null === $value ) {
-                $this->info( $setting );
-
-                return self::EXIT_SUCCESS;
-            }
-
-            $this->saveSetting( $key, $value );
-        }
-
-        $this->info( json_encode( $this->settings, JSON_PRETTY_PRINT ) );
+        $this->info( sprintf( 'File Location: %s', $this->settings->writer()->file() ) );
+        $this->table( [ 'Setting', 'Value', 'Command' ], $this->formattedSettings( $secrets ) );
 
         return self::EXIT_SUCCESS;
     }
 
-    protected function getSetting( string $path ) {
-        $properties = explode( '.', $path );
+    protected function formattedSettings( bool $showSecrets ): array {
+        $settings = Arr::dot( $this->settings->toArray() );
 
-        $value = $this->settings;
+        $formatted = [];
 
-        foreach ( $properties as $property ) {
-            if ( isset( $value->$property ) ) {
-                $value = $value->$property;
-                continue;
+        foreach ( $settings as $setting => $value ) {
+
+            if ( is_bool( $value ) ) {
+                $value = $value === false ? 'false' : 'true';
             }
 
-            return null;
+            $formatted[] = [
+                $setting,
+                ( ! $showSecrets && str_contains( $setting, 'secrets' ) ) ? '*********' : $value,
+                str_contains( $setting, 'secrets' ) ? '' : 'so settings:' . str_replace( '.', ':', $setting ),
+            ];
         }
 
-        return json_encode( $value, JSON_PRETTY_PRINT );
-    }
-
-    protected function saveSetting( string $path, $value ) {
-        $properties = explode( '.', $path );
-
-        foreach ( $properties as $property ) {
-            if ( isset( $this->settings->$property ) ) {
-                $p = next( $properties );
-
-                if ( ! $p ) {
-                    $this->settings->$property = $value;
-                    continue;
-                }
-
-                $this->settings->$property->$p = $value;
-                continue;
-            }
-
-            return;
-        }
-
-        $this->settings->save();
+        return $formatted;
     }
 
 }
