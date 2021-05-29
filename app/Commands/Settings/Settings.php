@@ -1,7 +1,8 @@
 <?php declare( strict_types=1 );
 
-namespace App\Commands;
+namespace App\Commands\Settings;
 
+use App\Commands\BaseCommand;
 use Illuminate\Filesystem\Filesystem;
 use App\Services\Settings\Groups\AllSettings;
 
