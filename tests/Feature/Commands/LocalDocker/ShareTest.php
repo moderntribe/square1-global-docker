@@ -8,9 +8,12 @@ use App\Services\FileIO;
 use App\Runners\CommandRunner;
 use App\Commands\LocalDocker\Share;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Settings\SettingsWriter;
+use App\Services\Settings\Groups\AllSettings;
 
 class ShareTest extends LocalDockerCommand {
 
+    protected $settingsWriter;
     protected $settings;
     protected $runner;
 
@@ -19,15 +22,13 @@ class ShareTest extends LocalDockerCommand {
 
         Storage::disk( 'local' )->makeDirectory( 'tests/share-test/wp-content/mu-plugins' );
 
-        $this->settings = $this->mock( Database::class );
+        $this->settingsWriter = $this->mock( SettingsWriter::class );
+        $this->settings = new AllSettings( $this->settingsWriter , [] );
         $this->runner   = $this->mock( CommandRunner::class );
     }
 
     public function test_it_shares_without_a_saved_ngrok_token() {
-        $document = $this->mock( Document::class );
-        $document->shouldReceive( 'save' )->once();
-
-        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+        $this->settingsWriter->shouldReceive( 'save' )->once()->with( $this->settings );
 
         $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
@@ -52,14 +53,10 @@ class ShareTest extends LocalDockerCommand {
 
         $this->assertSame( 0, $tester->getStatusCode() );
         $this->assertStringContainsString( 'Ngrok requires a free user account to proxy to https domains.', $tester->getDisplay() );
-        $this->assertSame( 'mytoken', $document->ngrok_token );
+        $this->assertSame( 'mytoken', $this->settings->secrets->ngrok_token );
     }
 
     public function test_it_fails_with_empty_ngrok_token() {
-        $document = $this->mock( Document::class );
-
-        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
-
         $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
 
@@ -70,14 +67,11 @@ class ShareTest extends LocalDockerCommand {
 
         $this->assertSame( 1, $tester->getStatusCode() );
         $this->assertStringContainsString( 'No token entered', $tester->getDisplay() );
-        $this->assertEmpty( $document->ngrok_token );
+        $this->assertEmpty( $this->settings->secrets->ngrok_token );
     }
 
     public function test_it_shares_with_a_saved_ngrok_token() {
-        $document = new Document( $this->settings );
-        $document->ngrok_token = 'savedtoken';
-
-        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+        $this->settings->secrets->ngrok_token = 'savedtoken';
 
         $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
@@ -105,10 +99,7 @@ class ShareTest extends LocalDockerCommand {
     public function test_it_adds_mu_plugin_to_gitignore() {
         Storage::disk( 'local' )->put( 'tests/share-test/.gitignore', '*.sql' );
 
-        $document = new Document( $this->settings );
-        $document->ngrok_token = 'savedtoken';
-
-        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+        $this->settings->secrets->ngrok_token = 'savedtoken';
 
         $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
@@ -144,10 +135,7 @@ class ShareTest extends LocalDockerCommand {
         $file->shouldReceive( 'contains' )->andReturnFalse();
         $file->shouldReceive( 'append_content' )->andReturnFalse();
 
-        $document = new Document( $this->settings );
-        $document->ngrok_token = 'savedtoken';
-
-        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+        $this->settings->secrets->ngrok_token = 'savedtoken';
 
         $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
@@ -175,10 +163,7 @@ class ShareTest extends LocalDockerCommand {
     public function test_it_bypass_git_ignore_functionality_when_it_already_exists() {
         Storage::disk( 'local' )->put( 'tests/share-test/.gitignore', '*.local.php' );
 
-        $document = new Document( $this->settings );
-        $document->ngrok_token = 'savedtoken';
-
-        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+        $this->settings->secrets->ngrok_token = 'savedtoken';
 
         $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
