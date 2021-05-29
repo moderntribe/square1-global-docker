@@ -9,6 +9,7 @@ use App\Services\Config\Github;
 use App\Commands\LocalDocker\Start;
 use Illuminate\Console\OutputStyle;
 use App\Services\Docker\SystemClock;
+use App\Commands\LocalDocker\Xdebug;
 use App\Services\Certificate\Handler;
 use App\Services\Docker\Local\Config;
 use Illuminate\Filesystem\Filesystem;
@@ -16,17 +17,30 @@ use App\Commands\LocalDocker\Composer;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Commands\BaseCommandTester;
+use App\Services\Settings\Groups\AllSettings;
 use App\Commands\GlobalDocker\Start as GlobalStart;
 
 class StartTest extends BaseCommandTester {
+
+    private AllSettings $settings;
 
     protected function setUp(): void {
         parent::setUp();
 
         Storage::disk( 'local' )->makeDirectory( 'tests/dev/docker' );
+
+        // Set config dir to /tmp folder
+        \Illuminate\Support\Facades\Config::set( 'squareone.config-dir', '/tmp' );
+        $this->settings = $this->app->make( AllSettings::class );
+
+        // Enable xdebug globally
+        $this->settings->docker->xdebug = true;
     }
 
     public function test_it_can_start_a_project_with_standard_default_env_file() {
+        // Disable xdebug globally
+        $this->settings->docker->xdebug = false;
+
         $config = $this->mock( Config::class );
         $config->shouldReceive( 'getComposerVolume' )
                ->twice()
@@ -124,6 +138,13 @@ class StartTest extends BaseCommandTester {
                    '-d',
                    '--force-recreate',
                    '--remove-orphans',
+               ] );
+
+        // Assert xdebug would be disabled
+        Artisan::shouldReceive( 'call' )
+               ->once()
+               ->with( Xdebug::class, [
+                   'action' => 'off',
                ] );
 
         // Assert prestissimo is installed in the php-fpm container
