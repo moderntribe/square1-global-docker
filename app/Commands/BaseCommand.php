@@ -7,6 +7,8 @@ use LaravelZero\Framework\Commands\Command;
 /**
  * Extend when operating system commands need to be run within the console commands.
  *
+ * @method \NunoMaduro\LaravelConsoleMenu\Menu menu( string $title, string[] $options )
+ *
  * @package App\Commands
  */
 abstract class BaseCommand extends Command {
