@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Migrations;
 
@@ -11,30 +11,30 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class Migration {
 
-    /**
-     * Bypass running a migration.
-     *
-     * @var bool
-     */
-    protected $bypass = false;
+	/**
+	 * Bypass running a migration.
+	 */
+	protected bool $bypass = false;
 
-    /**
-     * Migration constructor.
-     */
-    public function __construct() {
-        // Don't run during tests unless specified with the TEST_BYPASS environment variable.
-        if ( 'testing' === env( 'APP_ENV' ) && '1' != env( 'ALLOW_MIGRATION' ) ) {
-            $this->bypass = true;
-        }
-    }
+	/**
+	 * Run the Migration
+	 *
+	 * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+	 *
+	 * @return bool If the migration was successful
+	 */
+	abstract public function up( OutputInterface $output ): bool;
 
-    /**
-     * Run the Migration
-     *
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
-     *
-     * @return bool If the migration was successful
-     */
-    abstract public function up( OutputInterface $output ): bool;
+	/**
+	 * Migration constructor.
+	 */
+	public function __construct() {
+		// Don't run during tests unless specified with the TEST_BYPASS environment variable.
+		if ( 'testing' !== env( 'APP_ENV' ) || '1' === env( 'ALLOW_MIGRATION' ) ) {
+			return;
+		}
+
+		$this->bypass = true;
+	}
 
 }

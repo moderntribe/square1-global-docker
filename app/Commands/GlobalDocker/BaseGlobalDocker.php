@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\GlobalDocker;
 
@@ -11,24 +11,22 @@ use App\Commands\BaseCommand;
  */
 abstract class BaseGlobalDocker extends BaseCommand {
 
-    public const PROJECT_NAME = 'global';
+	public const PROJECT_NAME = 'global';
 
-    /**
-     * The path to the global docker compose file.
-     *
-     * @var string
-     */
-    protected $globalDirectory;
+	/**
+	 * The path to the global docker compose file.
+	 */
+	protected string $globalDirectory;
 
-    /**
-     * BaseGlobalDocker constructor.
-     *
-     * @param  string  $globalDirectory  The path to the global docker directory.
-     */
-    public function __construct( string $globalDirectory ) {
-        parent::__construct();
+	/**
+	 * BaseGlobalDocker constructor.
+	 *
+	 * @param  string  $globalDirectory  The path to the global docker directory.
+	 */
+	public function __construct( string $globalDirectory ) {
+		parent::__construct();
 
-        $this->globalDirectory = $globalDirectory;
-    }
+		$this->globalDirectory = $globalDirectory;
+	}
 
 }

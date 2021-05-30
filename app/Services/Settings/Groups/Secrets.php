@@ -11,11 +11,9 @@ use Spatie\DataTransferObject\FlexibleDataTransferObject;
  */
 class Secrets extends FlexibleDataTransferObject {
 
-    /**
-     * The user's ngrok token for use with "so share"
-     *
-     * @var string
-     */
-    public string $ngrok_token = '';
+	/**
+	 * The user's ngrok token for use with "so share"
+	 */
+	public string $ngrok_token = '';
 
 }

@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\LocalDocker;
 
@@ -13,45 +13,49 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Shell extends BaseLocalDocker {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'shell {--user=squareone : The username or UID of the account to use}';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'shell {--user=squareone : The username or UID of the account to use}';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Gives you a bash shell into the php-fpm docker container';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Gives you a bash shell into the php-fpm docker container';
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     *
-     * @return void
-     */
-    public function handle( Config $config ): void {
-        $this->info( sprintf( '➜ Launching shell for %s...', $config->getProjectName() ) );
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 */
+	public function handle( Config $config ): void {
+		$this->info( sprintf( '➜ Launching shell for %s...', $config->getProjectName() ) );
 
-        chdir( $config->getDockerDir() );
+		chdir( $config->getDockerDir() );
 
-        $result = Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            'exec',
-            '--user',
-            $this->option( 'user' ),
-            'php-fpm',
-            '/bin/bash',
-        ] );
+		$result = Artisan::call( DockerCompose::class, [
+			'--project-name',
+			$config->getProjectName(),
+			'exec',
+			'--user',
+			$this->option( 'user' ),
+			'php-fpm',
+			'/bin/bash',
+		] );
 
-        if ( self::EXIT_ERROR === $result ) {
-            $this->error( 'Whoops! This project is using an older php-fpm container. Try running "so shell --user root" instead' );
-        }
-    }
+		if ( self::EXIT_ERROR !== $result ) {
+			return;
+		}
+
+		$this->error( 'Whoops! This project is using an older php-fpm container. Try running "so shell --user root" instead' );
+	}
 
 }

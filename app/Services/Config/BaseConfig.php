@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Config;
 
@@ -11,29 +11,25 @@ use Illuminate\Filesystem\Filesystem;
  */
 abstract class BaseConfig {
 
-    /**
-     * Filesystem.
-     *
-     * @var Filesystem
-     */
-    protected $filesystem;
+	/**
+	 * Filesystem.
+	 */
+	protected Filesystem $filesystem;
 
-    /**
-     * The SquareOne configuration directory.
-     *
-     * @var string
-     */
-    protected $directory;
+	/**
+	 * The SquareOne configuration directory.
+	 */
+	protected string $directory;
 
-    /**
-     * Github constructor.
-     *
-     * @param  Filesystem  $filesystem
-     * @param  string      $directory
-     */
-    public function __construct( Filesystem $filesystem, string $directory ) {
-        $this->filesystem = $filesystem;
-        $this->directory  = $directory . '/defaults';
-    }
+	/**
+	 * Github constructor.
+	 *
+	 * @param \Illuminate\Filesystem\Filesystem $filesystem
+	 * @param  string      $directory
+	 */
+	public function __construct( Filesystem $filesystem, string $directory ) {
+		$this->filesystem = $filesystem;
+		$this->directory  = $directory . '/defaults';
+	}
 
 }

@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\GlobalDocker;
 
@@ -12,35 +12,39 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Logs extends BaseGlobalDocker {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'global:logs';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'global:logs';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Displays SquareOne global docker logs';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Displays SquareOne global docker logs';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle(): void {
+	/**
+	 * Execute the console command.
+	 *
+	 * @return void
+	 */
+	public function handle(): void {
 
-        chdir( $this->globalDirectory );
+		chdir( $this->globalDirectory );
 
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            self::PROJECT_NAME,
-            'logs',
-            '-f',
-        ] );
-    }
+		Artisan::call( DockerCompose::class, [
+			'--project-name',
+			self::PROJECT_NAME,
+			'logs',
+			'-f',
+		] );
+	}
 
 }

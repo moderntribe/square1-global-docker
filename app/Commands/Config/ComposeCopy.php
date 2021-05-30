@@ -1,9 +1,9 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\Config;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Http;
 use LaravelZero\Framework\Commands\Command;
 
 /**
@@ -13,65 +13,64 @@ use LaravelZero\Framework\Commands\Command;
  */
 class ComposeCopy extends Command {
 
-    /**
-     * The path where we'll save the docker-compose.override.yml file.
-     *
-     * @var string
-     */
-    protected $composeOverride;
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'config:compose-copy';
 
-    /**
-     * The URL to the docker-compose.yml in the GitHub repo.
-     *
-     * @var string
-     */
-    protected $downloadUrl;
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Copies the Global docker-compose.yml file to the local config folder for customization';
 
-    /**
-     * ComposeCopy constructor.
-     *
-     * @param  string  $composeOverride  The path where we'll save the docker-compose.override.yml file.
-     * @param  string  $downloadUrl      The URL to the docker-compose.yml in the GitHub repo.
-     */
-    public function __construct( string $composeOverride, string $downloadUrl ) {
-        parent::__construct();
+	/**
+	 * The path where we'll save the docker-compose.override.yml file.
+	 */
+	protected string $composeOverride;
 
-        $this->composeOverride = $composeOverride;
-        $this->downloadUrl     = $downloadUrl;
-    }
+	/**
+	 * The URL to the docker-compose.yml in the GitHub repo.
+	 */
+	protected string $downloadUrl;
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'config:compose-copy';
+	/**
+	 * ComposeCopy constructor.
+	 *
+	 * @param  string  $composeOverride  The path where we'll save the docker-compose.override.yml file.
+	 * @param  string  $downloadUrl      The URL to the docker-compose.yml in the GitHub repo.
+	 */
+	public function __construct( string $composeOverride, string $downloadUrl ) {
+		parent::__construct();
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Copies the Global docker-compose.yml file to the local config folder for customization';
+		$this->composeOverride = $composeOverride;
+		$this->downloadUrl     = $downloadUrl;
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Http\Client\RequestException
-     */
-    public function handle( Filesystem $filesystem ): void {
-        $this->info( '➜ Fetching docker-compose.yml...' );
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 *
+	 * @return void
+	 *
+	 * @throws \Illuminate\Http\Client\RequestException
+	 */
+	public function handle( Filesystem $filesystem ): void {
+		$this->info( '➜ Fetching docker-compose.yml...' );
 
-        $response = Http::get( $this->downloadUrl )->throw();
+		$response = Http::get( $this->downloadUrl )->throw();
 
-        $filesystem->replace( $this->composeOverride, $response->body() );
+		$filesystem->replace( $this->composeOverride, $response->body() );
 
-        $this->info( sprintf( '➜ Saved to %s', $this->composeOverride ) );
-
-    }
+		$this->info( sprintf( '➜ Saved to %s', $this->composeOverride ) );
+	}
 
 }

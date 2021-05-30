@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\LocalDocker;
 
@@ -13,46 +13,50 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Composer extends BaseLocalDocker {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'composer {args* : arguments passed to the composer binary}';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'composer {args* : arguments passed to the composer binary}';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Run a composer command in the local docker container';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Run a composer command in the local docker container';
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     *
-     * @return void
-     */
-    public function handle( Config $config ): void {
-        $params = [
-            '--project-name',
-            $config->getProjectName(),
-            'exec',
-            'php-fpm',
-            $this->arguments()['command'],
-        ];
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 *
+	 * @return void
+	 */
+	public function handle( Config $config ): void {
+		$params = [
+			'--project-name',
+			$config->getProjectName(),
+			'exec',
+			'php-fpm',
+			$this->arguments()['command'],
+		];
 
-        $params = array_merge( $params, $this->argument( 'args' ), [
-            '-d',
-            '/application/www',
-        ] );
+		$params = array_merge( $params, $this->argument( 'args' ), [
+			'-d',
+			'/application/www',
+		] );
 
-        chdir( $config->getDockerDir() );
+		chdir( $config->getDockerDir() );
 
-        Artisan::call( DockerCompose::class, $params );
+		Artisan::call( DockerCompose::class, $params );
 
-        $this->info( 'Done.' );
-    }
+		$this->info( 'Done.' );
+	}
 
 }

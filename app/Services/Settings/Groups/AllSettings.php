@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Settings\Groups;
 
@@ -12,45 +12,49 @@ use Spatie\DataTransferObject\FlexibleDataTransferObject;
  */
 class AllSettings extends FlexibleDataTransferObject {
 
-    public Secrets $secrets;
-    public Docker $docker;
+	public Secrets $secrets;
+	public Docker $docker;
 
-    protected SettingsWriter $writer;
+	protected SettingsWriter $writer;
 
-    /**
-     * Override default DTO functionality to set expected
-     * defaults.
-     *
-     * @param  array                                  $parameters
-     * @param  \App\Services\Settings\SettingsWriter  $writer
-     */
-    public function __construct( SettingsWriter $writer, array $parameters = [] ) {
-        $this->writer = $writer;
+	/**
+	 * Override default DTO functionality to set expected
+	 * defaults.
+	 *
+	 * @param  array                                  $parameters
+	 * @param  \App\Services\Settings\SettingsWriter  $writer
+	 */
+	public function __construct( SettingsWriter $writer, array $parameters = [] ) {
+		$this->writer = $writer;
 
-        $validators = $this->getFieldValidators();
+		$validators = $this->getFieldValidators();
 
-        foreach ( $validators as $field => $validator ) {
-            if (
-                ! isset( $parameters[ $field ] )
-                && ! $validator->isNullable
-            ) {
-                $class = current( $validator->allowedTypes );
+		foreach ( $validators as $field => $validator ) {
+			if (
+				isset( $parameters[ $field ] )
+				|| $validator->isNullable
+			) {
+				continue;
+			}
 
-                if ( class_exists( $class ) ) {
-                    $parameters[ $field ] = new $class;
-                }
-            }
-        }
+			$class = current( $validator->allowedTypes );
 
-        parent::__construct( $parameters );
-    }
+			if ( ! class_exists( $class ) ) {
+				continue;
+			}
 
-    public function save() {
-        $this->writer->save( $this );
-    }
+			$parameters[ $field ] = new $class;
+		}
 
-    public function writer(): SettingsWriter {
-        return $this->writer;
-    }
+		parent::__construct( $parameters );
+	}
+
+	public function save(): void {
+		$this->writer->save( $this );
+	}
+
+	public function writer(): SettingsWriter {
+		return $this->writer;
+	}
 
 }

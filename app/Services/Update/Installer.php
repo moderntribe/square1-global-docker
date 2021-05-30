@@ -1,11 +1,11 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Update;
 
-use Exception;
 use App\Services\Phar;
-use Filebase\Document;
 use App\Services\Terminator;
+use Exception;
+use Filebase\Document;
 use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -16,79 +16,69 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Installer {
 
-    /**
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    protected $filesystem;
+	protected Filesystem $filesystem;
+	protected Phar $phar;
+	protected Terminator $terminator;
 
-    /**
-     * @var \App\Services\Phar
-     */
-    protected $phar;
+	/**
+	 * Installer constructor.
+	 *
+	 * @param  \Symfony\Component\Filesystem\Filesystem  $filesystem
+	 * @param  \App\Services\Phar                        $phar
+	 * @param  \App\Services\Terminator                  $terminator
+	 */
+	public function __construct( Filesystem $filesystem, Phar $phar, Terminator $terminator ) {
+		$this->filesystem = $filesystem;
+		$this->phar       = $phar;
+		$this->terminator = $terminator;
+	}
 
-    /**
-     * @var \App\Services\Terminator
-     */
-    protected $terminator;
+	/**
+	 * Download a file to a temporary location.
+	 *
+	 * @param  \Filebase\Document                       $release    The release document
+	 * @param  string                                   $localFile  The path to the so binary
+	 * @param  \LaravelZero\Framework\Commands\Command  $command    The command instance
+	 *
+	 * @throws \Exception
+	 */
+	public function download( Document $release, string $localFile, Command $command ): void {
+		$tempFile = $this->filesystem->tempnam( '/tmp', 'so_', '.phar' );
 
-    /**
-     * Installer constructor.
-     *
-     * @param  \Symfony\Component\Filesystem\Filesystem  $filesystem
-     * @param  \App\Services\Phar                        $phar
-     * @param  \App\Services\Terminator                  $terminator
-     */
-    public function __construct( Filesystem $filesystem, Phar $phar, Terminator $terminator ) {
-        $this->filesystem = $filesystem;
-        $this->phar       = $phar;
-        $this->terminator = $terminator;
-    }
+		$this->filesystem->copy( $release->download, $tempFile );
 
-    /**
-     * Download a file to a temporary location.
-     *
-     * @param  \Filebase\Document                       $release    The release document
-     * @param  string                                   $localFile  The path to the so binary
-     * @param  \LaravelZero\Framework\Commands\Command  $command    The command instance
-     *
-     * @throws \Exception
-     */
-    public function download( Document $release, string $localFile, Command $command ): void {
-        $tempFile = $this->filesystem->tempnam( '/tmp', 'so_', '.phar' );
+		$this->install( $tempFile, $localFile );
 
-        $this->filesystem->copy( $release->download, $tempFile );
+		$command->info( sprintf( 'Successfully updated to %s.', $release->version ) );
 
-        $this->install( $tempFile, $localFile );
+		// Always kill execution after an upgrade
+		$this->terminator->exitWithCode();
+	}
 
-        $command->info( sprintf( 'Successfully updated to %s.', $release->version ) );
+	/**
+	 * Overwrite the existing so.phar with the newly updated version.
+	 *
+	 * @param  string  $tempFile
+	 * @param  string  $localFile
+	 *
+	 * @throws \Exception
+	 */
+	protected function install( string $tempFile, string $localFile ): void {
+		try {
+			$this->filesystem->chmod( $tempFile, 0755 );
 
-        // Always kill execution after an upgrade
-        $this->terminator->exitWithCode();
-    }
+			$phar = $this->phar->testPhar( $tempFile );
 
-    /**
-     * Overwrite the existing so.phar with the newly updated version.
-     *
-     * @param  string  $tempFile
-     * @param  string  $localFile
-     *
-     * @throws \Exception
-     */
-    protected function install( string $tempFile, string $localFile ): void {
-        try {
-            $this->filesystem->chmod( $tempFile, 0755 );
+			// Free variable to unlock the phar
+			unset( $phar );
 
-            $phar = $this->phar->testPhar( $tempFile );
+			// Overwrite the local phar
+			$this->filesystem->rename( $tempFile, $localFile, true );
+		} catch ( \Throwable $exception ) {
+			$this->filesystem->remove( [ $tempFile ] );
 
-            // Free variable to unlock the phar
-            unset( $phar );
-
-            // Overwrite the local phar
-            $this->filesystem->rename( $tempFile, $localFile, true );
-        } catch ( Exception $exception ) {
-            $this->filesystem->remove( [ $tempFile ] );
-            throw new Exception( $exception->getMessage() );
-        }
-    }
+			throw new Exception( $exception->getMessage() );
+		}
+	}
 
 }

@@ -1,9 +1,9 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Docker\Local;
 
-use RuntimeException;
 use App\Contracts\Runner;
+use RuntimeException;
 
 /**
  * Local Docker Config
@@ -12,178 +12,168 @@ use App\Contracts\Runner;
  */
 class Config {
 
-    public const ENV_UID     = 'SQ1_UID';
-    public const ENV_GID     = 'SQ1_GID';
-    public const DEFAULT_UID = 1000;
-    public const DEFAULT_GID = 1000;
+	public const ENV_UID     = 'SQ1_UID';
+	public const ENV_GID     = 'SQ1_GID';
+	public const DEFAULT_UID = 1000;
+	public const DEFAULT_GID = 1000;
 
-    /**
-     * The command runner.
-     *
-     * @var \App\Contracts\Runner
-     */
-    protected $runner;
+	/**
+	 * The command runner.
+	 */
+	protected Runner $runner;
 
-    /**
-     * The path to the project root folder.
-     *
-     * @var string
-     */
-    protected $projectRoot;
+	/**
+	 * The path to the project root folder.
+	 */
+	protected string $projectRoot;
 
-    /**
-     * Override the current directory with a custom path to a project.
-     *
-     * @var string
-     */
-    protected $path = '';
+	/**
+	 * Override the current directory with a custom path to a project.
+	 */
+	protected string $path = '';
 
-    /**
-     * Config constructor.
-     *
-     * @param  \App\Contracts\Runner  $runner
-     */
-    public function __construct( Runner $runner ) {
-        $this->runner = $runner;
-    }
+	/**
+	 * Config constructor.
+	 *
+	 * @param  \App\Contracts\Runner  $runner
+	 */
+	public function __construct( Runner $runner ) {
+		$this->runner = $runner;
+	}
 
-    /**
-     * The user's user ID.
-     *
-     * @return int
-     */
-    public static function uid(): int {
-        return getmyuid() ?: self::DEFAULT_UID;
-    }
+	/**
+	 * Override the current directory with a custom path to a project.
+	 *
+	 * @param  string  $path
+	 *
+	 * @return \App\Services\Docker\Local\Config
+	 */
+	public function setPath( string $path ): Config {
+		$this->path = trim( $path );
 
-    /**
-     * The user's group ID.
-     *
-     * @return int
-     */
-    public static function gid(): int {
-        return getmygid() ?: self::DEFAULT_GID;
-    }
+		return $this;
+	}
 
-    /**
-     * Override the current directory with a custom path to a project.
-     *
-     * @param  string  $path
-     *
-     * @return $this
-     */
-    public function setPath( string $path ) {
-        $this->path = trim( $path );
+	/**
+	 * Get the project root.
+	 *
+	 * @return string
+	 */
+	public function getProjectRoot(): string {
+		if ( empty( $this->projectRoot ) ) {
+			while ( true ) {
+				// We've reached the root of the operating system, bail out
+				if ( '/' === $this->path ) {
+					break;
+				}
 
-        return $this;
-    }
+				$path = $this->path ? $this->path : getcwd();
 
-    /**
-     * Get the project root.
-     *
-     * @return string
-     */
-    public function getProjectRoot(): string {
-        if ( empty( $this->projectRoot ) ) {
+				// If these either of these files exist, this is probably a SquareOne project
+				$squareOneFiles = [
+					"{$path}/dev/docker/docker-compose.yml",
+					"{$path}/squareone.yml",
+				];
 
-            while ( true ) {
+				$squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
 
-                // We've reached the root of the operating system, bail out
-                if ( '/' === $this->path ) {
-                    break;
-                }
+				// Check the directory above and continue the loop
+				if ( empty( $squareOneFiles ) ) {
+					$this->path = dirname( $path );
+					continue;
+				}
 
-                $path = $this->path ? $this->path : getcwd();
+				$this->projectRoot = trim( $path );
 
-                // If these either of these files exist, this is probably a SquareOne project
-                $squareOneFiles = [
-                    "{$path}/dev/docker/docker-compose.yml",
-                    "{$path}/squareone.yml",
-                ];
+				break;
+			}
+		}
 
-                $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
+		// We couldn't find a SquareOne project
+		if ( empty( $this->projectRoot ) ) {
+			throw new RuntimeException( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
+		}
 
-                // Check the directory above and continue the loop
-                if ( empty( $squareOneFiles ) ) {
-                    $this->path = dirname( $path );
-                    continue;
-                }
+		return $this->projectRoot;
+	}
 
-                $this->projectRoot = trim( $path );
+	/**
+	 * Get the directory of the docker-compose.yml file.
+	 *
+	 * @return string
+	 */
+	public function getDockerDir(): string {
+		return "{$this->getProjectRoot()}/dev/docker";
+	}
 
-                break;
-            }
+	/**
+	 * Get the path to the the docker php.ini file.
+	 *
+	 * @return string
+	 */
+	public function getPhpIni(): string {
+		return "{$this->getDockerDir()}/php/php-ini-overrides.ini";
+	}
 
-        }
+	/**
+	 * Get the project's name.
+	 *
+	 * @return string
+	 */
+	public function getProjectName(): string {
+		$name = file_get_contents( "{$this->getProjectRoot()}/dev/docker/.projectID" );
 
-        // We couldn't find a SquareOne project
-        if ( empty( $this->projectRoot ) ) {
-            throw new RuntimeException( 'Unable to find project root. Are you sure this is a SquareOne Project?' );
-        }
+		return trim( $name );
+	}
 
-        return $this->projectRoot;
-    }
+	/**
+	 * Get the composer volume where the cache and auth.json are stored.
+	 *
+	 * @return string
+	 */
+	public function getComposerVolume(): string {
+		return "{$this->getProjectRoot()}/dev/docker/composer";
+	}
 
-    /**
-     * Get the directory of the docker-compose.yml file.
-     *
-     * @return string
-     */
-    public function getDockerDir(): string {
-        return "{$this->getProjectRoot()}/dev/docker";
-    }
+	/**
+	 * Get the project's domain
+	 *
+	 * @param  string  $tld  The top-level domain, e.g. com
+	 *
+	 * @return string
+	 */
+	public function getProjectDomain( string $tld = 'tribe' ): string {
+		return $this->getProjectName() . '.' . $tld;
+	}
 
-    /**
-     * Get the path to the the docker php.ini file.
-     *
-     * @return string
-     */
-    public function getPhpIni(): string {
-        return "{$this->getDockerDir()}/php/php-ini-overrides.ini";
-    }
+	/**
+	 * Get the project's URL
+	 *
+	 * @param  string  $tld     The top-level domain, e.g. .com
+	 * @param  string  $scheme  The scheme, https, http
+	 *
+	 * @return string
+	 */
+	public function getProjectUrl( string $tld = 'tribe', string $scheme = 'https' ): string {
+		return $scheme . '://' . $this->getProjectDomain( $tld );
+	}
 
-    /**
-     * Get the project's name.
-     *
-     * @return string
-     */
-    public function getProjectName(): string {
-        $name = file_get_contents( "{$this->getProjectRoot()}/dev/docker/.projectID" );
+	/**
+	 * The user's user ID.
+	 *
+	 * @return int
+	 */
+	public static function uid(): int {
+		return getmyuid() ?: self::DEFAULT_UID;
+	}
 
-        return trim( $name );
-    }
-
-    /**
-     * Get the composer volume where the cache and auth.json are stored.
-     *
-     * @return string
-     */
-    public function getComposerVolume(): string {
-        return "{$this->getProjectRoot()}/dev/docker/composer";
-    }
-
-    /**
-     * Get the project's domain
-     *
-     * @param  string  $tld  The top-level domain, e.g. com
-     *
-     * @return string
-     */
-    public function getProjectDomain( string $tld = 'tribe' ): string {
-        return $this->getProjectName() . '.' . $tld;
-    }
-
-    /**
-     * Get the project's URL
-     *
-     * @param  string  $tld     The top-level domain, e.g. .com
-     * @param  string  $scheme  The scheme, https, http
-     *
-     * @return string
-     *
-     */
-    public function getProjectUrl( string $tld = 'tribe', string $scheme = 'https' ): string {
-        return $scheme . '://' . $this->getProjectDomain( $tld );
-    }
+	/**
+	 * The user's group ID.
+	 *
+	 * @return int
+	 */
+	public static function gid(): int {
+		return getmygid() ?: self::DEFAULT_GID;
+	}
 
 }

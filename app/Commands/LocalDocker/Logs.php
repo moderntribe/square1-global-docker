@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\LocalDocker;
 
@@ -13,38 +13,42 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Logs extends BaseLocalDocker {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'logs';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'logs';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Displays local SquareOne project docker logs';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Displays local SquareOne project docker logs';
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     *
-     * @return void
-     */
-    public function handle( Config $config ): void {
-        $this->info( sprintf( '➜ Displaying logs for %s. Press command/ctrl + c to quit', $config->getProjectName() ) );
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 *
+	 * @return void
+	 */
+	public function handle( Config $config ): void {
+		$this->info( sprintf( '➜ Displaying logs for %s. Press command/ctrl + c to quit', $config->getProjectName() ) );
 
-        chdir( $config->getDockerDir() );
+		chdir( $config->getDockerDir() );
 
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            'logs',
-            '-f',
-        ] );
-    }
+		Artisan::call( DockerCompose::class, [
+			'--project-name',
+			$config->getProjectName(),
+			'logs',
+			'-f',
+		] );
+	}
 
 }

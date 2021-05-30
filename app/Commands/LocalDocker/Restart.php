@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\LocalDocker;
 
@@ -13,39 +13,43 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Restart extends BaseLocalDocker {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'restart';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'restart';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Restarts your local SquareOne project';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Restarts your local SquareOne project';
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     *
-     * @return void
-     */
-    public function handle( Config $config ): void {
-        $this->info( sprintf( '➜ Restarting project %s...', $config->getProjectName() ) );
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 *
+	 * @return void
+	 */
+	public function handle( Config $config ): void {
+		$this->info( sprintf( '➜ Restarting project %s...', $config->getProjectName() ) );
 
-        chdir( $config->getDockerDir() );
+		chdir( $config->getDockerDir() );
 
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
-            'restart',
-        ] );
+		Artisan::call( DockerCompose::class, [
+			'--project-name',
+			$config->getProjectName(),
+			'restart',
+		] );
 
-        $this->info( 'Done.' );
-    }
+		$this->info( 'Done.' );
+	}
 
 }

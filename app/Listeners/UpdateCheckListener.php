@@ -1,10 +1,10 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Listeners;
 
 use App\Commands\Self\UpdateCheck;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Console\Events\CommandFinished;
+use Illuminate\Support\Facades\Artisan;
 
 /**
  * Check for updates after a command has run.
@@ -13,56 +13,52 @@ use Illuminate\Console\Events\CommandFinished;
  */
 class UpdateCheckListener {
 
-    /**
-     * Run the update checker.
-     *
-     * @param  CommandFinished  $event
-     *
-     * @return bool
-     */
-    public function handle( CommandFinished $event ): bool {
-        if ( $this->shouldRun( $event->command ) ) {
-            $this->runUpdate( $event );
+	/**
+	 * Run the update checker.
+	 *
+	 * @param \Illuminate\Console\Events\CommandFinished $event
+	 *
+	 * @return bool
+	 */
+	public function handle( CommandFinished $event ): bool {
+		if ( $this->shouldRun( $event->command ) ) {
+			$this->runUpdate( $event );
 
-            return true;
-        }
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /**
-     * Check if we should run the update check.
-     *
-     * @param  string|null  $command
-     *
-     * @return bool
-     */
-    protected function shouldRun( ?string $command = '' ): bool {
-        // Don't run during tests unless specified with the ALLOW_UPDATE_CHECK environment variable.
-        if ( 'testing' === env( 'APP_ENV' ) && '1' != env( 'ALLOW_UPDATE_CHECK' ) ) {
-            return false;
-        }
+	/**
+	 * Check if we should run the update check.
+	 *
+	 * @param  string|null  $command
+	 *
+	 * @return bool
+	 */
+	protected function shouldRun( ?string $command = '' ): bool {
+		// Don't run during tests unless specified with the ALLOW_UPDATE_CHECK environment variable.
+		if ( 'testing' === env( 'APP_ENV' ) && '1' !== env( 'ALLOW_UPDATE_CHECK' ) ) {
+			return false;
+		}
 
-        if ( empty( $command ) ) {
-            return false;
-        }
+		if ( empty( $command ) ) {
+			return false;
+		}
 
-        if ( 'self' !== substr( $command, 0, 4 ) && 'app' !== substr( $command, 0, 3 ) ) {
-            return true;
-        }
+		return  'self' !== substr( $command, 0, 4 ) && 'app' !== substr( $command, 0, 3 );
+	}
 
-        return false;
-    }
-
-    /**
-     * Run the update check command.
-     *
-     * @param  \Illuminate\Console\Events\CommandFinished  $event
-     */
-    protected function runUpdate( CommandFinished $event ): void {
-        Artisan::call( UpdateCheck::class, [
-            '--only-new' => true,
-        ], $event->output );
-    }
+	/**
+	 * Run the update check command.
+	 *
+	 * @param  \Illuminate\Console\Events\CommandFinished  $event
+	 */
+	protected function runUpdate( CommandFinished $event ): void {
+		Artisan::call( UpdateCheck::class, [
+			'--only-new' => true,
+		], $event->output );
+	}
 
 }

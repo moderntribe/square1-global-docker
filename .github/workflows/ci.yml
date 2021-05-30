@@ -35,6 +35,9 @@ jobs:
       - name: Install Composer dependencies
         run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest --optimize-autoloader
 
+      - name: PHPCS
+        run: ./vendor/bin/phpcs --standard=phpcs.xml.dist app/
+
       # Github workflows/actions have no tty, the script command captures the output as a work around
       - name: PHPUnit Testing
         run: script -e -c vendor/bin/phpunit

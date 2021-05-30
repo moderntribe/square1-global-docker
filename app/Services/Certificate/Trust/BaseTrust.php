@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Certificate\Trust;
 
@@ -13,53 +13,47 @@ use Illuminate\Filesystem\Filesystem;
  */
 abstract class BaseTrust implements Trustable {
 
+	protected Filesystem $filesystem;
 
-    /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    protected $filesystem;
+	/**
+	 * The command runner.
+	 */
+	protected Runner $runner;
 
-    /**
-     * The command runner.
-     *
-     * @var \App\Contracts\Runner
-     */
-    protected $runner;
+	/**
+	 * Whether the certificate is already installed on the host system.
+	 *
+	 * @return bool
+	 */
+	abstract public function installed(): bool;
 
-    /**
-     * BaseTrust constructor.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     * @param  \App\Contracts\Runner              $runner
-     */
-    public function __construct( Filesystem $filesystem, Runner $runner ) {
-        $this->filesystem = $filesystem;
-        $this->runner     = $runner;
-    }
+	/**
+	 * Run the commands in order to trust a CA certificate
+	 *
+	 * @param  string  $crt  The path to the crt file
+	 *
+	 * @return mixed
+	 */
+	abstract public function trustCa( string $crt );
 
-    /**
-     * Whether the certificate is already installed on the host system.
-     *
-     * @return bool
-     */
-    abstract public function installed(): bool;
+	/**
+	 * Run the commands in order to trust a certificate
+	 *
+	 * @param  string  $crt  The path to the crt file
+	 *
+	 * @return mixed
+	 */
+	abstract public function trustCertificate( string $crt );
 
-    /**
-     * Run the commands in order to trust a CA certificate
-     *
-     * @param  string  $crt  The path to the crt file
-     *
-     * @return mixed
-     */
-    abstract public function trustCa( string $crt );
-
-    /**
-     * Run the commands in order to trust a certificate
-     *
-     * @param  string  $crt  The path to the crt file
-     *
-     * @return mixed
-     */
-    abstract public function trustCertificate( string $crt );
+	/**
+	 * BaseTrust constructor.
+	 *
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 * @param  \App\Contracts\Runner              $runner
+	 */
+	public function __construct( Filesystem $filesystem, Runner $runner ) {
+		$this->filesystem = $filesystem;
+		$this->runner     = $runner;
+	}
 
 }

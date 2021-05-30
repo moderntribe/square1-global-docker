@@ -1,20 +1,20 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Docker\Dns;
 
 use App\Contracts\Runner;
-use App\Services\OperatingSystem;
-use Illuminate\Support\Collection;
-use Illuminate\Filesystem\Filesystem;
-use App\Services\Docker\Dns\Resolvers\Dhcp;
+use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Docker\Dns\OsSupport\Linux;
 use App\Services\Docker\Dns\OsSupport\MacOs;
 use App\Services\Docker\Dns\OsSupport\NullOs;
-use App\Services\Docker\Dns\Resolvers\Scutil;
-use App\Services\Docker\Dns\Resolvers\ResolvConf;
+use App\Services\Docker\Dns\Resolvers\Dhcp;
 use App\Services\Docker\Dns\Resolvers\Openresolv;
-use App\Services\Docker\Dns\OsSupport\BaseSupport;
+use App\Services\Docker\Dns\Resolvers\ResolvConf;
+use App\Services\Docker\Dns\Resolvers\Scutil;
 use App\Services\Docker\Dns\Resolvers\SystemdResolved;
+use App\Services\OperatingSystem;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 
 /**
  * Handles adding the docker name server across multiple systems
@@ -23,67 +23,60 @@ use App\Services\Docker\Dns\Resolvers\SystemdResolved;
  */
 class Factory {
 
-    /**
-     * The operating system instance.
-     *
-     * @var \App\Services\OperatingSystem
-     */
-    protected $os;
+	/**
+	 * The operating system instance.
+	 */
+	protected OperatingSystem $os;
 
-    /**
-     * The command runner.
-     *
-     * @var \App\Contracts\Runner
-     */
-    protected $runner;
+	/**
+	 * The command runner.
+	 */
+	protected Runner $runner;
 
-    /**
-     * Filesystem.
-     *
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    protected $filesystem;
+	/**
+	 * Filesystem.
+	 */
+	protected Filesystem $filesystem;
 
+	/**
+	 * Handler constructor.
+	 *
+	 * @param   \App\Services\OperatingSystem      $os
+	 * @param   \App\Contracts\Runner              $runner
+	 * @param   \Illuminate\Filesystem\Filesystem  $filesystem
+	 */
+	public function __construct( OperatingSystem $os, Runner $runner, Filesystem $filesystem ) {
+		$this->os         = $os;
+		$this->runner     = $runner;
+		$this->filesystem = $filesystem;
+	}
 
-    /**
-     * Handler constructor.
-     *
-     * @param   \App\Services\OperatingSystem      $os
-     * @param   \App\Contracts\Runner              $runner
-     * @param   \Illuminate\Filesystem\Filesystem  $filesystem
-     */
-    public function __construct( OperatingSystem $os, Runner $runner, Filesystem $filesystem ) {
-        $this->os         = $os;
-        $this->runner     = $runner;
-        $this->filesystem = $filesystem;
-    }
+	/**
+	 * The Resolver Factory.
+	 *
+	 * @param   \Illuminate\Support\Collection  $resolvers
+	 *
+	 * @return \App\Services\Docker\Dns\OsSupport\BaseSupport
+	 */
+	public function make( Collection $resolvers ): BaseSupport {
+		if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
+			$resolvers->push(
+				new Openresolv( $this->runner, $this->filesystem, '/etc/resolv.conf.head' ),
+				new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvconf/resolv.conf.d/head' ),
+				new Dhcp( $this->runner, $this->filesystem ),
+				new SystemdResolved( $this->runner, $this->filesystem )
+			);
 
-    /**
-     * The Resolver Factory.
-     *
-     * @param   \Illuminate\Support\Collection  $resolvers
-     *
-     * @return \App\Services\Docker\Dns\OsSupport\BaseSupport
-     */
-    public function make( Collection $resolvers ): BaseSupport {
-        if ( OperatingSystem::LINUX === $this->os->getFamily() ) {
-            $resolvers->push(
-                new Openresolv( $this->runner, $this->filesystem, '/etc/resolv.conf.head' ),
-                new ResolvConf( $this->runner, $this->filesystem, '/etc/resolvconf/resolv.conf.d/head' ),
-                new Dhcp( $this->runner, $this->filesystem ),
-                new SystemdResolved( $this->runner, $this->filesystem )
-            );
+			return new Linux( $resolvers );
+		}
 
-            return new Linux( $resolvers );
-        }
+		if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
+			$resolvers->push( new Scutil( $this->runner, $this->filesystem, '/etc/resolver/tribe' ) );
 
-        if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
-            $resolvers->push( new Scutil( $this->runner, $this->filesystem, '/etc/resolver/tribe' ) );
+			return new MacOs( $resolvers );
+		}
 
-            return new MacOs( $resolvers );
-        }
-
-        return new NullOs( $resolvers );
-    }
+		return new NullOs( $resolvers );
+	}
 
 }

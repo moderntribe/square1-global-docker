@@ -1,11 +1,11 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\Self;
 
-use RuntimeException;
 use App\Services\Phar;
 use App\Services\Update\Updater;
 use LaravelZero\Framework\Commands\Command;
+use RuntimeException;
 
 /**
  * Class SelfUpdate
@@ -14,66 +14,67 @@ use LaravelZero\Framework\Commands\Command;
  */
 class SelfUpdate extends Command {
 
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $name = 'self:update';
+	/**
+	 * The name and signature of the console command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $name = 'self:update';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Updates the application, if available';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Updates the application, if available';
 
-    /**
-     * The path to the currently running phar file.
-     *
-     * @var string
-     */
-    protected $installedPhar;
+	/**
+	 * The path to the currently running phar file.
+	 */
+	protected string $installedPhar;
 
-    /**
-     * The application's name.
-     *
-     * @var string
-     */
-    protected $appName;
+	/**
+	 * The application's name.
+	 */
+	protected string $appName;
 
-    /**
-     * SelfUpdate constructor.
-     *
-     * @param  string  $installedPhar
-     * @param  string  $appName
-     */
-    public function __construct( string $installedPhar, string $appName ) {
-        parent::__construct();
+	/**
+	 * SelfUpdate constructor.
+	 *
+	 * @param  string  $installedPhar
+	 * @param  string  $appName
+	 */
+	public function __construct( string $installedPhar, string $appName ) {
+		parent::__construct();
 
-        $this->installedPhar = $installedPhar;
-        $this->appName       = $appName;
-    }
+		$this->installedPhar = $installedPhar;
+		$this->appName       = $appName;
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Update\Updater  $updater
-     * @param  \App\Services\Phar            $phar
-     *
-     * @return void
-     * @throws \Exception
-     */
-    public function handle( Updater $updater, Phar $phar ): void {
-        if ( empty( $phar->isPhar() ) ) {
-            throw new RuntimeException( $this->name . ' only works when running the phar version of ' . $this->appName );
-        }
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Update\Updater  $updater
+	 * @param  \App\Services\Phar            $phar
+	 *
+	 * @return void
+	 *
+	 * @throws \Exception
+	 */
+	public function handle( Updater $updater, Phar $phar ): void {
+		if ( empty( $phar->isPhar() ) ) {
+			throw new RuntimeException( $this->name . ' only works when running the phar version of ' . $this->appName );
+		}
 
-        $release = $updater->getLatestReleaseFromGitHub();
+		$release = $updater->getLatestReleaseFromGitHub();
 
-        $this->info( sprintf( 'Updating %s to %s...', $this->appName, $release->version ) );
+		$this->info( sprintf( 'Updating %s to %s...', $this->appName, $release->version ) );
 
-        $updater->update( $release, $this->installedPhar, $this );
-    }
+		$updater->update( $release, $this->installedPhar, $this );
+	}
 
 }

@@ -1,9 +1,9 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Docker\Dns\Resolvers;
 
-use App\Contracts\Runner;
 use App\Contracts\Resolvable;
+use App\Contracts\Runner;
 use Illuminate\Filesystem\Filesystem;
 
 /**
@@ -13,29 +13,25 @@ use Illuminate\Filesystem\Filesystem;
  */
 abstract class BaseResolver implements Resolvable {
 
-    /**
-     * The command runner.
-     *
-     * @var \App\Contracts\Runner
-     */
-    protected $runner;
+	/**
+	 * The command runner.
+	 */
+	protected Runner $runner;
 
-    /**
-     * Illuminate Filesystem.
-     *
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    protected $filesystem;
+	/**
+	 * Illuminate Filesystem.
+	 */
+	protected Filesystem $filesystem;
 
-    /**
-     * BaseResolver constructor.
-     *
-     * @param  \App\Contracts\Runner              $runner
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     */
-    public function __construct( Runner $runner, Filesystem $filesystem ) {
-        $this->runner     = $runner;
-        $this->filesystem = $filesystem;
-    }
+	/**
+	 * BaseResolver constructor.
+	 *
+	 * @param  \App\Contracts\Runner              $runner
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 */
+	public function __construct( Runner $runner, Filesystem $filesystem ) {
+		$this->runner     = $runner;
+		$this->filesystem = $filesystem;
+	}
 
 }

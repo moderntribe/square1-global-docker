@@ -1,8 +1,7 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Contracts;
 
-use IteratorAggregate;
 use Symfony\Component\Process\Process;
 
 /**
@@ -15,23 +14,25 @@ use Symfony\Component\Process\Process;
  */
 interface Runner {
 
-    /**
-     * Execute a given command.
-     *
-     * @param  string|array   $command  The command to run.
-     * @param  callable|null  $output
-     *
-     * @return mixed
-     */
-    public function run( $command = null, callable $output = null );
+	/**
+	 * Execute a given command.
+	 *
+	 * @param  string|array   $command  The command to run.
+	 * @param  callable|null  $output
+	 *
+	 * @return mixed
+	 */
+	public function run( $command = null, ?callable $output = null );
 
-    /**
-     * Run a given process.
-     *
-     * @param  \Symfony\Component\Process\Process  $process
-     *
-     * @return IteratorAggregate
-     */
-    public function runProcess( Process $process );
+	/**
+	 * Run a given process.
+	 *
+	 * @param  \Symfony\Component\Process\Process  $process
+	 *
+	 * @return \IteratorAggregate
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+	 */
+	public function runProcess( Process $process );
 
 }

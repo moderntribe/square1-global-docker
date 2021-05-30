@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\GlobalDocker;
 
@@ -13,33 +13,37 @@ use LaravelZero\Framework\Commands\Command;
  */
 class Portainer extends Command {
 
-    public const PORTAINER_URL = 'http://portainer.tribe';
+	public const PORTAINER_URL = 'http://portainer.tribe';
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'global:portainer';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'global:portainer';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Launches Portainer docker management';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Launches Portainer docker management';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle(): void {
-        $this->info( sprintf( '➜ Launching Portainer at %s', self::PORTAINER_URL ) );
+	/**
+	 * Execute the console command.
+	 *
+	 * @return void
+	 */
+	public function handle(): void {
+		$this->info( sprintf( '➜ Launching Portainer at %s', self::PORTAINER_URL ) );
 
-        Artisan::call( Open::class, [
-            'url' => self::PORTAINER_URL,
-        ] );
-    }
+		Artisan::call( Open::class, [
+			'url' => self::PORTAINER_URL,
+		] );
+	}
 
 }

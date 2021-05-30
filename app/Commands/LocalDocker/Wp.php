@@ -1,11 +1,11 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Services\Docker\Local\Config;
 use App\Services\XdebugValidator;
 use App\Traits\XdebugWarningTrait;
-use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
 /**
@@ -15,72 +15,75 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Wp extends BaseLocalDocker {
 
-    use XdebugWarningTrait;
+	use XdebugWarningTrait;
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'wp {args* : arguments passed to the wp binary}
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'wp {args* : arguments passed to the wp binary}
                            {--x|xdebug : Enable xdebug}
                            {--notty : Disable interactive/tty to capture output}';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Run WP CLI commands in the SquareOne local container';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Run WP CLI commands in the SquareOne local container';
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     * @param  \App\Services\XdebugValidator      $xdebugValidator
-     *
-     * @return int|null
-     */
-    public function handle( Config $config, XdebugValidator $xdebugValidator ): ?int {
-        $params = [
-            '--project-name',
-            $config->getProjectName(),
-            'exec',
-        ];
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 * @param  \App\Services\XdebugValidator      $xdebugValidator
+	 *
+	 * @return int|null
+	 */
+	public function handle( Config $config, XdebugValidator $xdebugValidator ): ?int {
+		$params = [
+			'--project-name',
+			$config->getProjectName(),
+			'exec',
+		];
 
-        if ( $this->option( 'notty' ) ) {
-            $params = array_merge( $params, [ '-T' ] );
-        }
+		if ( $this->option( 'notty' ) ) {
+			$params = array_merge( $params, [ '-T' ] );
+		}
 
-        if ( $this->option( 'xdebug' ) ) {
+		if ( $this->option( 'xdebug' ) ) {
+			$phpIni = $config->getPhpIni();
 
-            $phpIni = $config->getPhpIni();
+			if ( ! $xdebugValidator->valid( $phpIni ) ) {
+				$this->outdatedXdebugWarning( $phpIni );
+			}
 
-            if ( ! $xdebugValidator->valid( $phpIni ) ) {
-                $this->outdatedXdebugWarning( $phpIni );
-            }
+			$env = [
+				'--env',
+				self::XDEBUG_ENV,
+			];
+		} else {
+			$env = [
+				'--env',
+				'WP_CLI_PHP_ARGS',
+			];
+		}
 
-            $env = [
-                '--env',
-                self::XDEBUG_ENV,
-            ];
-        } else {
-            $env = [
-                '--env',
-                'WP_CLI_PHP_ARGS',
-            ];
-        }
+		$exec = [
+			'/usr/local/bin/wp',
+			'--allow-root',
+		];
 
-        $exec = [
-            '/usr/local/bin/wp',
-            '--allow-root',
-        ];
+		$params = array_merge( $params, $env, [ 'php-fpm' ], $exec, $this->argument( 'args' ) );
 
-        $params = array_merge( $params, $env, [ 'php-fpm' ], $exec, $this->argument( 'args' ) );
+		chdir( $config->getDockerDir() );
 
-        chdir( $config->getDockerDir() );
-
-        return Artisan::call( DockerCompose::class, $params );
-    }
+		return Artisan::call( DockerCompose::class, $params );
+	}
 
 }

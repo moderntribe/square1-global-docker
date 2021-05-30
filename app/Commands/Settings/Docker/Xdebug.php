@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\Settings\Docker;
 
@@ -12,47 +12,51 @@ use App\Services\Settings\Groups\AllSettings;
  */
 class Xdebug extends BaseCommand {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'settings:docker:xdebug';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'settings:docker:xdebug';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Enable/disable your xdebug preference globally';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Enable/disable your xdebug preference globally';
 
-    protected AllSettings $settings;
+	protected AllSettings $settings;
 
-    public function __construct( AllSettings $settings ) {
-        parent::__construct();
+	public function __construct( AllSettings $settings ) {
+		parent::__construct();
 
-        $this->settings = $settings;
-    }
+		$this->settings = $settings;
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle(): int {
-        $current = $this->settings->docker->xdebug;
+	/**
+	 * Execute the console command.
+	 *
+	 * @return int
+	 */
+	public function handle(): int {
+		$current = $this->settings->docker->xdebug;
 
-        $this->info( 'Set the default Xdebug state for all projects. Recommended: Off for macOS due to performance reasons' );
+		$this->info( 'Set the default Xdebug state for all projects. Recommended: Off for macOS due to performance reasons' );
 
-        $choice = $this->choice( 'Xdebug', [
-            1 => 'On',
-            0 => 'Off',
-        ], $current );
+		$choice = $this->choice( 'Xdebug', [
+			1 => 'On',
+			0 => 'Off',
+		], $current );
 
-        $this->settings->docker->xdebug = 'On' === $choice;
-        $this->settings->save();
+		$this->settings->docker->xdebug = 'On' === $choice;
+		$this->settings->save();
 
-        return self::EXIT_SUCCESS;
-    }
+		return self::EXIT_SUCCESS;
+	}
 
 }

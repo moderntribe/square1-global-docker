@@ -1,9 +1,9 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\Config;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Http;
 use LaravelZero\Framework\Commands\Command;
 
 /**
@@ -13,65 +13,64 @@ use LaravelZero\Framework\Commands\Command;
  */
 class ConfigCopy extends Command {
 
-    /**
-     * The path to the SquareOne configuration directory.
-     *
-     * @var string
-     */
-    protected $configDir;
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'config:copy';
 
-    /**
-     * The URL to the squareone.yml file in the GitHub repo.
-     *
-     * @var string
-     */
-    protected $downloadUrl;
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Copies the squareone.yml file to the local config folder for customization';
 
-    /**
-     * ConfigCopy constructor.
-     *
-     * @param  string  $configDir    The path to the SquareOne configuration directory.
-     * @param  string  $downloadUrl  The URL to the squareone.yml file in the GitHub repo.
-     */
-    public function __construct( string $configDir, string $downloadUrl ) {
-        parent::__construct();
+	/**
+	 * The path to the SquareOne configuration directory.
+	 */
+	protected string $configDir;
 
-        $this->configDir   = $configDir;
-        $this->downloadUrl = $downloadUrl;
-    }
+	/**
+	 * The URL to the squareone.yml file in the GitHub repo.
+	 */
+	protected string $downloadUrl;
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'config:copy';
+	/**
+	 * ConfigCopy constructor.
+	 *
+	 * @param  string  $configDir    The path to the SquareOne configuration directory.
+	 * @param  string  $downloadUrl  The URL to the squareone.yml file in the GitHub repo.
+	 */
+	public function __construct( string $configDir, string $downloadUrl ) {
+		parent::__construct();
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Copies the squareone.yml file to the local config folder for customization';
+		$this->configDir   = $configDir;
+		$this->downloadUrl = $downloadUrl;
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Http\Client\RequestException
-     */
-    public function handle( Filesystem $filesystem ): void {
-        $this->info( '➜ Fetching config file...' );
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 *
+	 * @return void
+	 *
+	 * @throws \Illuminate\Http\Client\RequestException
+	 */
+	public function handle( Filesystem $filesystem ): void {
+		$this->info( '➜ Fetching config file...' );
 
-        $response = Http::get( $this->downloadUrl )->throw();
+		$response = Http::get( $this->downloadUrl )->throw();
 
-        $filesystem->replace( $this->configDir . '/squareone.yml', $response->body() );
+		$filesystem->replace( $this->configDir . '/squareone.yml', $response->body() );
 
-        $this->info( sprintf( '➜ Saved squareone.yml to %s', $this->configDir ) );
-
-    }
+		$this->info( sprintf( '➜ Saved squareone.yml to %s', $this->configDir ) );
+	}
 
 }

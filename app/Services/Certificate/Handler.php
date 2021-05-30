@@ -1,9 +1,9 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Certificate;
 
-use InvalidArgumentException;
 use Illuminate\Filesystem\Filesystem;
+use InvalidArgumentException;
 
 /**
  * Certificate Handler
@@ -12,108 +12,99 @@ use Illuminate\Filesystem\Filesystem;
  */
 class Handler {
 
-    /**
-     * The CA certificate instance.
-     *
-     * @var \App\Services\Certificate\Ca
-     */
-    protected $ca;
+	/**
+	 * The CA certificate instance.
+	 */
+	protected Ca $ca;
 
-    /**
-     * The local certificate instance.
-     *
-     * @var \App\Services\Certificate\Certificate
-     */
-    protected $certificate;
+	/**
+	 * The local certificate instance.
+	 */
+	protected Certificate $certificate;
 
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    protected $filesystem;
+	protected Filesystem $filesystem;
 
-    /**
-     * The path to where certificates are stored, generally: ~/USER/.config/squareone/global/certs.
-     *
-     * @var string
-     */
-    protected $certFolder;
+	/**
+	 * The path to where certificates are stored, generally: ~/USER/.config/squareone/global/certs.
+	 */
+	protected string $certFolder;
 
-    /**
-     * The path to the CA Certificate.
-     *
-     * @var string
-     */
-    protected $caPath;
+	/**
+	 * The path to the CA Certificate.
+	 */
+	protected string $caPath;
 
-    /**
-     * Handler constructor.
-     *
-     * @param  \App\Services\Certificate\Ca           $ca
-     * @param  \App\Services\Certificate\Certificate  $certificate
-     * @param  \Illuminate\Filesystem\Filesystem      $filesystem
-     * @param  string                                 $certFolder
-     */
-    public function __construct( Ca $ca, Certificate $certificate, Filesystem $filesystem, string $certFolder ) {
-        $this->ca          = $ca;
-        $this->certificate = $certificate;
-        $this->filesystem  = $filesystem;
-        $this->certFolder  = $certFolder;
-        $this->caPath      = $this->certFolder . '/' . Ca::PEM_NAME;
-    }
+	/**
+	 * Handler constructor.
+	 *
+	 * @param  \App\Services\Certificate\Ca           $ca
+	 * @param  \App\Services\Certificate\Certificate  $certificate
+	 * @param  \Illuminate\Filesystem\Filesystem      $filesystem
+	 * @param  string                                 $certFolder
+	 */
+	public function __construct( Ca $ca, Certificate $certificate, Filesystem $filesystem, string $certFolder ) {
+		$this->ca          = $ca;
+		$this->certificate = $certificate;
+		$this->filesystem  = $filesystem;
+		$this->certFolder  = $certFolder;
+		$this->caPath      = $this->certFolder . '/' . Ca::PEM_NAME;
+	}
 
-    /**
-     * Check if a CA certificate already exists.
-     *
-     * @return bool
-     */
-    public function caExists(): bool {
-        return ( $this->filesystem->exists( $this->caPath ) && $this->ca->installed() );
-    }
+	/**
+	 * Check if a CA certificate already exists.
+	 *
+	 * @return bool
+	 */
+	public function caExists(): bool {
+		return  $this->filesystem->exists( $this->caPath ) && $this->ca->installed();
+	}
 
-    /**
-     * Create a CA certificate
-     */
-    public function createCa(): void {
-        $this->ca->create( $this->certFolder );
-    }
+	/**
+	 * Create a CA certificate
+	 */
+	public function createCa(): void {
+		$this->ca->create( $this->certFolder );
+	}
 
-    /**
-     * Check if a certificate exists.
-     *
-     * @param  string  $domain  The domain name
-     *
-     * @return bool
-     */
-    public function certificateExists( string $domain = '' ): bool {
-        return $this->certificate->exists( $this->buildCertificatePath( $domain ) );
-    }
+	/**
+	 * Check if a certificate exists.
+	 *
+	 * @param  string  $domain  The domain name
+	 *
+	 * @return bool
+	 */
+	public function certificateExists( string $domain = '' ): bool {
+		return $this->certificate->exists( $this->buildCertificatePath( $domain ) );
+	}
 
-    /**
-     * Create a local certificate if it doesn't exist or is expired.
-     *
-     * @param  string  $domain
-     */
-    public function createCertificate( string $domain = '' ): void {
-        if ( empty( $domain ) ) {
-            throw new InvalidArgumentException( 'Cannot create a certificate with an empty domain' );
-        }
+	/**
+	 * Create a local certificate if it doesn't exist or is expired.
+	 *
+	 * @param  string  $domain
+	 */
+	public function createCertificate( string $domain = '' ): void {
+		if ( empty( $domain ) ) {
+			throw new InvalidArgumentException( 'Cannot create a certificate with an empty domain' );
+		}
 
-        $file = $this->buildCertificatePath( $domain );
+		$file = $this->buildCertificatePath( $domain );
 
-        if ( ! $this->certificateExists( $domain ) || $this->certificate->expired( $file ) ) {
-            $this->certificate->create( $domain, $this->certFolder );
-        }
-    }
+		if ( $this->certificateExists( $domain ) && ! $this->certificate->expired( $file ) ) {
+			return;
+		}
 
-    /**
-     * Build a certificate path based on a domain name
-     *
-     * @param  string  $domain  The domain name
-     *
-     * @return string
-     */
-    protected function buildCertificatePath( string $domain = '' ): string {
-        return $this->certFolder . '/' . $domain . '.crt';
-    }
+		$this->certificate->create( $domain, $this->certFolder );
+	}
+
+	/**
+	 * Build a certificate path based on a domain name
+	 *
+	 * @param  string  $domain  The domain name
+	 *
+	 * @return string
+	 */
+	protected function buildCertificatePath( string $domain = '' ): string {
+		return $this->certFolder . '/' . $domain . '.crt';
+	}
 
 }

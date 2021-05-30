@@ -38,6 +38,7 @@
         "fzaninotto/faker": "^1.4",
         "jaschilz/php-coverage-badger": "^2.0",
         "mockery/mockery": "^1.4",
+        "moderntribe/coding-standards": "^2.0",
         "php-mock/php-mock-mockery": "^1.3",
         "phpunit/phpunit": "^9.3"
     },

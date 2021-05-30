@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Docker\Dns\OsSupport;
 
@@ -9,13 +9,13 @@ namespace App\Services\Docker\Dns\OsSupport;
  */
 class MacOs extends BaseSupport {
 
-    /**
-     * MacOS is supported.
-     *
-     * @return bool
-     */
-    public function supported(): bool {
-        return true;
-    }
+	/**
+	 * MacOS is supported.
+	 *
+	 * @return bool
+	 */
+	public function supported(): bool {
+		return true;
+	}
 
 }

@@ -1,19 +1,19 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\LocalDocker;
 
-use M1\Env\Parser;
+use App\Commands\DockerCompose;
+use App\Commands\GlobalDocker\Start as GlobalStart;
 use App\Commands\Open;
+use App\Services\Certificate\Handler;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
-use App\Commands\DockerCompose;
-use App\Services\Docker\SystemClock;
 use App\Services\Docker\Local\Config;
-use App\Services\Certificate\Handler;
+use App\Services\Docker\SystemClock;
+use App\Services\Settings\Groups\AllSettings;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
-use App\Services\Settings\Groups\AllSettings;
-use App\Commands\GlobalDocker\Start as GlobalStart;
+use M1\Env\Parser;
 
 /**
  * Local docker start command.
@@ -22,297 +22,307 @@ use App\Commands\GlobalDocker\Start as GlobalStart;
  */
 class Start extends BaseLocalDocker {
 
-    public const ENV        = '/.env';
-    public const ENV_SAMPLE = '/.env.sample';
+	public const ENV        = '/.env';
+	public const ENV_SAMPLE = '/.env.sample';
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'start {--b|browser      : Automatically open the project in your browser}
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'start {--b|browser      : Automatically open the project in your browser}
                                   {--p|path=        : Path to a specific local project folder}
                                   {--remove-orphans : Remove containers for services not in the compose file}';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Starts your local SquareOne project, run anywhere in a project folder';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Starts your local SquareOne project, run anywhere in a project folder';
 
-    protected AllSettings $settings;
+	protected AllSettings $settings;
 
-    public function __construct( AllSettings $settings ) {
-        parent::__construct();
+	public function __construct( AllSettings $settings ) {
+		parent::__construct();
 
-        $this->settings = $settings;
-    }
+		$this->settings = $settings;
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     * @param  \App\Services\Certificate\Handler  $certificateHandler
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     * @param  \App\Services\Config\Github        $github
-     * @param  \App\Services\Config\Env           $env
-     *
-     * @param  \App\Services\Docker\SystemClock   $clock
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function handle( Config $config, Handler $certificateHandler, Filesystem $filesystem, Github $github, Env $env, SystemClock $clock ): void {
-        // Set a custom project path, if provided
-        if ( $path = $this->option( 'path' ) ) {
-            $config = $config->setPath( $path );
-        }
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 * @param  \App\Services\Certificate\Handler  $certificateHandler
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 * @param  \App\Services\Config\Github        $github
+	 * @param  \App\Services\Config\Env           $env
+	 *
+	 * @param  \App\Services\Docker\SystemClock   $clock
+	 *
+	 * @return void
+	 *
+	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+	 */
+	public function handle( Config $config, Handler $certificateHandler, Filesystem $filesystem, Github $github, Env $env, SystemClock $clock ): void {
+		$path = $this->option( 'path' );
 
-        $this->info( sprintf( '➜ Starting %s...', $config->getProjectName() ) );
+		// Set a custom project path, if provided
+		if ( ! empty( $path ) ) {
+			$config = $config->setPath( $path );
+		}
 
-        // Check for composer .env file
-        if ( $filesystem->exists( $config->getProjectRoot() . self::ENV_SAMPLE )
-             && $filesystem->missing( $config->getProjectRoot() . self::ENV )
-        ) {
-            $this->createDefaultEnvFile( $env, $filesystem );
-            $this->addEnvFile( $config, $env, $filesystem );
-        }
+		$this->info( sprintf( '➜ Starting %s...', $config->getProjectName() ) );
 
-        $this->prepareComposer( $config, $filesystem, $github );
+		// Check for composer .env file
+		if ( $filesystem->exists( $config->getProjectRoot() . self::ENV_SAMPLE )
+			 && $filesystem->missing( $config->getProjectRoot() . self::ENV )
+		) {
+			$this->createDefaultEnvFile( $env, $filesystem );
+			$this->addEnvFile( $config, $env, $filesystem );
+		}
 
-        // Start global containers
-        Artisan::call( GlobalStart::class, [], $this->getOutput() );
+		$this->prepareComposer( $config, $filesystem, $github );
 
-        $this->checkCertificates( $config, $certificateHandler );
+		// Start global containers
+		Artisan::call( GlobalStart::class, [], $this->getOutput() );
 
-        $clock->sync();
+		$this->checkCertificates( $config, $certificateHandler );
 
-        $workdir = getcwd();
+		$clock->sync();
 
-        chdir( $config->getDockerDir() );
+		$workdir = getcwd();
 
-        $args = [
-            '--project-name',
-            $config->getProjectName(),
-            'up',
-            '-d',
-            '--force-recreate',
-        ];
+		chdir( $config->getDockerDir() );
 
-        if ( $this->option( 'remove-orphans' ) ) {
-            $args[] = '--remove-orphans';
-        }
+		$args = [
+			'--project-name',
+			$config->getProjectName(),
+			'up',
+			'-d',
+			'--force-recreate',
+		];
 
-        // Start this project
-        Artisan::call( DockerCompose::class, $args );
+		if ( $this->option( 'remove-orphans' ) ) {
+			$args[] = '--remove-orphans';
+		}
 
-        // Disable xdebug
-        if ( ! $this->settings->docker->xdebug ) {
-            Artisan::call( Xdebug::class, [
-                'action' => 'off',
-            ] );
-        }
+		// Start this project
+		Artisan::call( DockerCompose::class, $args );
 
-        chdir( $workdir );
+		// Disable xdebug
+		if ( ! $this->settings->docker->xdebug ) {
+			Artisan::call( Xdebug::class, [
+				'action' => 'off',
+			] );
+		}
 
-        // Install hirak/prestissimo to speed up composer installs
-        $this->prestissimo( $config, $filesystem );
+		chdir( $workdir );
 
-        // Run composer
-        Artisan::call( Composer::class, [
-            'args' => [ 'install' ],
-        ], $this->output );
+		// Install hirak/prestissimo to speed up composer installs
+		$this->prestissimo( $config, $filesystem );
 
-        $url = $config->getProjectUrl();
+		// Run composer
+		Artisan::call( Composer::class, [
+			'args' => [ 'install' ],
+		], $this->output );
 
-        if ( $this->option( 'browser' ) ) {
-            Artisan::call( Open::class, [
-                'url' => $url,
-            ] );
-        }
+		$url = $config->getProjectUrl();
 
-        $this->info( sprintf( 'Project started: %s', $url ) );
-    }
+		if ( $this->option( 'browser' ) ) {
+			Artisan::call( Open::class, [
+				'url' => $url,
+			] );
+		}
 
-    /**
-     * Ensure we have a valid GitHub auth token for composer
-     *
-     * @codeCoverageIgnore
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     * @param  \App\Services\Config\Github        $github
-     */
-    protected function prepareComposer( Config $config, Filesystem $filesystem, Github $github ): void {
-        $composerDirectory = $config->getComposerVolume();
+		$this->info( sprintf( 'Project started: %s', $url ) );
+	}
 
-        if ( ! is_dir( $composerDirectory ) ) {
-            mkdir( $composerDirectory );
-        }
+	/**
+	 * Ensure we have a valid GitHub auth token for composer
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 * @param  \App\Services\Config\Github        $github
+	 */
+	protected function prepareComposer( Config $config, Filesystem $filesystem, Github $github ): void {
+		$composerDirectory = $config->getComposerVolume();
 
-        $auth = $composerDirectory . '/auth.json';
+		if ( ! is_dir( $composerDirectory ) ) {
+			mkdir( $composerDirectory );
+		}
 
-        if ( $filesystem->missing( $auth ) ) {
+		$auth = $composerDirectory . '/auth.json';
 
-            // Copy global auth.json to this project
-            if ( $github->exists() ) {
-                $github->copy( $composerDirectory );
+		if ( ! $filesystem->missing( $auth ) ) {
+			return;
+		}
 
-                return;
-            }
+		// Copy global auth.json to this project
+		if ( $github->exists() ) {
+			$github->copy( $composerDirectory );
 
-            $token =
-                $this->secret( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one or enter an existing token' );
+			return;
+		}
 
-            // Save the default token to the so config directory.
-            $github->save( $token );
+		$token =
+			$this->secret( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one or enter an existing token' );
 
-            // Copy to local project.
-            $github->copy( $composerDirectory );
-        }
-    }
+		// Save the default token to the so config directory.
+		$github->save( $token );
 
-    /**
-     * Install hirak/prestissimo if not already installed.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     */
-    protected function prestissimo( Config $config, Filesystem $filesystem ) {
-        $composerDirectory = $config->getComposerVolume();
+		// Copy to local project.
+		$github->copy( $composerDirectory );
+	}
 
-        $global = $composerDirectory . '/composer.lock';
+	/**
+	 * Install hirak/prestissimo if not already installed.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 */
+	protected function prestissimo( Config $config, Filesystem $filesystem ): void {
+		$composerDirectory = $config->getComposerVolume();
 
-        if ( $filesystem->missing( $global ) ) {
+		$global = $composerDirectory . '/composer.lock';
 
-            chdir( $config->getDockerDir() );
+		if ( ! $filesystem->missing( $global ) ) {
+			return;
+		}
 
-            Artisan::call( DockerCompose::class, [
-                '--project-name',
-                $config->getProjectName(),
-                'exec',
-                'php-fpm',
-                'composer',
-                'global',
-                'require',
-                'hirak/prestissimo',
-            ] );
-        }
-    }
+		chdir( $config->getDockerDir() );
 
-    /**
-     * Check if the proper CA / local and test domain certificates have been created.
-     *
-     * @codeCoverageIgnore
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     * @param  \App\Services\Certificate\Handler  $certificateHandler
-     */
-    protected function checkCertificates( Config $config, Handler $certificateHandler ): void {
-        if ( ! $certificateHandler->caExists() ) {
-            $this->warn( 'Missing CA certificate. Enter your sudo password when requested. Completely restart your browser after this is complete' );
-            $certificateHandler->createCa();
-        }
+		Artisan::call( DockerCompose::class, [
+			'--project-name',
+			$config->getProjectName(),
+			'exec',
+			'php-fpm',
+			'composer',
+			'global',
+			'require',
+			'hirak/prestissimo',
+		] );
+	}
 
-        $projectName = $config->getProjectName();
+	/**
+	 * Check if the proper CA / local and test domain certificates have been created.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 * @param  \App\Services\Certificate\Handler  $certificateHandler
+	 */
+	protected function checkCertificates( Config $config, Handler $certificateHandler ): void {
+		if ( ! $certificateHandler->caExists() ) {
+			$this->warn( 'Missing CA certificate. Enter your sudo password when requested. Completely restart your browser after this is complete' );
+			$certificateHandler->createCa();
+		}
 
-        $certificateHandler->createCertificate( $projectName . '.tribe' );
-        $certificateHandler->createCertificate( $projectName . 'test.tribe' );
-    }
+		$projectName = $config->getProjectName();
 
-    /**
-     * Ask the user for a license key
-     *
-     * @param  string  $variable  The environment variable name
-     *
-     * @return mixed
-     */
-    protected function licenseKey( string $variable ) {
-        return $this->secret( sprintf( 'Enter your license key for %s (input is hidden)', $variable ) );
-    }
+		$certificateHandler->createCertificate( $projectName . '.tribe' );
+		$certificateHandler->createCertificate( $projectName . 'test.tribe' );
+	}
 
-    /**
-     * Check if the default .env file exists, otherwise get the user to create it.
-     *
-     * @param  \App\Services\Config\Env           $env
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function createDefaultEnvFile( Env $env, Filesystem $filesystem ): void {
-        if ( ! $env->exists() ) {
-            $this->info( 'We’ll need to set up an .env file to install premium plugins. The default secrets are available here: https://m.tri.be/soenv10' );
-            $file = storage_path( 'defaults/env' );
-            $vars = Parser::parse( $filesystem->get( $file ) );
+	/**
+	 * Ask the user for a license key
+	 *
+	 * @param  string  $variable  The environment variable name
+	 *
+	 * @return mixed
+	 */
+	protected function licenseKey( string $variable ) {
+		return $this->secret( sprintf( 'Enter your license key for %s (input is hidden)', $variable ) );
+	}
 
-            $content = '';
+	/**
+	 * Check if the default .env file exists, otherwise get the user to create it.
+	 *
+	 * @param  \App\Services\Config\Env           $env
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 *
+	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+	 */
+	protected function createDefaultEnvFile( Env $env, Filesystem $filesystem ): void {
+		if ( $env->exists() ) {
+			return;
+		}
 
-            foreach ( $vars as $key => $value ) {
-                $secret  = $this->licenseKey( $key );
-                $content .= "${key}='${secret}'" . PHP_EOL;
-            }
+		$this->info( 'We’ll need to set up an .env file to install premium plugins. The default secrets are available here: https://m.tri.be/soenv10' );
+		$file = storage_path( 'defaults/env' );
+		$vars = Parser::parse( $filesystem->get( $file ) );
 
-            // Save to config directory
-            $env->save( $content );
+		$content = '';
 
-            $this->info( sprintf( 'Data saved to %s', $file ) );
-        }
-    }
+		foreach ( $vars as $key => $value ) {
+			$secret   = $this->licenseKey( $key );
+			$content .= "$key='$secret'" . PHP_EOL;
+		}
 
-    /**
-     * Add secrets to the project's .env file.
-     *
-     * @param  \App\Services\Docker\Local\Config  $config
-     * @param  \App\Services\Config\Env           $env
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function addEnvFile( Config $config, Env $env, Filesystem $filesystem ): void {
-        $sample = $config->getProjectRoot() . self::ENV_SAMPLE;
-        $file   = $config->getProjectRoot() . self::ENV;
+		// Save to config directory
+		$env->save( $content );
 
-        $vars = $env->diff( $sample );
+		$this->info( sprintf( 'Data saved to %s', $file ) );
+	}
 
-        // The default .env file matches the one for this project exactly.
-        if ( empty( $vars ) ) {
-            $env->copy( $config->getProjectRoot() );
-            $this->info( sprintf( 'Automatically created %s from default .env file', $file ) );
+	/**
+	 * Add secrets to the project's .env file.
+	 *
+	 * @param  \App\Services\Docker\Local\Config  $config
+	 * @param  \App\Services\Config\Env           $env
+	 * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+	 *
+	 * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+	 */
+	protected function addEnvFile( Config $config, Env $env, Filesystem $filesystem ): void {
+		$sample = $config->getProjectRoot() . self::ENV_SAMPLE;
+		$file   = $config->getProjectRoot() . self::ENV;
 
-            return;
-        }
+		$vars = $env->diff( $sample );
 
-        // Only notify the user of missing items if they do not contain a value
-        if ( ! array_filter( $vars ) ) {
-            $this->info( 'The default .env file is missing a few items for this project, please fill them in below' );
-        }
+		// The default .env file matches the one for this project exactly.
+		if ( empty( $vars ) ) {
+			$env->copy( $config->getProjectRoot() );
+			$this->info( sprintf( 'Automatically created %s from default .env file', $file ) );
 
-        $missing = [];
+			return;
+		}
 
-        foreach ( $vars as $key => $value ) {
-            // Only ask the user to set values for empty env vars
-            if ( ! empty( $value ) ) {
-                $missing[ $key ] = $value;
-                continue;
-            }
+		// Only notify the user of missing items if they do not contain a value
+		if ( ! array_filter( $vars ) ) {
+			$this->info( 'The default .env file is missing a few items for this project, please fill them in below' );
+		}
 
-            $secret          = $this->licenseKey( $key );
-            $missing[ $key ] = $secret;
-        }
+		$missing = [];
 
-        $vars = array_merge( $env->getVars(), $missing );
+		foreach ( $vars as $key => $value ) {
+			// Only ask the user to set values for empty env vars
+			if ( ! empty( $value ) ) {
+				$missing[ $key ] = $value;
+				continue;
+			}
 
-        $content = '';
+			$secret          = $this->licenseKey( $key );
+			$missing[ $key ] = $secret;
+		}
 
-        foreach ( $vars as $key => $value ) {
-            $content .= "${key}='${value}'" . PHP_EOL;
-        }
+		$vars = array_merge( $env->getVars(), $missing );
 
-        $filesystem->put( $file, $content );
+		$content = '';
 
-        $this->info( sprintf( '.env file created at %s', $file ) );
-    }
+		foreach ( $vars as $key => $value ) {
+			$content .= "${key}='${value}'" . PHP_EOL;
+		}
+
+		$filesystem->put( $file, $content );
+
+		$this->info( sprintf( '.env file created at %s', $file ) );
+	}
 
 }

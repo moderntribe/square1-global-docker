@@ -21,6 +21,7 @@
                 "fzaninotto",
                 "phpunit",
                 "phpspec",
+                "phpcs",
                 "php_codesniffer",
                 "phpdocumentor",
                 "phar-io",

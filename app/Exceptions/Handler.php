@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Exceptions;
 
-use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 
 /**
  * Class Handler
@@ -14,26 +14,26 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
  */
 class Handler extends ExceptionHandler {
 
-    /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-        // \Symfony\Component\Console\Exception\RuntimeException::class,
-    ];
+	/**
+	 * A list of the exception types that are not reported.
+	 *
+	 * @var string[]
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $dontReport = [
+		// \Symfony\Component\Console\Exception\RuntimeException::class,
+	];
 
-    /**
-     * Report or log an exception.
-     *
-     * @param  \Throwable  $exception
-     *
-     * @return void
-     *
-     * @throws \Exception
-     */
-    public function report( Throwable $exception ) {
-        parent::report( $exception );
-    }
+	/**
+	 * Report or log an exception.
+	 *
+	 * @param  \Throwable  $e
+	 *
+	 * @throws \Throwable
+	 */
+	public function report( Throwable $e ): void {
+		parent::report( $e );
+	}
 
 }

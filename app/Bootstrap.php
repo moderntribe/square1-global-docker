@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App;
 
@@ -11,81 +11,81 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Bootstrap {
 
-    public const GLOBAL_DIR = 'global';
+	public const GLOBAL_DIR = 'global';
 
-    /**
-     * The location of the configuration directory
-     *
-     * Default Path: ~/.config/squareone
-     *
-     * @var string
-     */
-    protected $configDir;
+	/**
+	 * The location of the configuration directory
+	 *
+	 * Default Path: ~/.config/squareone
+	 */
+	protected string $configDir;
 
-    /**
-     * Symfony filesystem
-     *
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    protected $filesystem;
+	/**
+	 * Symfony filesystem
+	 */
+	protected Filesystem $filesystem;
 
-    /**
-     * Directories to be created if they don't exist.
-     *
-     * @var string[]
-     */
-    protected $directories = [
-        'defaults',
-        'store',
-    ];
+	/**
+	 * Directories to be created if they don't exist.
+	 *
+	 * @var string[]
+	 */
+	protected array $directories = [
+		'defaults',
+		'store',
+	];
 
-    /**
-     * Bootstrap constructor.
-     *
-     * @param  string                                    globalDockerDir
-     * @param  \Symfony\Component\Filesystem\Filesystem  $filesystem
-     */
-    public function __construct( string $configDir, Filesystem $filesystem ) {
-        $this->configDir  = $configDir;
-        $this->filesystem = $filesystem;
-    }
+	/**
+	 * Bootstrap constructor.
+	 *
+	 * @param  string                                    globalDockerDir
+	 * @param  \Symfony\Component\Filesystem\Filesystem  $filesystem
+	 */
+	public function __construct( string $configDir, Filesystem $filesystem ) {
+		$this->configDir  = $configDir;
+		$this->filesystem = $filesystem;
+	}
 
-    /**
-     * Run all pre flight checks.
-     */
-    public function boot(): void {
-        $this->maybeCopyGlobalConfig();
-        $this->createDirectories();
-    }
+	/**
+	 * Run all pre flight checks.
+	 */
+	public function boot(): void {
+		$this->maybeCopyGlobalConfig();
+		$this->createDirectories();
+	}
 
-    /**
-     * Create required configuration directories.
-     */
-    protected function createDirectories(): void {
-        foreach ( $this->directories as $directory ) {
-            $directory = $this->configDir . '/' . $directory;
+	/**
+	 * Create required configuration directories.
+	 */
+	protected function createDirectories(): void {
+		foreach ( $this->directories as $directory ) {
+			$directory = $this->configDir . '/' . $directory;
 
-            if ( ! $this->filesystem->exists( $directory ) ) {
-                $this->filesystem->mkdir( $directory, 0755 );
-            }
-        }
-    }
+			if ( $this->filesystem->exists( $directory ) ) {
+				continue;
+			}
 
-    /**
-     * Copy the global docker configuration folder if it's not already on the user's system.
-     */
-    protected function maybeCopyGlobalConfig(): void {
-        if ( ! $this->filesystem->exists( $this->configDir . '/' . self::GLOBAL_DIR ) ) {
-            $this->copyStorage();
-        }
-    }
+			$this->filesystem->mkdir( $directory, 0755 );
+		}
+	}
 
-    /**
-     * Copy global docker directory to the user's system.
-     */
-    protected function copyStorage(): void {
-        $global = storage_path( 'global/' );
-        $this->filesystem->mirror( $global, $this->configDir . '/' . self::GLOBAL_DIR );
-    }
+	/**
+	 * Copy the global docker configuration folder if it's not already on the user's system.
+	 */
+	protected function maybeCopyGlobalConfig(): void {
+		if ( $this->filesystem->exists( $this->configDir . '/' . self::GLOBAL_DIR ) ) {
+			return;
+		}
+
+		$this->copyStorage();
+	}
+
+	/**
+	 * Copy global docker directory to the user's system.
+	 */
+	protected function copyStorage(): void {
+		$global = storage_path( 'global/' );
+		$this->filesystem->mirror( $global, $this->configDir . '/' . self::GLOBAL_DIR );
+	}
 
 }

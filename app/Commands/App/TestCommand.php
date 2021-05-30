@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\App;
 
@@ -11,12 +11,14 @@ use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand as ZeroTestComman
  */
 class TestCommand extends ZeroTestCommand {
 
-    /**
-     * Run this application's automated tests
-     *
-     * @var string
-     */
-    protected $signature = 'app:test
+	/**
+	 * Run this application's automated tests
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'app:test
         {--without-tty : Disable output to TTY}
         {--parallel : Indicates if the tests should run in parallel}
         {--recreate-databases : Indicates if the test databases should be re-created}

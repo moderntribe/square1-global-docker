@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\GlobalDocker;
 
@@ -13,55 +13,57 @@ use Illuminate\Support\Facades\Artisan;
  */
 class Start extends BaseGlobalDocker {
 
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'global:start';
+	/**
+	 * The signature of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $signature = 'global:start';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Starts the SquareOne global docker containers';
+	/**
+	 * The description of the command.
+	 *
+	 * @var string
+	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+	 */
+	protected $description = 'Starts the SquareOne global docker containers';
 
-    /**
-     * Execute the console command.
-     *
-     * @param  \App\Services\Docker\Dns\Handler  $resolveHandler
-     *
-     * @return void
-     */
-    public function handle( Handler $resolveHandler ): void {
-        $this->info( '➜ Starting global docker containers...' );
+	/**
+	 * Execute the console command.
+	 *
+	 * @param  \App\Services\Docker\Dns\Handler  $resolveHandler
+	 */
+	public function handle( Handler $resolveHandler ): void {
+		$this->info( '➜ Starting global docker containers...' );
 
-        if ( ! $resolveHandler->enabled() ) {
-            $this->error( 'DNS resolvers not enabled! Enter your sudo password when requested to enable them...' );
-            $this->enableDnsResolvers( $resolveHandler );
-        }
+		if ( ! $resolveHandler->enabled() ) {
+			$this->error( 'DNS resolvers not enabled! Enter your sudo password when requested to enable them...' );
+			$this->enableDnsResolvers( $resolveHandler );
+		}
 
-        chdir( $this->globalDirectory );
+		chdir( $this->globalDirectory );
 
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            self::PROJECT_NAME,
-            'up',
-            '--remove-orphans',
-            '-d',
-        ] );
+		Artisan::call( DockerCompose::class, [
+			'--project-name',
+			self::PROJECT_NAME,
+			'up',
+			'--remove-orphans',
+			'-d',
+		] );
 
-        $this->info( 'Done.' );
-    }
+		$this->info( 'Done.' );
+	}
 
-    /**
-     * Write the nameservers to the relevant resolvers.
-     *
-     * @param  \App\Services\Docker\Dns\Handler  $resolveHandler
-     */
-    protected function enableDnsResolvers( Handler $resolveHandler ): void {
-        $resolveHandler->enable( $this );
-    }
+	/**
+	 * Write the nameservers to the relevant resolvers.
+	 *
+	 * @param  \App\Services\Docker\Dns\Handler  $resolveHandler
+	 */
+	protected function enableDnsResolvers( Handler $resolveHandler ): void {
+		$resolveHandler->enable( $this );
+	}
 
 }

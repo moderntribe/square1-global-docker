@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Docker\Dns\Resolvers;
 
@@ -11,19 +11,15 @@ namespace App\Services\Docker\Dns\Resolvers;
  */
 class Scutil extends ResolvConf {
 
-    /**
-     * Check if this OS supports scutil, which runs on MacOS.
-     *
-     * @return bool
-     */
-    public function supported(): bool {
-        $response = $this->runner->run( 'scutil --dns' );
+	/**
+	 * Check if this OS supports scutil, which runs on MacOS.
+	 *
+	 * @return bool
+	 */
+	public function supported(): bool {
+		$response = $this->runner->run( 'scutil --dns' );
 
-        if ( $response->ok() ) {
-            return true;
-        }
-
-        return false;
-    }
+		return $response->ok();
+	}
 
 }
