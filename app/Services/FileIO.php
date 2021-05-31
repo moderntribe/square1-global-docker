@@ -31,7 +31,7 @@ class FileIO implements File {
 	 * @return bool
 	 */
 	public function exists( string $path ): bool {
-		return (bool) $this->filesystem->exists( $path );
+		return $this->filesystem->exists( $path );
 	}
 
 	/**
@@ -60,7 +60,7 @@ class FileIO implements File {
 	public function contains( string $path, string $content ): bool {
 		$data = $this->filesystem->get( $path );
 
-		return (bool) str_contains( $data, $content );
+		return str_contains( $data, $content );
 	}
 
 
@@ -73,7 +73,7 @@ class FileIO implements File {
 	 * @return int The number of bytes that were written to the file.
 	 */
 	public function append_content( string $path, string $content ): int {
-		return (int) $this->filesystem->append( $path, $content );
+		return $this->filesystem->append( $path, $content );
 	}
 
 	/**

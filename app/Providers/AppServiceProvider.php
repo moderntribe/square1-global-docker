@@ -29,9 +29,14 @@ use App\Services\Docker\Dns\Factory;
 use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Docker\Local\Config;
+use App\Services\Docker\Volumes\Types\BindVolume;
+use App\Services\Docker\Volumes\Types\NfsVolume;
+use App\Services\Docker\Volumes\Types\NoneVolume;
+use App\Services\Docker\Volumes\VolumeCollection;
 use App\Services\HomeDir;
 use App\Services\OperatingSystem;
 use App\Services\Settings\Groups\AllSettings;
+use App\Services\Settings\Groups\Docker;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsWriter;
 use App\Services\Update\Updater;
@@ -225,22 +230,22 @@ class AppServiceProvider extends ServiceProvider {
 								new LinuxTrustStore(
 									'/etc/pki/ca-trust/source/anchors/',
 									'/etc/pki/ca-trust/source/anchors/%s.pem',
-									'update-ca-trust extract' 
+									'update-ca-trust extract'
 								),
 								new LinuxTrustStore(
 									'/usr/local/share/ca-certificates/',
 									'/usr/local/share/ca-certificates/%s.crt',
-									'update-ca-certificates' 
+									'update-ca-certificates'
 								),
 								new LinuxTrustStore(
 									'/etc/ca-certificates/trust-source/anchors/',
 									'/etc/ca-certificates/trust-source/anchors/%s.crt',
-									'trust extract-compat' 
+									'trust extract-compat'
 								),
 								new LinuxTrustStore(
 									'/usr/share/pki/trust/anchors/',
 									'/usr/share/pki/trust/anchors/%s.pem',
-									'update-ca-certificates' 
+									'update-ca-certificates'
 								),
 							] );
 
@@ -258,6 +263,16 @@ class AppServiceProvider extends ServiceProvider {
 		$this->app->when( Env::class )
 				  ->needs( '$directory' )
 				  ->give( config( 'squareone.config-dir' ) );
+
+		$this->app->when( VolumeCollection::class )
+				  ->needs( Collection::class )
+				  ->give( static function ( Application $app ) {
+					  return collect( [
+						  Docker::BIND => $app->make( BindVolume::class ),
+						  Docker::NFS  => $app->make( NfsVolume::class ),
+						  Docker::NONE => $app->make( NoneVolume::class ),
+					  ] );
+				  } );
 	}
 
 	/**

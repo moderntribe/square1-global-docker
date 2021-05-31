@@ -12,10 +12,16 @@ use RuntimeException;
  */
 class Config {
 
-	public const ENV_UID     = 'SQ1_UID';
-	public const ENV_GID     = 'SQ1_GID';
-	public const DEFAULT_UID = 1000;
-	public const DEFAULT_GID = 1000;
+	public const DEFAULT_GID        = 1000;
+	public const DEFAULT_UID        = 1000;
+	public const ENV_DB_NAME        = 'SQ1_DB_NAME';
+	public const ENV_GID            = 'SQ1_GID';
+	public const ENV_HOSTIP         = 'HOSTIP';
+	public const ENV_HOSTNAME       = 'SQ1_HOSTNAME';
+	public const ENV_HOSTNAME_TESTS = 'SQ1_HOSTNAME_TESTS';
+	public const ENV_PROJECT_NAME   = 'SQ1_PROJECT_NAME';
+	public const ENV_PROJECT_ROOT   = 'SQ1_PROJECT_ROOT';
+	public const ENV_UID            = 'SQ1_UID';
 
 	/**
 	 * The command runner.
@@ -67,12 +73,12 @@ class Config {
 					break;
 				}
 
-				$path = $this->path ? $this->path : getcwd();
+				$path = $this->path ?: getcwd();
 
 				// If these either of these files exist, this is probably a SquareOne project
 				$squareOneFiles = [
-					"{$path}/dev/docker/docker-compose.yml",
-					"{$path}/squareone.yml",
+					"$path/dev/docker/docker-compose.yml",
+					"$path/squareone.yml",
 				];
 
 				$squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
@@ -127,6 +133,17 @@ class Config {
 	}
 
 	/**
+	 * Get the database name.
+	 *
+	 * @return string
+	 */
+	public function getDbName(): string {
+		$name = $this->getProjectName();
+
+		return str_replace( '-', '_', $name );
+	}
+
+	/**
 	 * Get the composer volume where the cache and auth.json are stored.
 	 *
 	 * @return string
@@ -144,6 +161,17 @@ class Config {
 	 */
 	public function getProjectDomain( string $tld = 'tribe' ): string {
 		return $this->getProjectName() . '.' . $tld;
+	}
+
+	/**
+	 * Get the project's test domain
+	 *
+	 * @param  string  $tld  The top-level domain, e.g. com
+	 *
+	 * @return string
+	 */
+	public function getProjectTestDomain( string $tld = 'tribe' ): string {
+		return $this->getProjectName() . 'test.' . $tld;
 	}
 
 	/**
