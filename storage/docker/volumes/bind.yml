@@ -1,0 +1,12 @@
+# Default local volume driver
+# for native Docker operating systems (e.g. Linux)
+
+version: "3.4"
+
+volumes:
+  appdata: # The project's named volume
+    driver: local
+    driver_opts:
+      type: none
+      device: ${SQ1_PROJECT_ROOT}
+      o: bind
