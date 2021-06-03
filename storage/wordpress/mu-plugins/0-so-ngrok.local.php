@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 /**
  * Plugin Name: SquareOne Ngrok Local Sharing
  * Plugin URI: https://tri.be
@@ -66,7 +66,7 @@ final class Ngrok {
 
 }
 
-$instance = new Ngrok( site_url( '/' ) );
+$instance = new Ngrok( network_site_url( '/' ) );
 
 add_action( 'wp_loaded', [ $instance, 'buffer_start' ] );
 // prevent infinite redirects on a multisite homepage
