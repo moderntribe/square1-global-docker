@@ -1,8 +1,6 @@
 # NFS volume mounting for use on macOS
 # Note: this has no inotify/fs watchers but improves performance
 
-version: "3.4"
-
 volumes:
   appdata: # The project's named volume
     driver: local

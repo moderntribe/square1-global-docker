@@ -1,0 +1,50 @@
+# The default SquareOne stack
+
+services:
+  php-fpm:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: php-fpm
+
+  webserver:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: webserver
+    depends_on:
+      - php-fpm
+
+  memcached:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: memcached
+
+  ##################################################
+  # Testing Containers
+  ##################################################
+
+  php-tests:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: php-tests
+
+  webserver-tests:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: webserver-tests
+    depends_on:
+      - php-tests
+
+  memcached-tests:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: memcached-tests
+
+  chrome:
+    extends:
+      file: ${HOME}/.config/squareone/docker/services.yml
+      service: chrome
+
+networks:
+  global_square1:
+    external:
+      name: ${SQ1_PROXY_NETWORK:-global_square1}

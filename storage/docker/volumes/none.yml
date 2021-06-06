@@ -2,7 +2,5 @@
 # All work should be done inside the container and your data can be easily lost
 # This provides the best performance
 
-version: "3.4"
-
 volumes:
   appdata: # The project's named volume

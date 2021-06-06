@@ -143,12 +143,12 @@ class DockerCompose extends BaseCommand {
 	protected function modifyCommand( string $command, Config $config ): string {
 		$args = [
 			$this->binary,
-			storage_path( 'docker/services.yml' ),
-			$config->getDockerDir() . '/docker-compose.yml',
+			storage_path( 'docker/stacks/default.yml' ),
+			//$config->getDockerDir() . '/docker-compose.yml',
 			storage_path( sprintf( 'docker/volumes/%s.yml', $this->settings->docker->volume ) ),
 		];
 
-		return str_replace( $this->binary, vsprintf( '%s -f %s -f %s -f %s', $args ), $command );
+		return str_replace( $this->binary, vsprintf( '%s -f %s -f %s', $args ), $command );
 	}
 
 }

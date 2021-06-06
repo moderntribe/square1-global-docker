@@ -1,8 +1,6 @@
 # Default local volume driver
 # for native Docker operating systems (e.g. Linux)
 
-version: "3.4"
-
 volumes:
   appdata: # The project's named volume
     driver: local
