@@ -12,8 +12,8 @@ complete -c so -n '__fish_so_no_subcommand' -l help -d 'Display help for the giv
 complete -c so -n '__fish_so_no_subcommand' -l quiet -d 'Do not output any message'
 complete -c so -n '__fish_so_no_subcommand' -l verbose -d 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'
 complete -c so -n '__fish_so_no_subcommand' -l version -d 'Display this application version'
-complete -c so -n '__fish_so_no_subcommand' -l ansi -d 'Force ANSI output'
-complete -c so -n '__fish_so_no_subcommand' -l no-ansi -d 'Disable ANSI output'
+complete -c so -n '__fish_so_no_subcommand' -l ansi -d 'Force (or disable --no-ansi) ANSI output'
+complete -c so -n '__fish_so_no_subcommand' -l no-ansi -d 'Negate the "--ansi" option'
 complete -c so -n '__fish_so_no_subcommand' -l no-interaction -d 'Do not ask any interactive question'
 complete -c so -n '__fish_so_no_subcommand' -l env -d 'The environment the command should run under'
 
@@ -71,6 +71,7 @@ complete -c so -A -n '__fish_seen_subcommand_from help' -l raw -d 'To output raw
 # list
 complete -c so -A -n '__fish_seen_subcommand_from list' -l raw -d 'To output raw command list'
 complete -c so -A -n '__fish_seen_subcommand_from list' -l format -d 'The output format (txt, xml, json, or md)'
+complete -c so -A -n '__fish_seen_subcommand_from list' -l short -d 'To skip describing commands\' arguments'
 
 # logs
 

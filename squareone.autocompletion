@@ -46,7 +46,7 @@ _so()
             ;;
 
             list)
-            opts="${opts} --raw --format"
+            opts="${opts} --raw --format --short"
             ;;
 
             logs)
