@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   dns-external:
-    image: 'andyshinn/dnsmasq:latest'
+    image: andyshinn/dnsmasq:latest
     container_name: tribe-dns-external
     command: '--log-facility=/proc/self/fd/2  --no-resolv --server=1.1.1.1 --address=/tribe/127.0.0.1'
     cap_add:
@@ -11,7 +11,7 @@ services:
       - '53:53/tcp'
     network_mode: bridge
   dns-internal:
-    image: 'andyshinn/dnsmasq:latest'
+    image: andyshinn/dnsmasq:latest
     container_name: tribe-dns-internal
     command: >-
       --log-facility=/proc/self/fd/2 --no-resolv --server=1.1.1.1 --address=/tribe/172.20.10.100 --address=/mysql.tribe/172.20.10.200 --address=/mailhog.tribe/172.20.10.90
@@ -34,11 +34,15 @@ services:
       - MYSQL_ROOT_PASSWORD=password
     ports:
       - '3306:3306'
+    healthcheck:
+      test: mysqladmin ping -h mysql -u root --password=$$MYSQL_PASSWORD
+      timeout: 3s
+      retries: 20
     networks:
       proxy:
         ipv4_address: 172.20.10.200
   reverse-proxy:
-    image: 'jwilder/nginx-proxy:alpine'
+    image: jwilder/nginx-proxy:0.9.0-alpine
     container_name: tribe-proxy
     ports:
       - '80:80'
@@ -53,7 +57,7 @@ services:
       proxy:
         ipv4_address: 172.20.10.100
   mailhog:
-    image: 'mailhog/mailhog:latest'
+    image: mailhog/mailhog:latest
     container_name: tribe-mail
     environment:
       - VIRTUAL_HOST=mailhog.tribe
@@ -64,7 +68,7 @@ services:
       proxy:
         ipv4_address: 172.20.10.90
   portainer:
-    image: 'portainer/portainer'
+    image: portainer/portainer
     container_name: tribe-portainer
     environment:
       - VIRTUAL_HOST=portainer.tribe
