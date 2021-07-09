@@ -7,6 +7,7 @@ use App\Services\Docker\Local\Config;
 use App\Services\ProjectBootstrapper;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
+use App\Commands\GlobalDocker\Start as GlobalStart;
 
 /**
  * Class Bootstrap
@@ -39,6 +40,8 @@ class Bootstrap extends BaseLocalDocker {
      * @return int
      */
     public function handle( Config $config, ProjectBootstrapper $bootstrapper ) {
+        Artisan::call( GlobalStart::class, [], $this->output );
+
         $this->info( 'Alright, let\'s get ready to configure WordPress!' );
 
         $email                = $this->ask( 'Enter your email address' );
@@ -74,7 +77,7 @@ class Bootstrap extends BaseLocalDocker {
         $bootstrapper->renameObjectCache( $config->getProjectRoot() );
 
         $this->task( 'Bootstrapping project', call_user_func( [ $this, 'bootstrap' ], $config, $bootstrapper ) );
-        $this->task( 'Starting docker containers', call_user_func( [ $this, 'startContainers' ] ) );
+        $this->task( 'Starting local docker containers', call_user_func( [ $this, 'startLocalContainers' ] ) );
         $this->task( 'Installing WordPress', call_user_func( [ $this, 'installWordpress' ], $config, $email, $username, $password ) );
 
         $bootstrapper->restoreObjectCache( $config->getProjectRoot() );
@@ -90,11 +93,10 @@ class Bootstrap extends BaseLocalDocker {
     }
 
     /**
-     * Starts all required docker containers.
-     *
+     * Starts local project docker containers.
      */
-    public function startContainers(): void {
-        Artisan::call( Start::class, [], $this->output );
+    public function startLocalContainers(): void {
+        Artisan::call( Start::class, [ '--skip-global' => true ], $this->output );
     }
 
     /**
@@ -108,7 +110,7 @@ class Bootstrap extends BaseLocalDocker {
     public function bootstrap( Config $config, ProjectBootstrapper $bootstrapper ): void {
         $projectRoot = $config->getProjectRoot();
 
-        $bootstrapper->createDatabases( $config->getProjectName() );
+        $bootstrapper->createDatabases( $config->getProjectName(), $this->output );
 
         $result = $bootstrapper->createLocalConfig( $projectRoot );
 
