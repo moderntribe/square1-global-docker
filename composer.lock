@@ -4,8 +4,66 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53083cb3bcbd9dfe6ec7b17ad4d36184",
+    "content-hash": "599b9ddcd5a1904e77fb7d7308062c21",
     "packages": [
+        {
+            "name": "alecrabbit/php-cli-snake",
+            "version": "0.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alecrabbit/php-cli-snake.git",
+                "reference": "2312ac6a6e19ae22a05aec9f4ea70d3063dfde46"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alecrabbit/php-cli-snake/zipball/2312ac6a6e19ae22a05aec9f4ea70d3063dfde46",
+                "reference": "2312ac6a6e19ae22a05aec9f4ea70d3063dfde46",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^4.2",
+                "phpunit/phpunit": "^9.5",
+                "react/event-loop": "^1.1",
+                "symfony/var-dumper": "^5.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AlecRabbit\\Snake\\": "src\\Snake"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Lightweight cli spinner with zero dependencies",
+            "keywords": [
+                "256color",
+                "8bit",
+                "ansi",
+                "cli",
+                "color",
+                "colorful",
+                "console",
+                "php",
+                "snake",
+                "spinner"
+            ],
+            "support": {
+                "issues": "https://github.com/alecrabbit/php-cli-snake/issues",
+                "source": "https://github.com/alecrabbit/php-cli-snake/tree/0.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.patreon.com/alecrabbit",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2020-12-19T18:42:31+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.9.2",
