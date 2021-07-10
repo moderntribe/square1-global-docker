@@ -44,14 +44,14 @@ class UpdateCheckListener {
         }
 
         if ( empty( $command ) ) {
-            return false;
-        }
-
-        if ( 'self' !== substr( $command, 0, 4 ) && 'app' !== substr( $command, 0, 3 ) ) {
             return true;
         }
 
-        return false;
+        if ( 'list' === $command ) {
+            return false;
+        }
+
+        return  'self' !== substr( $command, 0, 4 ) && 'app' !== substr( $command, 0, 3 );
     }
 
     /**
