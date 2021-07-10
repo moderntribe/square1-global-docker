@@ -90,6 +90,7 @@ complete -c so -A -n '__fish_seen_subcommand_from shell' -l user -d 'The usernam
 complete -c so -A -n '__fish_seen_subcommand_from start' -l browser -d 'Automatically open the project in your browser'
 complete -c so -A -n '__fish_seen_subcommand_from start' -l path -d 'Path to a specific local project folder'
 complete -c so -A -n '__fish_seen_subcommand_from start' -l remove-orphans -d 'Remove containers for services not in the compose file'
+complete -c so -A -n '__fish_seen_subcommand_from start' -l skip-global -d 'Skip starting global containers'
 
 # stop
 complete -c so -A -n '__fish_seen_subcommand_from stop' -l remove-orphans -d 'Remove containers for services not in the compose file'

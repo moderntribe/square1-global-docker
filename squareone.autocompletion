@@ -74,7 +74,7 @@ _so()
             ;;
 
             start)
-            opts="${opts} --browser --path --remove-orphans"
+            opts="${opts} --browser --path --remove-orphans --skip-global"
             ;;
 
             stop)

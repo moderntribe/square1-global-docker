@@ -78,7 +78,7 @@ _so()
             ;;
 
             start)
-            opts+=("--browser:Automatically open the project in your browser" "--path:Path to a specific local project folder" "--remove-orphans:Remove containers for services not in the compose file")
+            opts+=("--browser:Automatically open the project in your browser" "--path:Path to a specific local project folder" "--remove-orphans:Remove containers for services not in the compose file" "--skip-global:Skip starting global containers")
             ;;
 
             stop)
