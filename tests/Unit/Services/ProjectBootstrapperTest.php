@@ -70,7 +70,11 @@ class ProjectBootstrapperTest extends TestCase {
     }
 
     public function test_it_creates_databases() {
-        $this->healthChecker->shouldReceive('healthy')->once()->andReturnTrue();
+        PHPMockery::mock( 'App\Services', 'usleep' )->andReturnTrue();
+
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnFalse();
+        $this->spinner->shouldReceive( 'spin' )->once();
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnTrue();
         $this->spinner->shouldReceive( 'end' )->once();
 
         $projectName = 'squareone';
@@ -225,8 +229,14 @@ class ProjectBootstrapperTest extends TestCase {
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'process' )
-                     ->once()
+                     ->twice()
                      ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'isRunning' )
+                     ->once()
+                     ->andReturnTrue();
+
+        $this->spinner->shouldReceive( 'spin' )->once();
 
         // Mock the process finished running
         $this->runner->shouldReceive( 'isRunning' )
