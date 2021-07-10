@@ -48,9 +48,10 @@ class MigrationListener {
     /**
      * UpdateCheck constructor.
      *
-     * @param  \App\Services\Migrations\Migrator  $migrator
-     * @param  \App\Services\Update\Updater       $updater
-     * @param  string                             $version
+     * @param Finder $finder
+     * @param \App\Services\Migrations\Migrator $migrator
+     * @param \App\Services\Update\Updater $updater
+     * @param string $version
      */
     public function __construct( Finder $finder, Migrator $migrator, Updater $updater, string $version ) {
         $this->finder   = $finder;
