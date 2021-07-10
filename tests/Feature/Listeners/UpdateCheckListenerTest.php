@@ -15,7 +15,7 @@ class UpdateCheckListenerTest extends TestCase {
     }
 
     public function test_it_fires_update_check_listener() {
-        $this->artisan( 'global:stop-all' );
+        $this->artisan( 'open' );
         $this->assertCommandCalled( UpdateCheck::class, [ '--only-new' => true ] );
     }
 
