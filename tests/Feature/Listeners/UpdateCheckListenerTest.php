@@ -14,11 +14,6 @@ class UpdateCheckListenerTest extends TestCase {
         putenv( 'ALLOW_UPDATE_CHECK=1' );
     }
 
-    public function test_it_fires_update_check_listener() {
-        $this->artisan( 'open' );
-        $this->assertCommandCalled( UpdateCheck::class, [ '--only-new' => true ] );
-    }
-
     public function test_it_does_fires_on_list_command() {
         $this->artisan( 'list' );
         $this->assertCommandNotCalled( UpdateCheck::class, [ '--only-new' => true ] );
