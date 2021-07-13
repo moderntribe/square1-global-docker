@@ -55,6 +55,7 @@ complete -c so -f -n '__fish_so_no_subcommand' -a vendor:publish -d 'Publish any
 # command options
 
 # bootstrap
+complete -c so -A -n '__fish_seen_subcommand_from bootstrap' -l multisite -d 'Bootstrap for a multisite project'
 
 # composer
 

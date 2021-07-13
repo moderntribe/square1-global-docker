@@ -30,7 +30,7 @@ _so()
             case "$com" in
 
             bootstrap)
-            opts+=()
+            opts+=("--multisite:Bootstrap for a multisite project")
             ;;
 
             composer)
