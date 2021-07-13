@@ -21,7 +21,7 @@ class Bootstrap extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'bootstrap';
+    protected $signature = 'bootstrap {--multisite : Bootstrap for a multisite project}';
 
     /**
      * The description of the command.
@@ -133,10 +133,12 @@ class Bootstrap extends BaseLocalDocker {
      * @param  string                             $password
      */
     public function installWordpress( Config $config, string $email, string $username, string $password ): void {
+        $command = $this->option( 'multisite' ) ? 'multisite-install' : 'install';
+
         Artisan::call( Wp::class, [
             'args' => [
                 'core',
-                'install',
+                $command,
                 '--url'            => $config->getProjectDomain(),
                 '--title'          => 'Square One',
                 '--admin_email'    => $email,
