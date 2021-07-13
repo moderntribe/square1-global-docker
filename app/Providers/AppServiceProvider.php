@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use AlecRabbit\Snake\Contracts\SpinnerInterface;
+use AlecRabbit\Snake\Spinner;
 use App\Bootstrap;
 use RuntimeException;
 use App\Support\Yaml;
@@ -232,6 +234,8 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( Env::class )
                   ->needs( '$directory' )
                   ->give( config( 'squareone.config-dir' ) );
+
+        $this->app->bind( SpinnerInterface::class, Spinner::class );
     }
 
     /**

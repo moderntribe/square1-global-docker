@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use AlecRabbit\Snake\Contracts\SpinnerInterface;
 use App\Contracts\Runner;
+use App\Services\Docker\HealthChecker;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -35,16 +37,32 @@ class ProjectBootstrapper {
     protected $runner;
 
     /**
+     * The console spinner.
+     *
+     * @var \AlecRabbit\Snake\Contracts\SpinnerInterface
+     */
+    protected $spinner;
+
+    /**
+     * @var \App\Services\Docker\HealthChecker
+     */
+    protected $healthChecker;
+
+    /**
      * ProjectCreator constructor.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     * @param  \App\Services\HomeDir              $homedir
-     * @param  \App\Contracts\Runner              $runner
+     * @param \Illuminate\Filesystem\Filesystem $filesystem
+     * @param \App\Services\HomeDir $homedir
+     * @param \App\Contracts\Runner $runner
+     * @param SpinnerInterface $spinner
+     * @param HealthChecker $healthChecker
      */
-    public function __construct( Filesystem $filesystem, HomeDir $homedir, Runner $runner ) {
-        $this->filesystem = $filesystem;
-        $this->homedir    = $homedir;
-        $this->runner     = $runner;
+    public function __construct( Filesystem $filesystem, HomeDir $homedir, Runner $runner, SpinnerInterface $spinner, HealthChecker $healthChecker ) {
+        $this->filesystem    = $filesystem;
+        $this->homedir       = $homedir;
+        $this->runner        = $runner;
+        $this->spinner       = $spinner;
+        $this->healthChecker = $healthChecker;
     }
 
     /**
@@ -84,11 +102,21 @@ class ProjectBootstrapper {
     /**
      * Create WordPress and test databases.
      *
-     * @param  string  $projectName
+     * @param string $projectName
+     * @param OutputInterface $output
      *
      * @return \App\Services\ProjectBootstrapper
      */
-    public function createDatabases( string $projectName ): self {
+    public function createDatabases( string $projectName, OutputInterface $output ): self {
+        $output->writeln( 'Waiting for database container to become active...' );
+
+        while( $this->healthChecker->healthy( 'tribe-mysql' ) !== true ) {
+            $this->spinner->spin();
+            usleep( 500000 );
+        }
+
+        $this->spinner->end();
+
         $projectName = str_replace( '-', '_', $projectName );
 
         // Create the WordPress database
@@ -102,7 +130,7 @@ class ProjectBootstrapper {
             'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_%s_tests; CREATE DATABASE tribe_%s_acceptance;"',
             $projectName,
             $projectName
-        ) );
+        ) )->throw();
 
         return $this;
     }
@@ -182,22 +210,31 @@ class ProjectBootstrapper {
         $output->writeln( 'Building frontend assets, this will take a while...' );
 
         if ( $this->filesystem->exists( $isThemeBuild ) ) {
-            $this->runner->run( '. ~/.nvm/nvm.sh && nvm install && nvm use && npm install -g gulp-cli && npm run install:theme' )->throw();
+            $this->runner->run( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm install -g gulp-cli; npm run install:theme"' )->throw();
 
             $this->runner->with( [
                 'path' => $projectRoot . '/wp-content/themes/core/',
-            ] )->run( '. ~/.nvm/nvm.sh && nvm install && nvm use && npm run --prefix {{ $path }} gulp -- dist' )->throw();
+            ] )->run( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm run --prefix {{ $path }} gulp -- dist"' )->throw();
 
         } else {
-            $command = '. ~/.nvm/nvm.sh && nvm install && nvm use && yarn install';
+            $command = 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm install -g yarn; yarn install;';
 
             if ( $this->filesystem->exists( $projectRoot . '/gulpfile.js' ) ) {
-                $command .= ' && npm install -g gulp-cli && gulp dist';
+                $command .= ' npm install -g gulp-cli; gulp dist';
             } elseif ( $this->filesystem->exists( $projectRoot . '/Gruntfile.js' ) ) {
-                $command .= ' && npm install -g grunt-cli && grunt dist';
+                $command .= ' npm install -g grunt-cli; grunt dist';
             }
 
-            $this->runner->run( $command )->throw();
+            $command .= '"';
+
+            $response = $this->runner->command( $command )->inBackground()->run();
+
+            while ( $response->process()->isRunning() ) {
+                usleep( 500000 );
+                $this->spinner->spin();
+            }
+
+            $this->spinner->end();
         }
 
         return $this;

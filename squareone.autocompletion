@@ -26,7 +26,7 @@ _so()
         case "$com" in
 
             bootstrap)
-            opts="${opts} "
+            opts="${opts} --multisite"
             ;;
 
             composer)
@@ -74,7 +74,7 @@ _so()
             ;;
 
             start)
-            opts="${opts} --browser --path --remove-orphans"
+            opts="${opts} --browser --path --remove-orphans --skip-global"
             ;;
 
             stop)

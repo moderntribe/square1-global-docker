@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\Services;
 
+use AlecRabbit\Snake\Spinner;
 use App\Runners\CommandRunner;
+use App\Services\Docker\HealthChecker;
 use App\Services\HomeDir;
 use App\Services\ProjectBootstrapper;
 use Illuminate\Filesystem\Filesystem;
@@ -20,15 +22,19 @@ class ProjectBootstrapperTest extends TestCase {
      */
     private $bootstrapper;
     private $projectRoot;
+    private $healthChecker;
+    private $spinner;
 
     protected function setUp(): void {
         parent::setUp();
 
-        $this->filesystem   = $this->mock( Filesystem::class );
-        $this->homedir      = $this->mock( HomeDir::class );
-        $this->runner       = $this->mock( CommandRunner::class );
-        $this->bootstrapper = $this->app->make( ProjectBootstrapper::class );
-        $this->projectRoot  = storage_path( 'tests/project' );
+        $this->filesystem    = $this->mock( Filesystem::class );
+        $this->homedir       = $this->mock( HomeDir::class );
+        $this->runner        = $this->mock( CommandRunner::class );
+        $this->healthChecker = $this->mock( HealthChecker::class );
+        $this->spinner       = $this->mock( Spinner::class );
+        $this->bootstrapper  = $this->app->make( ProjectBootstrapper::class );
+        $this->projectRoot   = storage_path( 'tests/project' );
     }
 
     public function test_it_renames_object_cache() {
@@ -64,16 +70,27 @@ class ProjectBootstrapperTest extends TestCase {
     }
 
     public function test_it_creates_databases() {
+        PHPMockery::mock( 'App\Services', 'usleep' )->andReturnTrue();
+
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnFalse();
+        $this->spinner->shouldReceive( 'spin' )->once();
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnTrue();
+        $this->spinner->shouldReceive( 'end' )->once();
+
         $projectName = 'squareone';
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone;"' );
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone;"' )
+                     ->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' );
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->andReturnSelf();
 
-        $this->bootstrapper->createDatabases( $projectName );
+        $this->runner->shouldReceive( 'throw' )->once()->andReturnSelf();
+
+        $this->bootstrapper->createDatabases( $projectName, new NullOutput() );
     }
 
     public function test_it_creates_local_config() {
@@ -186,6 +203,7 @@ class ProjectBootstrapperTest extends TestCase {
     }
 
     public function test_it_builds_frontend_on_old_squareone_with_gulp() {
+        PHPMockery::mock( 'App\Services', 'usleep' )->andReturnTrue();
 
         $this->filesystem->shouldReceive( 'exists' )
                          ->once()
@@ -197,12 +215,35 @@ class ProjectBootstrapperTest extends TestCase {
                          ->with( $this->projectRoot . '/gulpfile.js' )
                          ->andReturnTrue();
 
-        $this->runner->shouldReceive( 'run' )
+        $this->runner->shouldReceive( 'command' )
                      ->once()
-                     ->with( '. ~/.nvm/nvm.sh && nvm install && nvm use && yarn install && npm install -g gulp-cli && gulp dist' )
+                     ->with( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm install -g yarn; yarn install; npm install -g gulp-cli; gulp dist"' )
                      ->andReturnSelf();
 
-        $this->runner->shouldReceive( 'throw' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'inBackground' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'process' )
+                     ->twice()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'isRunning' )
+                     ->once()
+                     ->andReturnTrue();
+
+        $this->spinner->shouldReceive( 'spin' )->once();
+
+        // Mock the process finished running
+        $this->runner->shouldReceive( 'isRunning' )
+                     ->once()
+                     ->andReturnFalse();
+
+        $this->spinner->shouldReceive( 'end' )->once();
 
         $this->bootstrapper->buildFrontend( $this->projectRoot, new NullOutput() );
     }
@@ -224,12 +265,29 @@ class ProjectBootstrapperTest extends TestCase {
                          ->with( $this->projectRoot . '/Gruntfile.js' )
                          ->andReturnTrue();
 
-        $this->runner->shouldReceive( 'run' )
+        $this->runner->shouldReceive( 'command' )
                      ->once()
-                     ->with( '. ~/.nvm/nvm.sh && nvm install && nvm use && yarn install && npm install -g grunt-cli && grunt dist' )
+                     ->with( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm install -g yarn; yarn install; npm install -g grunt-cli; grunt dist"' )
                      ->andReturnSelf();
 
-        $this->runner->shouldReceive( 'throw' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'inBackground' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'process' )
+                     ->once()
+                     ->andReturnSelf();
+
+        // Mock the process finished running
+        $this->runner->shouldReceive( 'isRunning' )
+                     ->once()
+                     ->andReturnFalse();
+
+        $this->spinner->shouldReceive( 'end' )->once();
 
         $this->bootstrapper->buildFrontend( $this->projectRoot, new NullOutput() );
     }
@@ -251,12 +309,29 @@ class ProjectBootstrapperTest extends TestCase {
                          ->with( $this->projectRoot . '/Gruntfile.js' )
                          ->andReturnFalse();
 
-        $this->runner->shouldReceive( 'run' )
+        $this->runner->shouldReceive( 'command' )
                      ->once()
-                     ->with( '. ~/.nvm/nvm.sh && nvm install && nvm use && yarn install' )
+                     ->with( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm install -g yarn; yarn install;"' )
                      ->andReturnSelf();
 
-        $this->runner->shouldReceive( 'throw' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'inBackground' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'process' )
+                     ->once()
+                     ->andReturnSelf();
+
+        // Mock the process finished running
+        $this->runner->shouldReceive( 'isRunning' )
+                     ->once()
+                     ->andReturnFalse();
+
+        $this->spinner->shouldReceive( 'end' )->once();
 
         $this->bootstrapper->buildFrontend( $this->projectRoot, new NullOutput() );
     }
@@ -270,7 +345,7 @@ class ProjectBootstrapperTest extends TestCase {
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( '. ~/.nvm/nvm.sh && nvm install && nvm use && npm install -g gulp-cli && npm run install:theme' )
+                     ->with( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm install -g gulp-cli; npm run install:theme"' )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'with' )
@@ -282,7 +357,7 @@ class ProjectBootstrapperTest extends TestCase {
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( '. ~/.nvm/nvm.sh && nvm install && nvm use && npm run --prefix {{ $path }} gulp -- dist' )
+                     ->with( 'bash -c ". ~/.nvm/nvm.sh; nvm install; nvm use; npm run --prefix {{ $path }} gulp -- dist"' )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'throw' )->twice()->andReturnSelf();

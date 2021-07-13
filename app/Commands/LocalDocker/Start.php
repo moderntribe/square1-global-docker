@@ -31,7 +31,8 @@ class Start extends BaseLocalDocker {
      */
     protected $signature = 'start {--b|browser      : Automatically open the project in your browser}
                                   {--p|path=        : Path to a specific local project folder}
-                                  {--remove-orphans : Remove containers for services not in the compose file}';
+                                  {--remove-orphans : Remove containers for services not in the compose file}
+                                  {--skip-global    : Skip starting global containers}';
 
     /**
      * The description of the command.
@@ -74,7 +75,9 @@ class Start extends BaseLocalDocker {
         $this->prepareComposer( $config, $filesystem, $github );
 
         // Start global containers
-        Artisan::call( GlobalStart::class, [], $this->getOutput() );
+        if ( ! $this->option( 'skip-global') ) {
+            Artisan::call( GlobalStart::class, [], $this->getOutput() );
+        }
 
         $this->checkCertificates( $config, $certificateHandler );
 
