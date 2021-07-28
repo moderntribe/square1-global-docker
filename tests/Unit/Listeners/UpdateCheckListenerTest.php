@@ -15,11 +15,11 @@ class UpdateCheckListenerTest extends TestCase {
         putenv( 'ALLOW_UPDATE_CHECK=1' );
     }
 
-    public function test_it_returns_false_when_no_command_is_provided() {
+    public function test_it_returns_true_when_no_command_is_provided() {
         $listener = new UpdateCheckListener();
         $event    = $this->mock( CommandFinished::class );
 
-        $this->assertFalse( $listener->handle( $event ) );
+        $this->assertTrue( $listener->handle( $event ) );
     }
 
 }

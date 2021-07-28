@@ -20,6 +20,8 @@ class StartTest extends BaseCommandTester {
 
         $this->dockerCompose = $this->mock( DockerCompose::class );
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
+            '--project-directory',
+            config( 'squareone.docker.config-dir' ),
             '--project-name',
             Start::PROJECT_NAME,
             'up',
