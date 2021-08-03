@@ -5,43 +5,43 @@ namespace App\Providers;
 use AlecRabbit\Snake\Contracts\SpinnerInterface;
 use AlecRabbit\Snake\Spinner;
 use App\Bootstrap;
-use RuntimeException;
-use App\Support\Yaml;
-use Filebase\Database;
-use App\Contracts\Runner;
-use App\Services\HomeDir;
-use App\Contracts\Trustable;
-use App\Services\Config\Env;
-use App\Services\Config\Github;
-use App\Commands\DockerCompose;
-use App\Services\Certificate\Ca;
-use App\Services\Update\Updater;
-use App\Commands\Self\SelfUpdate;
-use App\Recorders\ResultRecorder;
-use App\Services\OperatingSystem;
-use App\Commands\LocalDocker\Test;
-use App\Commands\Self\UpdateCheck;
-use Illuminate\Support\Collection;
+use App\Commands\Config\ComposeCopy;
 use App\Commands\Config\ConfigCopy;
+use App\Commands\DockerCompose;
 use App\Commands\GlobalDocker\Logs;
+use App\Commands\GlobalDocker\Restart;
+use App\Commands\GlobalDocker\Start;
 use App\Commands\GlobalDocker\Stop;
 use App\Commands\LocalDocker\Share;
-use App\Commands\Config\ComposeCopy;
-use App\Commands\GlobalDocker\Start;
+use App\Commands\LocalDocker\Test;
+use App\Commands\Self\SelfUpdate;
+use App\Commands\Self\UpdateCheck;
+use App\Contracts\Runner;
+use App\Contracts\Trustable;
 use App\Listeners\MigrationListener;
-use App\Services\Docker\Dns\Factory;
-use App\Services\Docker\Dns\Handler;
-use App\Services\Docker\Local\Config;
-use Illuminate\Filesystem\Filesystem;
-use App\Commands\GlobalDocker\Restart;
-use Illuminate\Support\ServiceProvider;
-use Symfony\Component\Config\FileLocator;
-use Illuminate\Contracts\Foundation\Application;
-use App\Services\Docker\Dns\OsSupport\BaseSupport;
+use App\Recorders\ResultRecorder;
+use App\Services\Certificate\Ca;
 use App\Services\Certificate\Handler as CertHandler;
 use App\Services\Certificate\Trust\LinuxTrustStore;
 use App\Services\Certificate\Trust\Strategies\Linux;
 use App\Services\Certificate\Trust\Strategies\MacOs;
+use App\Services\Config\Env;
+use App\Services\Config\Github;
+use App\Services\Docker\Dns\Factory;
+use App\Services\Docker\Dns\Handler;
+use App\Services\Docker\Dns\OsSupport\BaseSupport;
+use App\Services\Docker\Local\Config;
+use App\Services\HomeDir;
+use App\Services\OperatingSystem;
+use App\Services\Update\Updater;
+use App\Support\Yaml;
+use Filebase\Database;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Illuminate\Support\ServiceProvider;
+use RuntimeException;
+use Symfony\Component\Config\FileLocator;
 
 /**
  * Class AppServiceProvider
@@ -57,10 +57,9 @@ class AppServiceProvider extends ServiceProvider {
     /**
      * Bootstrap any application services.
      *
-     * @return void
-     *
+     * @throws \Filebase\Filesystem\FilesystemException
      */
-    public function boot() {
+    public function boot(): void {
         $config = [
             'dir' => config( 'squareone.config-dir' ) . '/' . self::DB_STORE . '/migrations',
         ];
@@ -73,11 +72,10 @@ class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      *
-     * @return void
-     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Filebase\Filesystem\FilesystemException
      */
-    public function register() {
+    public function register(): void {
         $this->initConfig();
 
         $this->app->when( Bootstrap::class )
@@ -249,21 +247,16 @@ class AppServiceProvider extends ServiceProvider {
         $yaml = $this->app->make( 'pragmarx.yaml' );
 
         $yaml->loadToConfig( $files, 'squareone' );
-
-        // Override the configuration directory for tests
-        if ( 'testing' === env( 'APP_ENV' ) ) {
-            config(['squareone.config-dir' => '/tmp/.squareonetests' ] );
-        }
     }
 
     /**
-     * Load configuration files from multiple locations, furthest down the list will overwrite any configuration values of the previous one.
+     * Load configuration files from multiple locations, the furthest down the list will overwrite any configuration values of the previous one.
      *
      * @return array|string
      */
     private function getConfigFiles() {
         if ( 'testing' === env( 'APP_ENV' ) ) {
-            $paths = [ config_path() ];
+            $paths = [ config_path( 'tests' ) ];
         } else {
             $paths = [
                 config_path(),
