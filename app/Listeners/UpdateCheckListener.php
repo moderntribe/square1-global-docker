@@ -43,9 +43,7 @@ class UpdateCheckListener {
             return false;
         }
 
-        if ( empty( $command ) ) {
-            return true;
-        }
+        $command = (string) $command;
 
         if ( 'list' === $command ) {
             return false;
