@@ -91,9 +91,7 @@ class MigrationListener {
             return false;
         }
 
-        if ( empty( $command ) ) {
-            return false;
-        }
+        $command = (string) $command;
 
         if ( 'self' === substr( $command, 0, 4 ) || 'app' === substr( $command, 0, 3 ) ) {
             return false;

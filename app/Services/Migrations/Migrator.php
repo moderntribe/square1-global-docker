@@ -2,14 +2,14 @@
 
 namespace App\Services\Migrations;
 
-use stdClass;
 use Filebase\Database;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Symfony\Component\Finder\Finder;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use stdClass;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class Migrator
@@ -53,14 +53,16 @@ class Migrator {
     }
 
     /**
-     * Run migrations
+     * Run migrations.
      *
      * @param  \Symfony\Component\Finder\Finder                   $migrations  The Finder iterator of Symfony\Component\Finder\SplFileInfo objects.
      *
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      *
-     * @return \Illuminate\Support\Collection A collection of migration files that ran
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @return \Illuminate\Support\Collection A collection of migration files that ran
      */
     public function run( Finder $migrations, OutputInterface $output ): Collection {
         $results = [];
@@ -100,6 +102,8 @@ class Migrator {
      * @codeCoverageIgnore
      *
      * @param  string  $file  The full path to the migration file.
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function require( string $file ): void {
         $this->filesystem->requireOnce( $file );

@@ -14,7 +14,7 @@ use LaravelZero\Framework\Commands\Command;
  */
 class UpdateCheck extends Command {
 
-    public const TIME_BETWEEN_CHECKS = '7 days';
+    public const TIME_BETWEEN_CHECKS = '2 days';
     public const RELEASES_URL        = 'https://github.com/moderntribe/square1-global-docker/releases/tag/%s';
 
     /**

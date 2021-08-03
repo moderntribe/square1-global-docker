@@ -64,13 +64,7 @@ class MigrationListenerTest extends TestCase {
     }
 
     public function test_it_does_not_run_migrator_with_specific_commands() {
-        $this->event->command = null;
-
         $listener = new MigrationListener( $this->finder, $this->migrator, $this->updater, '1.0' );
-
-        $result = $listener->handle( $this->event );
-
-        $this->assertFalse( $result );
 
         $this->event->command = 'self:update';
 
