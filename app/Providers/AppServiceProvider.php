@@ -249,6 +249,11 @@ class AppServiceProvider extends ServiceProvider {
         $yaml = $this->app->make( 'pragmarx.yaml' );
 
         $yaml->loadToConfig( $files, 'squareone' );
+
+        // Override the configuration directory for tests
+        if ( 'testing' === env( 'APP_ENV' ) ) {
+            config(['squareone.config-dir' => '/tmp/.squareonetests' ] );
+        }
     }
 
     /**
