@@ -3,9 +3,9 @@
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Services\Docker\Local\Config;
 use App\Services\XdebugValidator;
 use App\Traits\XdebugWarningTrait;
-use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
 /**
@@ -22,11 +22,12 @@ class Test extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'test {args*             : arguments passed to the wp binary}
-                           {--x|xdebug              : Enable xdebug}
-                           {--c|container=php-tests : Set the docker container to run the tests on}
-                           {--noclean               : Do not run the codecept clean command first}
-                           {--notty                 : Disable interactive/tty to capture output}';
+    protected $signature = 'test {args*                         : arguments passed to the wp binary}
+                           {--x|xdebug                          : Enable xdebug}
+                           {--c|container=php-tests             : Set the docker container to run the tests on}
+                           {--p|path=/application/www/dev/tests : The path to the tests directory in the container}
+                           {--noclean                           : Do not run the codecept clean command first}
+                           {--notty                             : Disable interactive/tty to capture output}';
 
     /**
      * The description of the command.
@@ -97,7 +98,7 @@ class Test extends BaseLocalDocker {
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
-            '/application/www/dev/tests',
+            $this->option( 'path' ),
         ];
 
         chdir( $config->getDockerDir() );

@@ -80,7 +80,7 @@ class TestTest extends LocalDockerCommand {
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
-            '/application/www/dev/tests',
+            '/application/www/other/tests',
             'clean',
         ] );
 
@@ -99,7 +99,7 @@ class TestTest extends LocalDockerCommand {
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
-            '/application/www/dev/tests',
+            '/application/www/other/tests',
             'run',
             'integration',
         ] );
@@ -112,6 +112,7 @@ class TestTest extends LocalDockerCommand {
             '--xdebug'    => true,
             '--container' => 'php-fpm',
             '--notty'     => true,
+            '--path'      => '/application/www/other/tests',
             'args'        => [
                 'run',
                 'integration',
