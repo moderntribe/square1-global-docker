@@ -22,7 +22,7 @@ class Share extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'share {directory=wp-content : The name of the wp-content folder, if renamed}';
+    protected $signature = 'share {--c|content-dir=wp-content : The name of the wp-content directory, if renamed}';
 
     /**
      * The description of the command.
@@ -82,7 +82,7 @@ class Share extends BaseLocalDocker {
         $content = $filesystem->get( $source );
         $target  = sprintf( '%s/%s', $config->getProjectRoot(),
             sprintf( '%s/mu-plugins/%s',
-                basename( $this->argument( 'directory' ) ),
+                basename( $this->option( 'content-dir' ) ),
                 self::MU_PLUGIN
             )
         );
@@ -91,7 +91,7 @@ class Share extends BaseLocalDocker {
 
         if ( ! $filesystem->exists( $targetDir ) ) {
             $this->error(
-                sprintf( 'The directory "%s" does not exist! Does this project have a renamed wp-content folder? try "so share <directory-name>"', $targetDir )
+                sprintf( 'The directory "%s" does not exist! Does this project have a renamed wp-content folder? try "so share -c <directory-name>"', $targetDir )
             );
 
             return self::EXIT_ERROR;

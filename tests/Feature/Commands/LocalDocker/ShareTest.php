@@ -128,7 +128,7 @@ class ShareTest extends LocalDockerCommand {
 
         $command = new Share( $this->settings );
         $tester  = $this->runCommand( $command, [
-            'directory' => 'content'
+            '--content-dir' => 'content'
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
@@ -253,7 +253,7 @@ class ShareTest extends LocalDockerCommand {
         $tester  = $this->runCommand( $command );
 
         $this->assertSame( 1, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'does not exist! Does this project have a renamed wp-content folder?', $tester->getDisplay() );
+        $this->assertStringContainsString( 'try "so share -c <directory-name>"', $tester->getDisplay() );
     }
 
 }
