@@ -70,7 +70,7 @@ _so()
             ;;
 
             share)
-            opts+=()
+            opts+=("--content-dir:The name of the wp-content directory, if renamed")
             ;;
 
             shell)
