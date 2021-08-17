@@ -99,6 +99,7 @@ complete -c so -A -n '__fish_seen_subcommand_from stop' -l remove-orphans -d 'Re
 # test
 complete -c so -A -n '__fish_seen_subcommand_from test' -l xdebug -d 'Enable xdebug'
 complete -c so -A -n '__fish_seen_subcommand_from test' -l container -d 'Set the docker container to run the tests on'
+complete -c so -A -n '__fish_seen_subcommand_from test' -l path -d 'The path to the tests directory in the container'
 complete -c so -A -n '__fish_seen_subcommand_from test' -l noclean -d 'Do not run the codecept clean command first'
 complete -c so -A -n '__fish_seen_subcommand_from test' -l notty -d 'Disable interactive/tty to capture output'
 

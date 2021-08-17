@@ -86,7 +86,7 @@ _so()
             ;;
 
             test)
-            opts+=("--xdebug:Enable xdebug" "--container:Set the docker container to run the tests on" "--noclean:Do not run the codecept clean command first" "--notty:Disable interactive/tty to capture output")
+            opts+=("--xdebug:Enable xdebug" "--container:Set the docker container to run the tests on" "--path:The path to the tests directory in the container" "--noclean:Do not run the codecept clean command first" "--notty:Disable interactive/tty to capture output")
             ;;
 
             wp)
