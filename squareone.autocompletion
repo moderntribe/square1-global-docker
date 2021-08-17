@@ -66,7 +66,7 @@ _so()
             ;;
 
             share)
-            opts="${opts} "
+            opts="${opts} --content-dir"
             ;;
 
             shell)
@@ -82,7 +82,7 @@ _so()
             ;;
 
             test)
-            opts="${opts} --xdebug --container --noclean --notty"
+            opts="${opts} --xdebug --container --path --noclean --notty"
             ;;
 
             wp)

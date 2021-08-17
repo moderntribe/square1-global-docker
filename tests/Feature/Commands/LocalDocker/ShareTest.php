@@ -102,6 +102,39 @@ class ShareTest extends LocalDockerCommand {
         $this->assertStringNotContainsString( 'Ngrok requires a free user account to proxy to https domains.', $tester->getDisplay() );
     }
 
+    public function test_it_shares_with_a_custom_content_folder_and_a_saved_ngrok_token() {
+        Storage::disk( 'local' )->makeDirectory( 'tests/share-test-custom-content-dir/content/mu-plugins' );
+
+        $document = new Document( $this->settings );
+        $document->ngrok_token = 'savedtoken';
+
+        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+
+        $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test-custom-content-dir' ) );
+        $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
+
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'docker run --rm -it --net global_proxy --link tribe-proxy wernight/ngrok ngrok http --authtoken {{ $token }} -host-header={{ $domain }} tribe-proxy:443' )
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'with' )->with( [
+            'domain' => 'squareone.tribe',
+            'token'  => 'savedtoken',
+        ] )->andReturnSelf();
+
+        $this->runner->shouldReceive( 'tty' )->with( true )->andReturnSelf();
+
+        $this->runner->shouldReceive( 'throw' )->andReturnSelf();
+
+        $command = new Share( $this->settings );
+        $tester  = $this->runCommand( $command, [
+            '--content-dir' => 'content'
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+        $this->assertStringNotContainsString( 'Ngrok requires a free user account to proxy to https domains.', $tester->getDisplay() );
+    }
+
     public function test_it_adds_mu_plugin_to_gitignore() {
         Storage::disk( 'local' )->put( 'tests/share-test/.gitignore', '*.sql' );
 
@@ -203,6 +236,24 @@ class ShareTest extends LocalDockerCommand {
         $this->assertStringNotContainsString( 'Your project is missing', $tester->getDisplay() );
         $contents = file_get_contents( storage_path( 'tests/share-test/.gitignore' ) );
         $this->assertStringContainsString( '*.local.php', $contents );
+    }
+
+    public function test_it_shows_error_if_custom_wp_content_folder() {
+        Storage::disk( 'local' )->makeDirectory( 'tests/share-test-custom-content-dir/content/mu-plugins' );
+
+        $document = new Document( $this->settings );
+        $document->ngrok_token = 'savedtoken';
+
+        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+
+        $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test-custom-content-dir' ) );
+        $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
+
+        $command = new Share( $this->settings );
+        $tester  = $this->runCommand( $command );
+
+        $this->assertSame( 1, $tester->getStatusCode() );
+        $this->assertStringContainsString( 'try "so share -c <directory-name>"', $tester->getDisplay() );
     }
 
 }

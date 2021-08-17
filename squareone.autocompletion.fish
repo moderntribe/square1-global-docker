@@ -83,6 +83,7 @@ complete -c so -A -n '__fish_seen_subcommand_from list' -l short -d 'To skip des
 # restart
 
 # share
+complete -c so -A -n '__fish_seen_subcommand_from share' -l content-dir -d 'The name of the wp-content directory, if renamed'
 
 # shell
 complete -c so -A -n '__fish_seen_subcommand_from shell' -l user -d 'The username or UID of the account to use'
@@ -99,6 +100,7 @@ complete -c so -A -n '__fish_seen_subcommand_from stop' -l remove-orphans -d 'Re
 # test
 complete -c so -A -n '__fish_seen_subcommand_from test' -l xdebug -d 'Enable xdebug'
 complete -c so -A -n '__fish_seen_subcommand_from test' -l container -d 'Set the docker container to run the tests on'
+complete -c so -A -n '__fish_seen_subcommand_from test' -l path -d 'The path to the tests directory in the container'
 complete -c so -A -n '__fish_seen_subcommand_from test' -l noclean -d 'Do not run the codecept clean command first'
 complete -c so -A -n '__fish_seen_subcommand_from test' -l notty -d 'Disable interactive/tty to capture output'
 
