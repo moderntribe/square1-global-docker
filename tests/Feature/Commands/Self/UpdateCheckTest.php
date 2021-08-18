@@ -34,11 +34,11 @@ class UpdateCheckTest extends BaseCommandTester {
         $tester  = $this->runCommand( $command, [] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertEquals(
+        $this->assertStringContainsString(
             'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
-            trim( $tester->getDisplay()
-            )
+            $tester->getDisplay()
         );
+        $this->assertStringContainsString( '"so self:update-check --force"', $tester->getDisplay() );
     }
 
     public function test_it_does_not_find_an_update() {
@@ -71,10 +71,9 @@ class UpdateCheckTest extends BaseCommandTester {
 
         $this->assertSame( 0, $tester->getStatusCode() );
 
-        $this->assertEquals(
+        $this->assertStringContainsString(
             'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
-            trim( $tester->getDisplay()
-            )
+            $tester->getDisplay()
         );
     }
 

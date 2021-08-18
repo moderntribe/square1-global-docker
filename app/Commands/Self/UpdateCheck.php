@@ -101,6 +101,8 @@ class UpdateCheck extends Command {
                     sprintf( self::RELEASES_URL, $release->version ),
                 )
             );
+
+            $this->info( 'Note: this check is cached. Run "so self:update-check --force" to see if a newer version is available' );
         } elseif ( ! $this->option( 'only-new' ) ) {
             $this->info( sprintf( "You're running the latest version: %s", $this->version ) );
         }
