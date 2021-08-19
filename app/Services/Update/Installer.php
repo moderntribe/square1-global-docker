@@ -2,10 +2,11 @@
 
 namespace App\Services\Update;
 
-use Exception;
+use App\Services\Migrations\MigrationChecker;
 use App\Services\Phar;
-use Filebase\Document;
 use App\Services\Terminator;
+use Exception;
+use Filebase\Document;
 use LaravelZero\Framework\Commands\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -32,16 +33,23 @@ class Installer {
     protected $terminator;
 
     /**
+     * @var \App\Services\Migrations\MigrationChecker
+     */
+    protected $migrationChecker;
+
+    /**
      * Installer constructor.
      *
-     * @param  \Symfony\Component\Filesystem\Filesystem  $filesystem
-     * @param  \App\Services\Phar                        $phar
-     * @param  \App\Services\Terminator                  $terminator
+     * @param  \Symfony\Component\Filesystem\Filesystem   $filesystem
+     * @param  \App\Services\Phar                         $phar
+     * @param  \App\Services\Terminator                   $terminator
+     * @param  \App\Services\Migrations\MigrationChecker  $migrationChecker
      */
-    public function __construct( Filesystem $filesystem, Phar $phar, Terminator $terminator ) {
-        $this->filesystem = $filesystem;
-        $this->phar       = $phar;
-        $this->terminator = $terminator;
+    public function __construct( Filesystem $filesystem, Phar $phar, Terminator $terminator, MigrationChecker $migrationChecker ) {
+        $this->filesystem       = $filesystem;
+        $this->phar             = $phar;
+        $this->terminator       = $terminator;
+        $this->migrationChecker = $migrationChecker;
     }
 
     /**
@@ -61,6 +69,8 @@ class Installer {
         $this->install( $tempFile, $localFile );
 
         $command->info( sprintf( 'Successfully updated to %s.', $release->version ) );
+
+        $this->migrationChecker->clear();
 
         // Always kill execution after an upgrade
         $this->terminator->exitWithCode();

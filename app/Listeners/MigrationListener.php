@@ -2,13 +2,12 @@
 
 namespace App\Listeners;
 
-use Filebase\Document;
-use Composer\Semver\Comparator;
-use App\Services\Update\Updater;
-use Symfony\Component\Finder\Finder;
+use App\Services\Migrations\MigrationChecker;
 use App\Services\Migrations\Migrator;
+use App\Services\Update\Updater;
 use Illuminate\Console\Events\CommandStarting;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Run migrations, if available.
@@ -39,6 +38,13 @@ class MigrationListener {
     protected $migrator;
 
     /**
+     * The migration checker.
+     *
+     * @var \App\Services\Migrations\MigrationChecker
+     */
+    protected $migrationChecker;
+
+    /**
      * The running application's version.
      *
      * @var string
@@ -48,16 +54,18 @@ class MigrationListener {
     /**
      * UpdateCheck constructor.
      *
-     * @param Finder $finder
-     * @param \App\Services\Migrations\Migrator $migrator
-     * @param \App\Services\Update\Updater $updater
-     * @param string $version
+     * @param  Finder                                     $finder
+     * @param  \App\Services\Migrations\Migrator          $migrator
+     * @param  \App\Services\Migrations\MigrationChecker  $migrationChecker
+     * @param  \App\Services\Update\Updater               $updater
+     * @param  string                                     $version
      */
-    public function __construct( Finder $finder, Migrator $migrator, Updater $updater, string $version ) {
-        $this->finder   = $finder;
-        $this->migrator = $migrator;
-        $this->updater  = $updater;
-        $this->version  = $version;
+    public function __construct( Finder $finder, Migrator $migrator, MigrationChecker $migrationChecker, Updater $updater, string $version ) {
+        $this->finder           = $finder;
+        $this->migrator         = $migrator;
+        $this->migrationChecker = $migrationChecker;
+        $this->updater          = $updater;
+        $this->version          = $version;
     }
 
     /**
@@ -65,8 +73,10 @@ class MigrationListener {
      *
      * @param  \Illuminate\Console\Events\CommandStarting  $event
      *
-     * @return bool
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @return bool
      */
     public function handle( CommandStarting $event ): bool {
         if ( $this->shouldRun( $event->command ) ) {
@@ -97,26 +107,7 @@ class MigrationListener {
             return false;
         }
 
-        $release = $this->getRelease();
-
-        if ( empty( $release->version ) ) {
-            return true;
-        }
-
-        if ( Comparator::greaterThan( $this->version, $release->version ) ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get release data.
-     *
-     * @return \Filebase\Document
-     */
-    protected function getRelease(): Document {
-        return $this->updater->getCachedRelease();
+        return $this->migrationChecker->shouldMigrate();
     }
 
     /**
@@ -125,14 +116,14 @@ class MigrationListener {
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function runMigration( OutputInterface $output ): void {
         $this->finder->files()->name( '*.php' )->in( storage_path( 'migrations' ) );
 
-        if ( iterator_count( $this->finder ) > 0 ) {
+        if ( $this->finder->count() > 0 ) {
             $this->migrator->run( $this->finder, $output );
         }
-
     }
 
 }

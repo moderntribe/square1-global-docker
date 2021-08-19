@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\Update;
 
+use App\Services\Migrations\MigrationChecker;
 use Exception;
 use Tests\TestCase;
 use Filebase\Document;
@@ -11,21 +12,26 @@ use App\Services\Update\Installer;
 use Symfony\Component\Filesystem\Filesystem;
 use LaravelZero\Framework\Components\Updater\SelfUpdateCommand;
 
-class InstallerTest extends TestCase {
+final class InstallerTest extends TestCase {
+
+    private $filesystem;
+    private $checker;
 
     protected function setUp(): void {
         parent::setUp();
+
+        $this->filesystem = $this->mock( Filesystem::class );
+        $this->checker    = $this->mock( MigrationChecker::class );
     }
 
     public function test_it_downloads_a_release() {
         $file     = storage_path( 'tests/so.phar' );
         $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
 
-        $filesystem = $this->mock( Filesystem::class );
-        $filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
-        $filesystem->shouldReceive( 'copy' )->once();
-        $filesystem->shouldReceive( 'chmod' )->with( $tempFile, 0755 )->once();
-        $filesystem->shouldReceive( 'rename' )->with( $tempFile, $file, true )->once();
+        $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
+        $this->filesystem->shouldReceive( 'copy' )->once();
+        $this->filesystem->shouldReceive( 'chmod' )->with( $tempFile, 0755 )->once();
+        $this->filesystem->shouldReceive( 'rename' )->with( $tempFile, $file, true )->once();
 
         $release           = $this->mock( Document::class );
         $release->download = 'https://github.com/path/to/release.phar';
@@ -40,6 +46,8 @@ class InstallerTest extends TestCase {
         $terminator = $this->mock( Terminator::class );
         $terminator->shouldReceive( 'exitWithCode' )->once();
 
+        $this->checker->shouldReceive( 'clear' )->once();
+
         $installer = $this->app->make( Installer::class );
 
         $installer->download( $release, $file, $command );
@@ -52,11 +60,11 @@ class InstallerTest extends TestCase {
         $file     = storage_path( 'tests/so.phar' );
         $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
 
-        $filesystem = $this->mock( Filesystem::class );
-        $filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
-        $filesystem->shouldReceive( 'copy' )->once();
-        $filesystem->shouldReceive( 'chmod' )->with( $tempFile, 0755 )->once();
-        $filesystem->shouldReceive( 'remove' )->with( [ 0 => $tempFile ] )->once();
+        $this->filesystem = $this->mock( Filesystem::class );
+        $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
+        $this->filesystem->shouldReceive( 'copy' )->once();
+        $this->filesystem->shouldReceive( 'chmod' )->with( $tempFile, 0755 )->once();
+        $this->filesystem->shouldReceive( 'remove' )->with( [ 0 => $tempFile ] )->once();
 
         $release           = $this->mock( Document::class );
         $release->download = 'https://github.com/path/to/release.phar';

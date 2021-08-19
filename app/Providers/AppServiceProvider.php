@@ -32,6 +32,7 @@ use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
 use App\Services\Docker\Local\Config;
 use App\Services\HomeDir;
+use App\Services\Migrations\MigrationChecker;
 use App\Services\OperatingSystem;
 use App\Services\Update\Updater;
 use App\Support\Yaml;
@@ -234,6 +235,10 @@ class AppServiceProvider extends ServiceProvider {
                   ->give( config( 'squareone.config-dir' ) );
 
         $this->app->bind( SpinnerInterface::class, Spinner::class );
+
+        $this->app->when( MigrationChecker::class )
+                  ->needs( '$configDir' )
+                  ->give( config( 'squareone.config-dir' ) );
     }
 
     /**
