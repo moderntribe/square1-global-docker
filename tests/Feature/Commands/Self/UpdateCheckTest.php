@@ -26,6 +26,10 @@ class UpdateCheckTest extends BaseCommandTester {
     public function test_it_can_find_a_new_cached_version() {
         $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( date( 'U' ) );
 
+        // Fake we ran --force 5 minutes ago.
+        $fiveMinutes = date( 'Y-m-d H:i:s', strtotime( '-5 minutes' ) );
+        $this->release->shouldReceive( 'updatedAt' )->once()->andReturn( $fiveMinutes );
+
         $this->release->version = '5000.0.0';
 
         $this->updater->shouldReceive( 'getCachedRelease' )->once()->andReturn( $this->release );
@@ -38,7 +42,8 @@ class UpdateCheckTest extends BaseCommandTester {
             'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
             $tester->getDisplay()
         );
-        $this->assertStringContainsString( '"so self:update-check --force"', $tester->getDisplay() );
+        $this->assertStringContainsString( 'so self:update-check --force', $tester->getDisplay() );
+        $this->assertStringContainsString( 'Cache last updated: 5 minutes ago', $tester->getDisplay() );
     }
 
     public function test_it_does_not_find_an_update() {
@@ -75,6 +80,8 @@ class UpdateCheckTest extends BaseCommandTester {
             'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
             $tester->getDisplay()
         );
+
+        $this->assertStringNotContainsString( 'so self:update-check --force', $tester->getDisplay() );
     }
 
     public function test_it_can_handle_empty_release_with_no_default_token() {

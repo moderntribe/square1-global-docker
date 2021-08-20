@@ -3,6 +3,7 @@
 namespace App\Commands\Self;
 
 use App\Services\Config\Github;
+use Carbon\Carbon;
 use Composer\Semver\Comparator;
 use App\Services\Update\Updater;
 use LaravelZero\Framework\Commands\Command;
@@ -102,7 +103,13 @@ class UpdateCheck extends Command {
                 )
             );
 
-            $this->info( 'Note: this check is cached. Run "so self:update-check --force" to see if a newer version is available' );
+            if ( ! $this->option( 'force' ) ) {
+                $this->info( 'Note: this check is cached. Run "so self:update-check --force" to see if a newer version is available' );
+                $this->info( sprintf(
+                    'Cache last updated: %s',
+                    Carbon::createFromDate( $release->updatedAt() )->diffForHumans()
+                ) );
+            }
         } elseif ( ! $this->option( 'only-new' ) ) {
             $this->info( sprintf( "You're running the latest version: %s", $this->version ) );
         }
