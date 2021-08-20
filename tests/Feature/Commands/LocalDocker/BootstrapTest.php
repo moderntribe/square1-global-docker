@@ -17,8 +17,7 @@ use App\Commands\GlobalDocker\Start as GlobalStart;
 use Mockery;
 use Symfony\Component\Console\Exception\MissingInputException;
 
-
-class BootstrapTest extends LocalDockerCommand {
+final class BootstrapTest extends LocalDockerCommand {
 
     private $artisan;
     private $runner;
