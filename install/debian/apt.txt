@@ -1,0 +1,11 @@
+bash-completion
+containerd.io
+docker-ce
+docker-ce-cli
+git
+openresolv
+php
+php-curl
+php-xml
+php-zip
+php-zlib
