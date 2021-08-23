@@ -87,9 +87,9 @@ fi
 
 # Debian Linux flavors
 if [[ -x "$(command -v apt-get)" ]]; then
-    echo "Installing dependencies via apt, enter your sudo password when requested..."
+    echo "* Installing dependencies via apt, enter your sudo password when requested..."
 
-    echo "Removing legacy docker installs..."
+    echo "* Removing legacy docker installs..."
     sudo apt-get remove docker docker-engine docker.io containerd runc
 
     echo "Preparing docker sources..."
@@ -104,29 +104,29 @@ if [[ -x "$(command -v apt-get)" ]]; then
       "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    echo "Updating and upgrading apt..."
-    sudo apt-get update && sudo apt-get upgrade
+    echo "* Updating and upgrading apt..."
+    sudo apt-get update -y && sudo apt-get upgrade -y
     curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/feature/install-improvements/install/debian/apt.txt -o ${CONFIG_DIR}/apt.txt
 
-    echo "Installing docker-compose..."
+    echo "* Installing docker-compose..."
     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
     sudo curl \
         -L https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose \
         -o /etc/bash_completion.d/docker-compose
 
-    echo "Installing packages..."
+    echo "* Installing packages..."
     sudo apt-get install -y "$(<${CONFIG_DIR}/apt.txt)"
 
-    echo "Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
+    echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
     sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
     sudo curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/feature/install-improvements/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
 
-    echo "Disabling systemd-resolved DNS service..."
+    echo "* Disabling systemd-resolved DNS service..."
     sudo systemctl disable systemd-resolved
     sudo systemctl stop systemd-resolved
     sudo rm -rf /etc/resolv.conf
-    echo "Generating a new /etc/resolv.conf..."
+    echo "* Generating a new /etc/resolv.conf..."
     sudo resolvconf -u
 fi
 
