@@ -1,4 +1,5 @@
 bash-completion
+composer
 containerd.io
 docker-ce
 docker-ce-cli
