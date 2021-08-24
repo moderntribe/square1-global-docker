@@ -71,12 +71,12 @@ class BootstrapTest extends LocalDockerCommand {
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
                      ->andReturnSelf();
 
         $this->artisan->shouldReceive( 'call' )
@@ -176,12 +176,12 @@ class BootstrapTest extends LocalDockerCommand {
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
                      ->andReturnSelf();
 
         $this->artisan->shouldReceive( 'call' )

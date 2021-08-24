@@ -121,13 +121,13 @@ class ProjectBootstrapper {
 
         // Create the WordPress database
         $this->runner->run( sprintf(
-            'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_%s;"',
+            'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_%s;"',
             $projectName
         ) );
 
         // Create test databases
         $this->runner->run( sprintf(
-            'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_%s_tests; CREATE DATABASE tribe_%s_acceptance;"',
+            'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_%s_tests; CREATE DATABASE tribe_%s_acceptance;"',
             $projectName,
             $projectName
         ) )->throw();
