@@ -3,6 +3,7 @@ containerd.io
 docker-ce
 docker-ce-cli
 git
+mariadb-client
 openresolv
 php-cli
 php-curl
