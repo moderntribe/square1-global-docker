@@ -51,7 +51,7 @@ Copy the following in your terminal:
 `bash -c "$(curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/install.sh)"`
 
 <sup>Note for macOS users: This script will install brew and all the requirements listed above.</sup>
-<sup>Note for Linux users: Ensure you have installed the required packages with your distribution's package manager first.</sup>
+<sup>Note for Debian users: This script will install and configure all the required packages.</sup>
 
 ### Usage
 
