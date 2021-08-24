@@ -44,34 +44,40 @@ class Bootstrap extends BaseLocalDocker {
 
         $this->info( 'Alright, let\'s get ready to configure WordPress!' );
 
-        $email                = $this->ask( 'Enter your email address' );
-        $username             = $this->ask( 'Enter your admin username' );
-        $password             = $this->secret( 'Enter your password' );
-        $passwordConfirmation = $this->secret( 'Confirm your password' );
+        while ( true ) {
+            $email                = $this->ask( 'Enter your email address' );
+            $username             = $this->ask( 'Enter your admin username' );
+            $password             = $this->secret( 'Enter your password' );
+            $passwordConfirmation = $this->secret( 'Confirm your password' );
 
-        $validator = Validator::make( [
-            'email'                 => $email,
-            'username'              => $username,
-            'password'              => $password,
-            'password_confirmation' => $passwordConfirmation,
-        ], [
-            'email'                 => [ 'required', 'email' ],
-            'username'              => [ 'required' ],
-            'password'              => [ 'required', 'same:password_confirmation' ],
-            'password_confirmation' => [ 'required' ],
-        ], [
-            'required' => 'The :attribute field is required',
-            'same'     => 'The :attribute and :other must match',
-            'email'    => 'Invalid email address',
-        ] );
+            $validator = Validator::make( [
+                'email'                 => $email,
+                'username'              => $username,
+                'password'              => $password,
+                'password_confirmation' => $passwordConfirmation,
+            ], [
+                'email'                 => [ 'required', 'email' ],
+                'username'              => [ 'required' ],
+                'password'              => [ 'required', 'same:password_confirmation' ],
+                'password_confirmation' => [ 'required' ],
+            ], [
+                'required' => 'The :attribute field is required',
+                'same'     => 'The :attribute and :other must match',
+                'email'    => 'Invalid email address',
+            ] );
 
-        if ( $validator->fails() ) {
-
-            foreach ( $validator->errors()->all() as $error ) {
-                $this->error( $error );
+            if ( ! $validator->fails() ) {
+                break;
             }
 
-            return self::EXIT_ERROR;
+            $this->error( 'The following errors occurred, please try again: ' );
+
+            $count = 1;
+
+            foreach ( $validator->errors()->all() as $error ) {
+                $this->error( sprintf( '%d. %s', $count, $error  ) );
+                $count++;
+            }
         }
 
         $bootstrapper->renameObjectCache( $config->getProjectRoot() );
