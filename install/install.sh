@@ -116,7 +116,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
         -o /etc/bash_completion.d/docker-compose
 
     echo "* Installing packages..."
-    sudo apt-get install -y "$(<${CONFIG_DIR}/apt.txt)"
+    xargs -a "${CONFIG_DIR}/apt.txt" sudo apt-get install -y
 
     echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
     sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
