@@ -59,6 +59,9 @@ install_nvm() {
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 }
 
+echo "Creating config folder: ~/.config/squareone"
+create_config_folder
+
 # OSX
 if [[ "$OSTYPE" == "darwin"* ]]; then
   command -v docker >/dev/null 2>&1
@@ -130,12 +133,8 @@ if [[ -x "$(command -v apt-get)" ]]; then
     sudo resolvconf -u
 fi
 
-
 echo "Installing nvm"
 install_nvm
-
-echo "Creating config folder: ~/.config/squareone"
-create_config_folder
 
 echo "Enabling SquareOne autocompletion, enter your password when requested."
 enable_autocomplete
