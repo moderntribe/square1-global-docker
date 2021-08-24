@@ -134,6 +134,9 @@ if [[ -x "$(command -v apt-get)" ]]; then
     sudo rm -rf /etc/resolv.conf
     echo "* Generating a new /etc/resolv.conf..."
     sudo resolvconf -u
+
+    echo "* Fixing docker permissions"
+    sudo usermod -a -G docker "$USER"
 fi
 
 echo "Installing nvm"
