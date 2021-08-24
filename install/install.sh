@@ -121,6 +121,9 @@ if [[ -x "$(command -v apt-get)" ]]; then
     echo "* Installing packages..."
     xargs -a ${CONFIG_DIR}/apt.txt sudo apt-get install -y
 
+    echo "* Installing nameservers to /etc/resolv.conf.head..."
+    sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/feature/install-improvements/install/debian/resolv.conf.head -o /etc/resolv.conf.head
+
     echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
     sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
     sudo curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/feature/install-improvements/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
