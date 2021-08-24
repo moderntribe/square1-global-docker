@@ -109,7 +109,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
 
     echo "* Updating and upgrading apt..."
     sudo apt-get update -y && sudo apt-get upgrade -y
-    curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/feature/install-improvements/install/debian/apt.txt -o ${CONFIG_DIR}/apt.txt
+    curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/feature/install-improvements/install/debian/apt.txt -o ${CONFIG_DIR}/apt.txt
 
     echo "* Installing docker-compose..."
     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -119,7 +119,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
         -o /etc/bash_completion.d/docker-compose
 
     echo "* Installing packages..."
-    xargs -a "${CONFIG_DIR}/apt.txt" sudo apt-get install -y
+    xargs -a ${CONFIG_DIR}/apt.txt sudo apt-get install -y
 
     echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
     sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
