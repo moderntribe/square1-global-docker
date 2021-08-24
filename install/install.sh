@@ -114,12 +114,14 @@ if [[ -x "$(command -v apt-get)" ]]; then
     echo "* Installing docker-compose..."
     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
-    sudo curl \
-        -L https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose \
-        -o /etc/bash_completion.d/docker-compose
 
     echo "* Installing packages..."
     xargs -a ${CONFIG_DIR}/apt.txt sudo apt-get install -y
+
+    echo "* Installing docker-compose bash completion"
+    sudo curl \
+        -L https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose \
+        -o /etc/bash_completion.d/docker-compose
 
     echo "* Installing nameservers to /etc/resolv.conf.head..."
     sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/resolv.conf.head -o /etc/resolv.conf.head
