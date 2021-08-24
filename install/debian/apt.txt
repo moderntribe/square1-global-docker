@@ -1,0 +1,13 @@
+bash-completion
+composer
+containerd.io
+docker-ce
+docker-ce-cli
+git
+libnss3-tools
+mariadb-client
+openresolv
+php-cli
+php-curl
+php-xml
+php-zip
