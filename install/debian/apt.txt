@@ -4,8 +4,7 @@ docker-ce
 docker-ce-cli
 git
 openresolv
-php
+php-cli
 php-curl
 php-xml
 php-zip
-php-zlib
