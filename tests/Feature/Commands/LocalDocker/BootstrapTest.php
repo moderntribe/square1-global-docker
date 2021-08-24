@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use App\Commands\GlobalDocker\Start as GlobalStart;
 use Mockery;
+use Symfony\Component\Console\Exception\MissingInputException;
 
-
-class BootstrapTest extends LocalDockerCommand {
+final class BootstrapTest extends LocalDockerCommand {
 
     private $artisan;
     private $runner;
@@ -71,12 +71,12 @@ class BootstrapTest extends LocalDockerCommand {
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
                      ->andReturnSelf();
 
         $this->artisan->shouldReceive( 'call' )
@@ -176,12 +176,12 @@ class BootstrapTest extends LocalDockerCommand {
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
                      ->andReturnSelf();
 
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword <<< "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
                      ->andReturnSelf();
 
         $this->artisan->shouldReceive( 'call' )
@@ -257,7 +257,9 @@ class BootstrapTest extends LocalDockerCommand {
     }
 
 
-    public function test_it_fails_validation_with_invalid_input() {
+    public function test_it_loops_failed_validation() {
+        $this->expectException( MissingInputException::class );
+
         Artisan::swap( $this->artisan );
 
         $this->artisan->shouldReceive( 'call' )
@@ -267,13 +269,24 @@ class BootstrapTest extends LocalDockerCommand {
         $command = $this->app->make( Bootstrap::class );
 
         $tester = $this->runCommand( $command, [], [
-            'Enter your email address'  => 'test@tri.be',
+            'Enter your email address'  => 'test',
             'Enter your admin username' => '',
             'Enter your password'       => 'test',
             'Confirm your password'     => 'not a match',
         ] );
 
-        $this->assertSame( BaseCommand::EXIT_ERROR, $tester->getStatusCode() );
+        $this->assertStringContainsString( 'Invalid email address', $tester->getErrorOutput() );
+        $this->assertStringContainsString( 'The username field is required', $tester->getErrorOutput() );
+        $this->assertStringContainsString( 'The password and password confirmation must match', $tester->getErrorOutput() );
+
+        $tester->setInputs( [
+            'Enter your email address'  => 'test@tri.be',
+            'Enter your admin username' => 'admin',
+            'Enter your password'       => 'test',
+            'Confirm your password'     => 'test',
+        ] );
+
+        $this->assertSame( BaseCommand::EXIT_SUCCESS, $tester->getStatusCode() );
 
     }
 

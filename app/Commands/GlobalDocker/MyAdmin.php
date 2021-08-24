@@ -42,7 +42,7 @@ class MyAdmin extends BaseCommand {
         $start = $runner->run( 'docker start tribe-phpmyadmin' );
 
         if ( ! $start->ok() ) {
-            $run = $runner->run( $this->getRunCommand() );
+            $run = $runner->tty( true )->run( $this->getRunCommand() );
 
             if ( ! $run->ok() ) {
                 $runner->run( 'docker rm /tribe-phpmyadmin' );
@@ -61,7 +61,7 @@ class MyAdmin extends BaseCommand {
      * @return string
      */
     protected function getRunCommand(): string {
-        return 'docker run --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin/phpmyadmin';
+        return 'docker run -d --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin/phpmyadmin';
     }
 
 }

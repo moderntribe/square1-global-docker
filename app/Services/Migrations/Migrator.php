@@ -40,16 +40,24 @@ class Migrator {
     protected $app;
 
     /**
+     * The migration checker.
+     *
+     * @var \App\Services\Migrations\MigrationChecker
+     */
+    protected $migrationChecker;
+
+    /**
      * Migrator constructor.
      *
      * @param  Database                                      $db          The migrations database
      * @param  \Illuminate\Filesystem\Filesystem             $filesystem  Illuminate filesystem.
      * @param  \Illuminate\Contracts\Foundation\Application  $app         The laravel service container.
      */
-    public function __construct( Database $db, Filesystem $filesystem, Application $app ) {
-        $this->db         = $db;
-        $this->filesystem = $filesystem;
-        $this->app        = $app;
+    public function __construct( Database $db, Filesystem $filesystem, Application $app, MigrationChecker $migrationChecker ) {
+        $this->db               = $db;
+        $this->filesystem       = $filesystem;
+        $this->app              = $app;
+        $this->migrationChecker = $migrationChecker;
     }
 
     /**
@@ -92,6 +100,8 @@ class Migrator {
                 $results[] = $result;
             }
         }
+
+        $this->migrationChecker->update();
 
         return collect( $results );
     }

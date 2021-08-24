@@ -37,9 +37,14 @@ class MyAdminTest extends BaseCommandTester {
                ->with( 'docker rm /tribe-phpmyadmin' )
                ->andReturn( $this->runner );
 
+        $this->runner->shouldReceive( 'tty' )
+                     ->once()
+                     ->with( true )
+                     ->andReturn( $this->runner );
+
         $this->runner->shouldReceive( 'run' )
                ->twice()
-               ->with( 'docker run --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin/phpmyadmin' )
+               ->with( 'docker run -d --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin/phpmyadmin' )
                ->andReturn( $this->runner );
 
         $open = $this->mock( Open::class );

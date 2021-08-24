@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Services\Migrations;
 
+use App\Services\Migrations\MigrationChecker;
 use App\Services\Migrations\MigrationCreator;
 use App\Services\Migrations\Migrator;
 use Filebase\Database;
@@ -18,13 +19,14 @@ use Tests\TestCase;
  *
  * @package Tests\Feature\Services\Migrations
  */
-class MigrationTest extends TestCase {
+final class MigrationTest extends TestCase {
 
-    protected $filesystem;
-    protected $creator;
-    protected $migrations;
-    protected $db;
-    protected $migrator;
+    private $filesystem;
+    private $creator;
+    private $migrations;
+    private $db;
+    private $migrator;
+    private $checker;
 
     protected function setUp(): void {
         parent::setUp();
@@ -40,7 +42,11 @@ class MigrationTest extends TestCase {
             'dir' => storage_path( 'tests/store/migrations' ),
         ] );
 
-        $this->migrator = new Migrator( $this->db, $this->filesystem, $this->app );
+        Storage::disk( 'local' )->makeDirectory( 'tests/fakeroot' );
+
+        $this->checker = new MigrationChecker( new \Symfony\Component\Filesystem\Filesystem(), storage_path( 'tests/fakeroot' ) );
+
+        $this->migrator = new Migrator( $this->db, $this->filesystem, $this->app, $this->checker );
     }
 
     protected function getMigrations(): Finder {
