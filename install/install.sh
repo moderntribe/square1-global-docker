@@ -79,7 +79,13 @@ install_phar() {
 
 symlink_sq1_dev() {
     SO_PATH=$(realpath "${SCRIPTDIR}/../so")
-    sudo ln -fs "${SO_PATH}" /usr/local/bin/sodev
+    SO_TARGET="/usr/local/bin/sodev"
+
+    if [[ -f "${SO_TARGET}" ]]; then
+        sudo rm -rf "${SO_TARGET}"
+    fi
+
+    sudo ln -fs "${SO_PATH}" "${SO_TARGET}"
 }
 
 install_nvm() {
