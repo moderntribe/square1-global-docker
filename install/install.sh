@@ -7,10 +7,32 @@
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
 PHAR_NAME="so.phar"
 CONFIG_DIR=~/.config/squareone
+BIN_NAME="so"
+DC_VERSION="1.29.2"
+NVM_VERSION="0.38.0"
+AUTOCOMPLETE_BASH="squareone.autocompletion"
+AUTOCOMPLETE_ZSH="squareone_completion.zsh"
+AUTOCOMPLETE_FISH="so.fish"
 
-# Functions
+# if the SO_DEV environment variable is set and to run a dev install
+is_dev() {
+  if [[ -n "${SO_DEV}" ]]; then
+    return 0
+  fi
+
+  return 1
+}
+
+if is_dev; then
+    echo "***** Installing development version"
+    BIN_NAME="sodev"
+    AUTOCOMPLETE_BASH="squareone.dev.autocompletion"
+    AUTOCOMPLETE_ZSH="squareone_dev_completion.zsh"
+    AUTOCOMPLETE_FISH="so.dev.fish"
+fi
+
 create_config_folder() {
-  if [ ! -d "${CONFIG_DIR}" ]; then
+  if [[ ! -d "${CONFIG_DIR}" ]]; then
     mkdir -p ${CONFIG_DIR}
   fi
 }
@@ -21,11 +43,11 @@ install_homebrew() {
 
 enable_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o $(brew --prefix)/etc/bash_completion.d/squareone.autocompletion
-    curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.zsh' -o ~/.squareone_completion.zsh && echo "source ~/.squareone_completion.zsh" >> ~/.zshrc
+    sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o "$(brew --prefix)/etc/bash_completion.d/${AUTOCOMPLETE_BASH}"
+    curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.zsh' -o ~/."${AUTOCOMPLETE_ZSH}" && echo "source ~/.${AUTOCOMPLETE_ZSH}" >> ~/.zshrc
   else
-    sudo curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/squareone.autocompletion
-    curl -s 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.fish' -o ~/.config/fish/completions/so.fish
+    sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/"${AUTOCOMPLETE_BASH}"
+    curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.fish' -o ~/.config/fish/completions/"${AUTOCOMPLETE_FISH}"
   fi
 }
 
@@ -35,31 +57,36 @@ install_phar() {
         | grep ${PHAR_NAME} \
         | cut -d '"' -f 4)
 
-  if [[ -z "$PHAR_DOWNLOAD" ]] ; then
+  if [[ -z "${PHAR_DOWNLOAD}" ]] ; then
     echo 'Error connecting to the GitHub API, enter a GitHub token to try again (you can create a new one here https://github.com/settings/tokens/new):';
     read GITHUB_TOKEN
 
-    PHAR_DOWNLOAD=$(curl -H "Authorization: token $GITHUB_TOKEN" -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
+    PHAR_DOWNLOAD=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
       | grep browser_download_url \
       | grep ${PHAR_NAME} \
       | cut -d '"' -f 4)
 
-    if [[ -z "$PHAR_DOWNLOAD" ]] ; then
+    if [[ -z "${PHAR_DOWNLOAD}" ]] ; then
       echo "Whoops, we still can't connect. Try manually downloading so.phar from the releases page: https://github.com/moderntribe/square1-global-docker/releases"
       exit 1;
     fi
   fi
 
-  curl -s -L --create-dirs "${PHAR_DOWNLOAD}" -o ${CONFIG_DIR}/bin/so
-  chmod +x ${CONFIG_DIR}/bin/so
-  sudo ln -s ${CONFIG_DIR}/bin/so /usr/local/bin/so
+  curl -fsSL --create-dirs "${PHAR_DOWNLOAD}" -o "${CONFIG_DIR}/bin/${BIN_NAME}"
+  chmod +x "${CONFIG_DIR}/bin/${BIN_NAME}"
+  sudo ln -s "${CONFIG_DIR}/bin/${BIN_NAME} /usr/local/bin/${BIN_NAME}"
+}
+
+symlink_sq1_dev() {
+    SO_PATH=$(realpath "${SCRIPTDIR}/../so")
+    sudo ln -fs "${SO_PATH}" /usr/local/bin/sodev
 }
 
 install_nvm() {
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh" | bash
 }
 
-echo "Creating config folder: ~/.config/squareone"
+echo "* Creating config folder: ~/.config/squareone"
 create_config_folder
 
 # OSX
@@ -81,10 +108,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
       done
   fi
 
-  echo "Installing dependencies via brew..."
-  curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o ${CONFIG_DIR}/packages.txt
+  echo "* Installing dependencies via brew..."
+  curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o "${CONFIG_DIR}/packages.txt"
   brew install "$(<${CONFIG_DIR}/packages.txt)"
-  echo "Setting the default PHP version to 7.4..."
+  echo "* Setting the default PHP version to 7.4..."
   brew link php@7.4 --force
 fi
 
@@ -95,7 +122,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
     echo "* Removing legacy docker installs..."
     sudo apt-get remove docker docker-engine docker.io containerd runc
 
-    echo "Preparing docker sources..."
+    echo "* Preparing docker sources..."
     sudo apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -109,14 +136,14 @@ if [[ -x "$(command -v apt-get)" ]]; then
 
     echo "* Updating and upgrading apt..."
     sudo apt-get update -y && sudo apt-get upgrade -y
-    curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt -o ${CONFIG_DIR}/apt.txt
+    curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt -o "${CONFIG_DIR}/apt.txt"
 
     echo "* Installing docker-compose..."
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo curl -fsSL "https://github.com/docker/compose/releases/download/${DC_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
 
     echo "* Installing packages..."
-    xargs -a ${CONFIG_DIR}/apt.txt sudo apt-get install -y
+    xargs -a "${CONFIG_DIR}/apt.txt" sudo apt-get install -y
 
     echo "* Installing docker-compose bash completion"
     sudo curl \
@@ -128,7 +155,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
 
     echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
     sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
-    sudo curl -s https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
+    sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
 
     echo "* Disabling systemd-resolved DNS service..."
     sudo systemctl disable systemd-resolved
@@ -138,28 +165,36 @@ if [[ -x "$(command -v apt-get)" ]]; then
     sudo resolvconf -u
 
     echo "* Fixing docker permissions"
-    sudo usermod -a -G docker "$USER"
+    sudo usermod -a -G docker "${USER}"
 fi
 
-echo "Installing nvm"
+echo "* Installing nvm"
 install_nvm
 
-echo "Enabling SquareOne autocompletion, enter your password when requested."
+echo "* Enabling SquareOne autocompletion, enter your password when requested."
 enable_autocomplete
 
-echo "Downloading so.phar to /usr/local/bin/so, enter your password when requested."
-install_phar
+if is_dev; then
+    echo "* Running composer install..."
+    composer install -d "${SCRIPTDIR}/../"
+
+    echo "* Symlinking ./so binary to /usr/local/bin/sodev, enter your password when requested."
+    symlink_sq1_dev
+else
+    echo "* Downloading so.phar to /usr/local/bin/so, enter your password when requested."
+    install_phar
+fi
 
 # run SquareOne Global docker
-so
+${BIN_NAME}
 
 echo ""
 echo "************************************"
-echo "If everything went smoothly, you should see the 'so' command list above. Reboot to properly complete installation."
+echo "If everything went smoothly, you should see the '${BIN_NAME}' command list above. Reboot to properly complete installation."
 echo "************************************"
 echo "* Reboot now to complete the installation [y/n]?"
 read -r CHOICE
-if [[ $CHOICE == y* ]]; then
+if [[ ${CHOICE} == y* ]]; then
     sudo reboot
 else
     echo "* Done! Make sure you reboot to complete the installation."
