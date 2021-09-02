@@ -59,7 +59,7 @@ install_phar() {
 
   if [[ -z "${PHAR_DOWNLOAD}" ]] ; then
     echo 'Error connecting to the GitHub API, enter a GitHub token to try again (you can create a new one here https://github.com/settings/tokens/new):';
-    read GITHUB_TOKEN
+    read -r GITHUB_TOKEN
 
     PHAR_DOWNLOAD=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
       | grep browser_download_url \
@@ -74,14 +74,14 @@ install_phar() {
 
   curl -fsSL --create-dirs "${PHAR_DOWNLOAD}" -o "${CONFIG_DIR}/bin/${BIN_NAME}"
   chmod +x "${CONFIG_DIR}/bin/${BIN_NAME}"
-  sudo ln -s "${CONFIG_DIR}/bin/${BIN_NAME} /usr/local/bin/${BIN_NAME}"
+  sudo ln -s "${CONFIG_DIR}/bin/${BIN_NAME}" "/usr/local/bin/${BIN_NAME}"
 }
 
 symlink_sq1_dev() {
     SO_PATH=$(realpath "${SCRIPTDIR}/../so")
     SO_TARGET="/usr/local/bin/sodev"
 
-    if [[ -f "${SO_TARGET}" ]]; then
+    if [[ -e "${SO_TARGET}" ]]; then
         sudo rm -rf "${SO_TARGET}"
     fi
 
