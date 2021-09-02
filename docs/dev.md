@@ -21,7 +21,7 @@ certificates from `dev/docker/global/certs` folder to the `~/.config/squareone/g
 - Run `composer install` in the cloned folder.
 - Back up your `~/mysql_data` folder in the event of any data loss.
 - Back up your `~/.config/squareone` folder.
-- Run `bash -c "(SO_DEV=true ./install/install.sh)"` from the root of the project.
+- Run `bash -c "(export SO_DEV=true; ./install/install.sh)"` from the root of the project.
 - type `sodev` in your terminal.
 
 ### Additional development commands
