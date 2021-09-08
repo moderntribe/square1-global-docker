@@ -294,7 +294,7 @@ class Start extends BaseLocalDocker {
         $content = '';
 
         foreach ( $vars as $key => $value ) {
-            $content .= "${key}='${value}'" . PHP_EOL;
+            $content .= "$key='$value'" . PHP_EOL;
         }
 
         $filesystem->put( $file, $content );
