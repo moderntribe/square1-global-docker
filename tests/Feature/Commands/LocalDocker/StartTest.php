@@ -3,6 +3,7 @@
 namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\Open;
+use App\Services\ComposerVersion;
 use App\Services\Config\Env;
 use App\Commands\DockerCompose;
 use App\Services\Config\Github;
@@ -24,6 +25,10 @@ class StartTest extends BaseCommandTester {
         parent::setUp();
 
         Storage::disk( 'local' )->makeDirectory( 'tests/dev/docker' );
+    }
+
+    private function getDefaultEnv(): string {
+        return "WP_PLUGIN_ACF_KEY='123456'" . PHP_EOL . "WP_PLUGIN_GF_KEY='123456'" . PHP_EOL . "WP_PLUGIN_GF_TOKEN='123456'" . PHP_EOL;
     }
 
     public function test_it_can_start_a_project_with_standard_default_env_file() {
@@ -109,6 +114,10 @@ class StartTest extends BaseCommandTester {
         $clock = $this->mock( SystemClock::class );
         $clock->shouldReceive( 'sync' )->once();
 
+        // Composer v1
+        $composerVersion = $this->mock( ComposerVersion::class );
+        $composerVersion->shouldReceive( 'isVersionOne' )->once()->andReturnTrue();
+
         // Assert global would start.
         Artisan::shouldReceive( 'call' )
                ->once()
@@ -171,15 +180,15 @@ class StartTest extends BaseCommandTester {
         $this->assertStringContainsString( 'Project started: https://squareone.tribe', $tester->getDisplay() );
     }
 
-    public function test_it_can_start_a_project_with_custom_env_file_with_defaults() {
+    public function test_it_can_start_a_project_with_custom_env_file_with_defaults_and_composer_v2() {
         $config = $this->mock( Config::class );
         $config->shouldReceive( 'getComposerVolume' )
-               ->twice()
+               ->once()
                ->andReturn( storage_path( 'tests/dev/docker/composer' ) );
 
-        $config->shouldReceive( 'getProjectName' )->times( 4 )->andReturn( 'squareone' );
+        $config->shouldReceive( 'getProjectName' )->times( 3 )->andReturn( 'squareone' );
         $config->shouldReceive( 'getProjectRoot' )->times( 4 )->andReturn( storage_path( 'tests' ) );
-        $config->shouldReceive( 'getDockerDir' )->twice()->andReturn( storage_path( 'tests/dev/docker' ) );
+        $config->shouldReceive( 'getDockerDir' )->once()->andReturn( storage_path( 'tests/dev/docker' ) );
         $config->shouldReceive( 'getProjectUrl' )->once()->andReturn( 'https://squareone.tribe' );
         $config->shouldReceive( 'setPath' )
                ->once()
@@ -256,14 +265,13 @@ class StartTest extends BaseCommandTester {
                    ->with( storage_path( 'tests/dev/docker/composer/auth.json' ) )
                    ->andReturnTrue();
 
-        $filesystem->shouldReceive( 'missing' )
-                   ->once()
-                   ->with( storage_path( 'tests/dev/docker/composer/composer.lock' ) )
-                   ->andReturnTrue();
-
         // Assert vm time sync runs.
         $clock = $this->mock( SystemClock::class );
         $clock->shouldReceive( 'sync' )->once();
+
+        // Composer v2+
+        $composerVersion = $this->mock( ComposerVersion::class );
+        $composerVersion->shouldReceive( 'isVersionOne' )->once()->andReturnFalse();
 
         // Assert global would start.
         Artisan::shouldReceive( 'call' )
@@ -279,20 +287,6 @@ class StartTest extends BaseCommandTester {
                    'up',
                    '-d',
                    '--force-recreate',
-               ] );
-
-        // Assert prestissimo is installed in the php-fpm container
-        Artisan::shouldReceive( 'call' )
-               ->once()
-               ->with( DockerCompose::class, [
-                   '--project-name',
-                   'squareone',
-                   'exec',
-                   'php-fpm',
-                   'composer',
-                   'global',
-                   'require',
-                   'hirak/prestissimo',
                ] );
 
         // Assert composer install would be run.
@@ -419,6 +413,9 @@ class StartTest extends BaseCommandTester {
         $clock = $this->mock( SystemClock::class );
         $clock->shouldReceive( 'sync' )->once();
 
+        $composerVersion = $this->mock( ComposerVersion::class );
+        $composerVersion->shouldReceive( 'isVersionOne' )->once()->andReturnTrue();
+
         // Assert global would start.
         Artisan::shouldReceive( 'call' )
                ->once()
@@ -478,10 +475,6 @@ class StartTest extends BaseCommandTester {
         $this->assertStringContainsString( 'Starting squareone', $tester->getDisplay() );
         $this->assertStringContainsString( 'Project started: https://squareone.tribe', $tester->getDisplay() );
         $this->assertStringContainsString( 'Project started: https://squareone.tribe', $tester->getDisplay() );
-    }
-
-    private function getDefaultEnv(): string {
-        return "WP_PLUGIN_ACF_KEY='123456'" . PHP_EOL . "WP_PLUGIN_GF_KEY='123456'" . PHP_EOL . "WP_PLUGIN_GF_TOKEN='123456'" . PHP_EOL;
     }
 
 }
