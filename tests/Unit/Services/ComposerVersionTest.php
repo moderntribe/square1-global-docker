@@ -7,8 +7,8 @@ use App\Contracts\ArgumentRewriter;
 use App\Services\ComposerVersion;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
-use Tests\TestCase;
 use phpmock\mockery\PHPMockery;
+use Tests\TestCase;
 
 final class ComposerVersionTest extends TestCase {
 
