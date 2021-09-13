@@ -3,15 +3,19 @@
 namespace App\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
+use App\Contracts\ArgumentRewriter;
 use App\Services\Docker\Local\Config;
+use App\Traits\ArgumentRewriterTrait;
 use Illuminate\Support\Facades\Artisan;
 
 /**
- * Local docker start command
+ * Local docker start command.
  *
  * @package App\Commands\LocalDocker
  */
-class Composer extends BaseLocalDocker {
+class Composer extends BaseLocalDocker implements ArgumentRewriter {
+
+    use ArgumentRewriterTrait;
 
     /**
      * The signature of the command.
@@ -43,7 +47,9 @@ class Composer extends BaseLocalDocker {
             $this->arguments()['command'],
         ];
 
-        $params = array_merge( $params, $this->argument( 'args' ), [
+        $args = $this->rewriteVersionArguments( $this->argument( 'args' ) );
+
+        $params = array_merge( $params, $args, [
             '-d',
             '/application/www',
         ] );

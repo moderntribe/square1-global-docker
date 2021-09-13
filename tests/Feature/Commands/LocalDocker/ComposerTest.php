@@ -1,14 +1,15 @@
-<?php
+<?php declare( strict_types=1 );
 
 namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\DockerCompose;
 use App\Commands\LocalDocker\Composer;
+use App\Contracts\ArgumentRewriter;
 use Illuminate\Support\Facades\Artisan;
 
-class ComposerTest extends LocalDockerCommand {
+final class ComposerTest extends LocalDockerCommand {
 
-    public function test_it_runs_local_composer_command() {
+    public function test_it_runs_composer_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
@@ -37,4 +38,65 @@ class ComposerTest extends LocalDockerCommand {
         $this->assertSame( 0, $tester->getStatusCode() );
         $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
     }
+
+    public function test_it_runs_composer_command_with_proxy_version_option() {
+        $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
+
+        $this->dockerCompose = $this->mock( DockerCompose::class );
+        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
+            '--project-name',
+            $this->project,
+            'exec',
+            'php-fpm',
+            'composer',
+            ArgumentRewriter::OPTION_VERSION_PROXY,
+            '-d',
+            '/application/www',
+        ] );
+
+        Artisan::swap( $this->dockerCompose );
+
+        $command = $this->app->make( Composer::class );
+
+        $tester = $this->runCommand( $command, [
+            'args' => [
+                ArgumentRewriter::OPTION_VERSION
+            ],
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
+    }
+
+    public function test_it_runs_composer_command_with_proxy_version_flag() {
+        $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
+
+        $this->dockerCompose = $this->mock( DockerCompose::class );
+        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
+            '--project-name',
+            $this->project,
+            'exec',
+            'php-fpm',
+            'composer',
+            ArgumentRewriter::FLAG_VERSION_PROXY,
+            '-d',
+            '/application/www',
+        ] );
+
+        Artisan::swap( $this->dockerCompose );
+
+        $command = $this->app->make( Composer::class );
+
+        $tester = $this->runCommand( $command, [
+            'args' => [
+                ArgumentRewriter::FLAG_VERSION
+            ],
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
+    }
+
 }

@@ -2,17 +2,21 @@
 
 namespace App\Commands;
 
+use App\Contracts\ArgumentRewriter;
 use App\Contracts\Runner;
-use App\Services\Docker\Network;
 use App\Recorders\ResultRecorder;
 use App\Services\Docker\Local\Config;
+use App\Services\Docker\Network;
+use App\Traits\ArgumentRewriterTrait;
 
 /**
  * Docker Compose Facade / Proxy Command
  *
  * @package App\Commands
  */
-class DockerCompose extends BaseCommand {
+class DockerCompose extends BaseCommand implements ArgumentRewriter {
+
+    use ArgumentRewriterTrait;
 
     /**
      * The signature of the command.
@@ -61,6 +65,9 @@ class DockerCompose extends BaseCommand {
     public function handle( Runner $runner, Network $network, ResultRecorder $recorder ): int {
         // Get the entire input passed to this command.
         $command = (string) $this->input;
+
+        // Replace version options and flags
+        $command = $this->restoreVersionArguments( $command );
 
         if ( ! str_contains( $this->binary, $command ) ) {
             $command = str_replace( 'docker-compose', $this->binary, $command );
