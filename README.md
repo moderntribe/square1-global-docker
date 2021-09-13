@@ -42,7 +42,7 @@ The following ports should be available:
 
 - [x] MacOS
 - [x] Linux (Debian, Arch, openSUSE or RedHat based distros with systemd)
-- [ ] Windows ¯\_(ツ)_/¯
+- [ ] Windows (Works on WSL2, but without DNS) ¯\_(ツ)_/¯
 
 ### Installation
 
@@ -50,7 +50,7 @@ Copy the following in your terminal:
 
 `bash -c "$(curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/install.sh)"`
 
-<sup>Note for macOS users: This script will install brew and all the requirements listed above.</sup>
+<sup>Note for macOS users: This script will install brew and all the requirements listed above.</sup>  
 <sup>Note for Debian users: This script will install and configure all the required packages.</sup>
 
 ### Usage
@@ -74,7 +74,7 @@ Starting a project does the following:
 
 1. cd anywhere in your SquareOne project.
 1. Run `so restart` to run a docker compose restart.
-1. If you want a full project restart, run `so stop && so start`.
+1. If you want a full project restart, run `so stop; so start`.
 
 ### Stop a project
 
@@ -86,16 +86,27 @@ Stopping projects not in use will free up computer resources.
 ### Create a new project
 
 1. cd into a directory where you'd like to create your new SquareOne project
-1. Run `so create` or `so create my-project --remote=https://github.com/moderntribe/my-project/` to automatically set
+2. Run `so create` or `so create my-project --remote=https://github.com/moderntribe/my-project/` to automatically set
 the project name/directory and git remote.
-1. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project. 
+3. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project. 
+
+### Bootstrap a project
+
+For existing projects where you don't have a local database yet.
+
+> Automatically builds the frontend, installs WP core, creates the required databases and asks
+> you to create an admin user.
+
+1. cd anywhere in your SquareOne project.
+2. Run `so bootstrap` or `so bootstrap --multisite` for multisite projects and follow the onscreen instructions.
 
 ### Share your local project temporarily on the internet with Ngrok
 
 1. cd anywhere in your SquareOne project.
-1. Run `so share` and follow the on-screen instructions.
-1. Copy the displayed https://...ngrok.io URL to share your local project with someone.
-1. Press "ctrl+c" to stop sharing.
+2. Run `so share` and follow the on-screen instructions.
+3. Run `so share -c <content-directory>` if your project's `wp-content` folder is renamed.
+4. Copy the displayed https://...ngrok.io URL to share your local project with someone.
+5. Press `ctrl+c` to stop sharing.
 
 ### Gain shell access to the php-fpm container
 
@@ -131,9 +142,7 @@ Note: Test run in the `php-tests` container, however older projects may not have
 
 ### Enable/disable xdebug
 
-**Disabling xdebug when you don't need it can improve loading performance, especially on MacOS.**
-
-Note: This setting is **not persistent**. The default in the php-fpm container is `on`. You'll need to run `so xdebug
+> Note: Disabling xdebug when you don't need it can improve loading performance, especially on macOS. This setting is **not persistent**. The default in the php-fpm container is `on`. You'll need to run `so xdebug
 off` each time after starting or restarting projects.
 
 1. cd anywhere in your SquareOne project.
@@ -142,6 +151,8 @@ off` each time after starting or restarting projects.
 1. enable xdebug: `so xdebug on`
 
 ### Migrate a production database to your local
+
+> NOTE: Does not currently support multisite installations.
 
 If you've exported a project database for a project, we'll attempt to automatically configure it.
 

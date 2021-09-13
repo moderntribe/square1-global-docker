@@ -1,6 +1,7 @@
-php@7.4
-composer
-curl
 bash-completion@2
+composer
+coreutils
+curl
 docker-credential-helper
 git
+php@7.4

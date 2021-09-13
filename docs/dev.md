@@ -21,7 +21,7 @@ certificates from `dev/docker/global/certs` folder to the `~/.config/squareone/g
 - Run `composer install` in the cloned folder.
 - Back up your `~/mysql_data` folder in the event of any data loss.
 - Back up your `~/.config/squareone` folder.
-- Run [dev-install.sh](../install/dev-install.sh) from the root `./install/dev-install.sh`.
+- Run `bash -c "(export SO_DEV=true; ./install/install.sh)"` from the root of the project.
 - type `sodev` in your terminal.
 
 ### Additional development commands
@@ -63,4 +63,7 @@ There are a few options to override the configuration options.
 
 ### Customize Global Docker
 
-Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.config/squareone/docker-compose.yml` for customization.
+Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.config/squareone/global/docker-compose.override.yml` for customization.
+
+> Note: The original docker-compose.yml will always load first, only change what you need
+> in the override and delete the rest so you continue to get important updates.
