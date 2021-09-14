@@ -123,7 +123,7 @@ final class DockerComposeTest extends BaseCommandTester {
         $this->assertSame( 0, $tester->getStatusCode() );
     }
 
-    public function test_it_returns_failed_exist_code_on_bad_command() {
+    public function test_it_returns_failed_exit_code_on_bad_command() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( "docker-compose --project-name test --file '/tmp/docker-compose.yml' invalid-command" )
