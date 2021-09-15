@@ -2,6 +2,7 @@
 
 namespace App\Commands\LocalDocker;
 
+use App\Services\ComposerVersion;
 use M1\Env\Parser;
 use App\Commands\Open;
 use App\Services\Config\Env;
@@ -49,14 +50,21 @@ class Start extends BaseLocalDocker {
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      * @param  \App\Services\Config\Github        $github
      * @param  \App\Services\Config\Env           $env
-     *
      * @param  \App\Services\Docker\SystemClock   $clock
-     *
-     * @return void
+     * @param  \App\Services\ComposerVersion      $composerVersion
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return void
+     *
      */
-    public function handle( Config $config, Handler $certificateHandler, Filesystem $filesystem, Github $github, Env $env, SystemClock $clock ): void {
+    public function handle( Config $config,
+        Handler $certificateHandler,
+        Filesystem $filesystem,
+        Github $github,
+        Env $env,
+        SystemClock $clock,
+        ComposerVersion $composerVersion
+    ): void {
         // Set a custom project path, if provided
         if ( $path = $this->option( 'path' ) ) {
             $config = $config->setPath( $path );
@@ -105,7 +113,7 @@ class Start extends BaseLocalDocker {
         chdir( $workdir );
 
         // Install hirak/prestissimo to speed up composer installs
-        $this->prestissimo( $config, $filesystem );
+        $this->prestissimo( $config, $filesystem, $composerVersion );
 
         // Run composer
         Artisan::call( Composer::class, [
@@ -166,8 +174,13 @@ class Start extends BaseLocalDocker {
      *
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
+     * @param  \App\Services\ComposerVersion      $composerVersion
      */
-    protected function prestissimo( Config $config, Filesystem $filesystem ) {
+    protected function prestissimo( Config $config, Filesystem $filesystem, ComposerVersion $composerVersion ): void {
+        if ( ! $composerVersion->isVersionOne( $config ) ) {
+            return;
+        }
+
         $composerDirectory = $config->getComposerVolume();
 
         $global = $composerDirectory . '/composer.lock';
@@ -294,7 +307,7 @@ class Start extends BaseLocalDocker {
         $content = '';
 
         foreach ( $vars as $key => $value ) {
-            $content .= "${key}='${value}'" . PHP_EOL;
+            $content .= "$key='$value'" . PHP_EOL;
         }
 
         $filesystem->put( $file, $content );

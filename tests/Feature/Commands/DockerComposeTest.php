@@ -1,13 +1,14 @@
-<?php
+<?php declare( strict_types=1 );
 
 namespace Tests\Feature\Commands;
 
 use App\Commands\DockerCompose;
+use App\Contracts\ArgumentRewriter;
 use App\Runners\CommandRunner;
 use App\Services\Docker\Network;
 use Symfony\Component\Process\Process;
 
-class DockerComposeTest extends BaseCommandTester {
+final class DockerComposeTest extends BaseCommandTester {
 
     private $runner;
 
@@ -26,7 +27,7 @@ class DockerComposeTest extends BaseCommandTester {
         $network->shouldReceive( 'getGateWayIP' )->with()->once()->andReturn( '172.17.0.1' );
     }
 
-    public function testItCanProxyDockerComposeCommands() {
+    public function test_it_can_proxy_docker_compose_commands() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( "docker-compose --project-name test --file '/tmp/docker-compose.yml' up" )
@@ -47,7 +48,59 @@ class DockerComposeTest extends BaseCommandTester {
         $this->assertSame( 0, $tester->getStatusCode() );
     }
 
-    public function testItCanDisableTty() {
+    public function test_it_can_proxy_version_options() {
+        $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( sprintf(
+                         "docker-compose --project-name test --file '/tmp/docker-compose.yml' exec php %s",
+                         ArgumentRewriter::OPTION_VERSION )
+                     )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
+
+        $command = $this->app->make( DockerCompose::class );
+
+        $tester = $this->runCommand( $command, [
+            '--project-name',
+            'test',
+            '--file',
+            '/tmp/docker-compose.yml',
+            'exec',
+            'php',
+            ArgumentRewriter::OPTION_VERSION_PROXY,
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+    }
+
+    public function test_it_can_proxy_version_flags() {
+        $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( sprintf(
+                         "docker-compose --project-name test --file '/tmp/docker-compose.yml' exec composer %s",
+                         ArgumentRewriter::FLAG_VERSION )
+                     )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
+
+        $command = $this->app->make( DockerCompose::class );
+
+        $tester = $this->runCommand( $command, [
+            '--project-name',
+            'test',
+            '--file',
+            '/tmp/docker-compose.yml',
+            'exec',
+            'composer',
+            ArgumentRewriter::FLAG_VERSION_PROXY,
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+    }
+
+    public function test_it_can_disable_tty() {
         $this->runner->shouldReceive( 'tty' )->with( false )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( "docker-compose --project-name test --file '/tmp/docker-compose.yml' exec -T '/bin/bash'" )
@@ -70,7 +123,7 @@ class DockerComposeTest extends BaseCommandTester {
         $this->assertSame( 0, $tester->getStatusCode() );
     }
 
-    public function testItReturnsFailedExitCodeOnBadCommand() {
+    public function test_it_returns_failed_exit_code_on_bad_command() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( "docker-compose --project-name test --file '/tmp/docker-compose.yml' invalid-command" )
@@ -91,7 +144,7 @@ class DockerComposeTest extends BaseCommandTester {
         $this->assertSame( 1, $tester->getStatusCode() );
     }
 
-    public function testItCanRunAnAlternateDockerComposerBinary() {
+    public function test_it_can_run_an_alternate_docker_compose_binary() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( "docker compose --project-name test --file '/tmp/docker compose.yml' up" )
