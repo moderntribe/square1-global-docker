@@ -87,6 +87,11 @@ class AppServiceProvider extends ServiceProvider {
         $bootstrap->boot();
 
         $this->app->singleton( ResultRecorder::class );
+
+        $this->app->when( Config::class )
+                  ->needs( '$workdir' )
+                  ->give( config( 'squareone.docker.workdir' ) );
+
         $this->app->singleton( Config::class );
 
         $this->app->bind(
