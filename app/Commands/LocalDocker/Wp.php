@@ -46,6 +46,8 @@ class Wp extends BaseLocalDocker {
             '--project-name',
             $config->getProjectName(),
             'exec',
+            '-w',
+            $config->getWorkdir(),
         ];
 
         if ( $this->option( 'notty' ) ) {
