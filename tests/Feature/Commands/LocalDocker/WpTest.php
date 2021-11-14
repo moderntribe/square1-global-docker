@@ -10,14 +10,19 @@ use Illuminate\Support\Facades\Storage;
 
 class WpTest extends LocalDockerCommand {
 
+    private $workdir = '/application/www';
+
     public function test_it_calls_local_wp_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
+        $this->config->shouldReceive( 'getWorkdir' )->andReturn( $this->workdir );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
             'exec',
+            '-w',
+            '/application/www',
             '--env',
             'WP_CLI_PHP_ARGS',
             'php-fpm',
@@ -48,12 +53,15 @@ class WpTest extends LocalDockerCommand {
 
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
+        $this->config->shouldReceive( 'getWorkdir' )->andReturn( $this->workdir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
             'exec',
+            '-w',
+            '/application/www',
             '-T',
             '--env',
             BaseCommand::XDEBUG_ENV,
@@ -88,12 +96,15 @@ class WpTest extends LocalDockerCommand {
 
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
+        $this->config->shouldReceive( 'getWorkdir' )->andReturn( $this->workdir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
         $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
             '--project-name',
             $this->project,
             'exec',
+            '-w',
+            '/application/www',
             '-T',
             '--env',
             BaseCommand::XDEBUG_ENV,

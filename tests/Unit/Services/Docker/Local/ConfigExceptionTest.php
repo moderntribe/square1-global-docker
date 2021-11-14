@@ -33,7 +33,7 @@ class ConfigExceptionTest extends TestCase {
         // Mock we already hit the operating system's root folder
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( '/' );
 
-        $config = new Config( $this->runner );
+        $config = new Config( $this->runner, '/application/www' );
 
         $config->getProjectRoot();
     }

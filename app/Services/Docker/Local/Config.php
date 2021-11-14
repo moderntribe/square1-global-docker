@@ -2,8 +2,8 @@
 
 namespace App\Services\Docker\Local;
 
-use RuntimeException;
 use App\Contracts\Runner;
+use RuntimeException;
 
 /**
  * Local Docker Config
@@ -39,12 +39,22 @@ class Config {
     protected $path = '';
 
     /**
+     * The working directory in the docker container where the application
+     * files live.
+     *
+     * @var string
+     */
+    protected $workdir = '';
+
+    /**
      * Config constructor.
      *
      * @param  \App\Contracts\Runner  $runner
+     * @param  string                 $workdir
      */
-    public function __construct( Runner $runner ) {
-        $this->runner = $runner;
+    public function __construct( Runner $runner, string $workdir ) {
+        $this->runner  = $runner;
+        $this->workdir = $workdir;
     }
 
     /**
@@ -184,6 +194,15 @@ class Config {
      */
     public function getProjectUrl( string $tld = 'tribe', string $scheme = 'https' ): string {
         return $scheme . '://' . $this->getProjectDomain( $tld );
+    }
+
+    /**
+     * The server path to the application inside the docker container.
+     *
+     * @return string
+     */
+    public function getWorkdir(): string {
+        return $this->workdir;
     }
 
 }
