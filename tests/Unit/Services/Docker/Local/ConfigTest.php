@@ -2,16 +2,17 @@
 
 namespace Tests\Unit\Services\Docker\Local;
 
-use Tests\TestCase;
 use App\Runners\CommandRunner;
-use phpmock\mockery\PHPMockery;
 use App\Services\Docker\Local\Config;
+use Illuminate\Config\Repository;
 use Illuminate\Support\Facades\Storage;
+use phpmock\mockery\PHPMockery;
+use Tests\TestCase;
 
-class ConfigTest extends TestCase {
+final class ConfigTest extends TestCase {
 
     private $runner;
-    private $workdir;
+    private $config;
 
     protected function setUp(): void {
         parent::setUp();
@@ -28,7 +29,7 @@ class ConfigTest extends TestCase {
                          'path' => '',
                      ] )->andReturnSelf();
 
-        $this->workdir = '/application/www';
+        $this->config = $this->mock( Repository::class );
     }
 
     public function test_it_can_set_a_path() {
@@ -37,7 +38,7 @@ class ConfigTest extends TestCase {
                          'path' => storage_path( 'tests/squareone' ),
                      ] )->andReturnSelf();
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $config = $config->setPath( storage_path( 'tests/squareone' ) );
 
@@ -48,7 +49,7 @@ class ConfigTest extends TestCase {
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $root = $config->getProjectRoot();
 
@@ -59,7 +60,7 @@ class ConfigTest extends TestCase {
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $compose = $config->getDockerDir();
 
@@ -72,7 +73,7 @@ class ConfigTest extends TestCase {
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $compose = $config->getDockerDir();
 
@@ -85,7 +86,7 @@ class ConfigTest extends TestCase {
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $name = $config->getProjectName();
 
@@ -98,7 +99,7 @@ class ConfigTest extends TestCase {
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $domain = $config->getProjectDomain();
 
@@ -115,7 +116,7 @@ class ConfigTest extends TestCase {
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
 
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         $url = $config->getProjectUrl();
 
@@ -127,7 +128,7 @@ class ConfigTest extends TestCase {
     }
 
     public function test_it_gets_composer_volume() {
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
@@ -138,7 +139,7 @@ class ConfigTest extends TestCase {
     }
 
     public function test_it_gets_a_php_ini_path() {
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
 
         // Mock getcwd() found our tests storage path
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( storage_path( 'tests/squareone' ) );
@@ -149,9 +150,25 @@ class ConfigTest extends TestCase {
     }
 
     public function test_it_gets_the_docker_workdir() {
-        $config = new Config( $this->runner, $this->workdir );
+        $config = new Config( $this->runner, $this->config );
+
+        $this->config->shouldReceive( 'get' )
+                     ->once()
+                     ->with( 'squareone.docker.workdir', '/application/www' )
+                     ->andReturn( '/application/www' );
 
         $this->assertSame( '/application/www', $config->getWorkdir() );
+    }
+
+    public function test_it_gets_frontend_skipping_status() {
+        $config = new Config( $this->runner, $this->config );
+
+        $this->config->shouldReceive( 'get' )
+                     ->once()
+                     ->with( 'squareone.build.skip-fe', false )
+                     ->andReturnFalse();
+
+        $this->assertSame( false, $config->skipFeBuild() );
     }
 
 }
