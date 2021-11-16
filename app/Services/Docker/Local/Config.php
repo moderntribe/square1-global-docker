@@ -3,6 +3,7 @@
 namespace App\Services\Docker\Local;
 
 use App\Contracts\Runner;
+use Illuminate\Contracts\Config\Repository;
 use RuntimeException;
 
 /**
@@ -39,22 +40,19 @@ class Config {
     protected $path = '';
 
     /**
-     * The working directory in the docker container where the application
-     * files live.
-     *
-     * @var string
+     * @var \Illuminate\Contracts\Config\Repository
      */
-    protected $workdir = '';
+    protected $config;
 
     /**
      * Config constructor.
      *
-     * @param  \App\Contracts\Runner  $runner
-     * @param  string                 $workdir
+     * @param  \App\Contracts\Runner          $runner
+     * @param  \Illuminate\Config\Repository  $config
      */
-    public function __construct( Runner $runner, string $workdir ) {
+    public function __construct( Runner $runner, Repository $config ) {
         $this->runner  = $runner;
-        $this->workdir = $workdir;
+        $this->config = $config;
     }
 
     /**
@@ -202,7 +200,16 @@ class Config {
      * @return string
      */
     public function getWorkdir(): string {
-        return $this->workdir;
+        return $this->config->get( 'squareone.docker.workdir', '/application/www' );
+    }
+
+    /**
+     * Whether this project should skip frontend building when bootstrapping.
+     *
+     * @return bool
+     */
+    public function skipFeBuild(): bool {
+        return $this->config->get( 'squareone.build.skip-fe', false );
     }
 
 }
