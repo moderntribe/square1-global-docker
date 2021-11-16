@@ -43,6 +43,11 @@ local-docker:
   # path to the composer auth file (relative to the docker directory)
   composer-auth: "composer/auth.json"
 
+# Build options for this project
+build:
+  # Skip building frontend with "so bootstrap"
+  skip-fe: false
+
 # Global Command Options
 options:
   project-path:
