@@ -126,8 +126,11 @@ class Bootstrap extends BaseLocalDocker {
             // @codeCoverageIgnoreEnd
         }
 
-        $bootstrapper->createLocalConfigJson( $projectRoot, $config->getProjectDomain() )
-                     ->buildFrontend( $projectRoot, $this->output );
+        $bootstrapper->createLocalConfigJson( $projectRoot, $config->getProjectDomain() );
+
+        if ( ! $config->skipFeBuild() ) {
+            $bootstrapper->buildFrontend( $projectRoot, $this->output );
+        }
     }
 
     /**
