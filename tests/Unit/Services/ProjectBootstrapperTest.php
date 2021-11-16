@@ -99,6 +99,11 @@ class ProjectBootstrapperTest extends TestCase {
                          ->with( $this->projectRoot . '/local-config.php' )
                          ->andReturnFalse();
 
+        $this->filesystem->shouldReceive( 'missing' )
+                         ->once()
+                         ->with( $this->projectRoot . '/local-config-sample.php' )
+                         ->andReturnFalse();
+
         $this->filesystem->shouldReceive( 'copy' )
                          ->once()
                          ->with( $this->projectRoot . '/local-config-sample.php', $this->projectRoot . '/local-config.php' )
@@ -123,6 +128,22 @@ class ProjectBootstrapperTest extends TestCase {
         $this->filesystem->shouldReceive( 'exists' )
                          ->once()
                          ->with( $this->projectRoot . '/local-config.php' )
+                         ->andReturnTrue();
+
+        $result = $this->bootstrapper->createLocalConfig( $this->projectRoot );
+
+        $this->assertFalse( $result );
+    }
+
+    public function test_it_bypasses_local_config_if_no_sample_exists() {
+        $this->filesystem->shouldReceive( 'exists' )
+                         ->once()
+                         ->with( $this->projectRoot . '/local-config.php' )
+                         ->andReturnFalse();
+
+        $this->filesystem->shouldReceive( 'missing' )
+                         ->once()
+                         ->with( $this->projectRoot . '/local-config-sample.php' )
                          ->andReturnTrue();
 
         $result = $this->bootstrapper->createLocalConfig( $this->projectRoot );
