@@ -39,7 +39,7 @@ class Bootstrap extends BaseLocalDocker {
      *
      * @return int
      */
-    public function handle( Config $config, ProjectBootstrapper $bootstrapper ) {
+    public function handle( Config $config, ProjectBootstrapper $bootstrapper ): int {
         Artisan::call( GlobalStart::class, [], $this->output );
 
         $this->info( 'Alright, let\'s get ready to configure WordPress!' );
@@ -122,13 +122,15 @@ class Bootstrap extends BaseLocalDocker {
 
         if ( ! $result ) {
             // @codeCoverageIgnoreStart
-            $this->info( 'local-config.php already exists. Skipping...' );
+            $this->warn( 'local-config.php already exists or missing local-config-sample.php. Skipping.' );
             // @codeCoverageIgnoreEnd
         }
 
         $bootstrapper->createLocalConfigJson( $projectRoot, $config->getProjectDomain() );
 
-        if ( ! $config->skipFeBuild() ) {
+        if ( $config->skipFeBuild() ) {
+            $this->warn( 'Found build.skip-fe in squareone.yml. Skipping frontend building.' );
+        } else {
             $bootstrapper->buildFrontend( $projectRoot, $this->output );
         }
     }
