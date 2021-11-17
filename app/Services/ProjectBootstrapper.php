@@ -147,7 +147,7 @@ class ProjectBootstrapper {
         $sample = $projectRoot . '/local-config-sample.php';
         $config = $projectRoot . '/local-config.php';
 
-        if ( $this->filesystem->exists( $config ) ) {
+        if ( $this->filesystem->exists( $config ) || $this->filesystem->missing( $sample ) ) {
             return false;
         }
 

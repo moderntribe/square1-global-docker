@@ -2,16 +2,18 @@
 
 namespace Tests\Unit\Services\Docker\Local;
 
-use Tests\TestCase;
-use RuntimeException;
 use App\Runners\CommandRunner;
-use phpmock\mockery\PHPMockery;
 use App\Services\Docker\Local\Config;
+use Illuminate\Config\Repository;
 use Illuminate\Support\Facades\Storage;
+use phpmock\mockery\PHPMockery;
+use RuntimeException;
+use Tests\TestCase;
 
-class ConfigExceptionTest extends TestCase {
+final class ConfigExceptionTest extends TestCase {
 
     private $runner;
+    private $config;
 
     protected function setUp(): void {
         parent::setUp();
@@ -19,7 +21,8 @@ class ConfigExceptionTest extends TestCase {
         // Prevent Mockery from erroring out on Response::__call
         error_reporting( 0 );
 
-        $this->runner   = $this->mock( CommandRunner::class );
+        $this->runner = $this->mock( CommandRunner::class );
+        $this->config = $this->mock( Repository::class );
     }
 
     public function test_it_throws_exception_on_invalid_project_root() {
@@ -33,7 +36,7 @@ class ConfigExceptionTest extends TestCase {
         // Mock we already hit the operating system's root folder
         PHPMockery::mock( 'App\Services\Docker\Local', 'getcwd' )->andReturn( '/' );
 
-        $config = new Config( $this->runner, '/application/www' );
+        $config = new Config( $this->runner, $this->config );
 
         $config->getProjectRoot();
     }

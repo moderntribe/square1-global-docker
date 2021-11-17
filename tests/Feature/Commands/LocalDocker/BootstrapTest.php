@@ -59,6 +59,7 @@ final class BootstrapTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
         $this->config->shouldReceive( 'getProjectUrl' )->andReturn( 'https://squareone.tribe' );
+        $this->config->shouldReceive( 'skipFeBuild' )->andReturnFalse();
 
         $this->runner->shouldReceive( 'run' )
                      ->with( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
@@ -149,6 +150,100 @@ final class BootstrapTest extends LocalDockerCommand {
         $this->assertSame( '"proxy": "squareone.tribe", "certs_path": "/home/test/.config/squareone/global/certs"', file_get_contents( storage_path( 'tests/local-config.json' ) ) );
     }
 
+    public function test_it_bootstraps_a_project_and_skips_frontend_building() {
+        Artisan::swap( $this->artisan );
+
+        $this->artisan->shouldReceive( 'call' )
+                      ->once()
+                      ->with( GlobalStart::class, [], OutputStyle::class );
+
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnTrue();
+
+        $this->config->shouldReceive( 'getProjectName' )->andReturn( 'squareone' );
+        $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests' ) );
+        $this->config->shouldReceive( 'getComposerVolume' )->andReturn( storage_path( 'tests/dev/docker/composer' ) );
+        $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
+        $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
+        $this->config->shouldReceive( 'getProjectUrl' )->andReturn( 'https://squareone.tribe' );
+
+        // Skip frontend building
+        $this->config->shouldReceive( 'skipFeBuild' )->andReturnTrue();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'throw' )->andReturnSelf();
+
+        $this->artisan->shouldReceive( 'call' )
+                      ->once()
+                      ->with( Start::class, [ '--skip-global' => true ], OutputStyle::class );
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->andReturnSelf();
+
+        $this->artisan->shouldReceive( 'call' )
+                      ->once()
+                      ->with( Wp::class, [
+                          'args' => [
+                              'core',
+                              'install',
+                              '--url'            => 'squareone.tribe',
+                              '--title'          => 'Square One',
+                              '--admin_email'    => 'test@tri.be',
+                              '--admin_user'     => 'admin',
+                              '--admin_password' => 'test',
+                              '--skip-email',
+                          ],
+                      ] );
+
+        $this->artisan->shouldReceive( 'call' )
+                      ->once()
+                      ->with( Wp::class, [
+                          'args' => [
+                              'rewrite',
+                              'structure',
+                              '/%postname%/',
+                          ],
+                      ] );
+
+        $this->artisan->shouldReceive( 'call' )
+                      ->once()
+                      ->with( Open::class, [
+                          'url' => 'https://squareone.tribe',
+                      ] );
+
+        $this->homedir->shouldReceive( 'get' )->once()->andReturn( '/home/test' );
+
+        $command = $this->app->make( Bootstrap::class );
+
+        $tester = $this->runCommand( $command, [], [
+            'Enter your email address'  => 'test@tri.be',
+            'Enter your admin username' => 'admin',
+            'Enter your password'       => 'test',
+            'Confirm your password'     => 'test',
+        ] );
+
+        $this->assertSame( BaseCommand::EXIT_SUCCESS, $tester->getStatusCode() );
+
+        $this->assertFileExists( storage_path( 'tests/wp-content/object-cache.php' ) );
+        $this->assertFileDoesNotExist( storage_path( 'tests/wp-content/object-cache.bak.php' ) );
+
+        $this->assertFileExists( storage_path( 'tests/local-config.php' ) );
+        $this->assertSame( "define( 'TRIBE_GLOMAR', false );", file_get_contents( storage_path( 'tests/local-config.php' ) ) );
+        $this->assertNotSame( "//define( 'TRIBE_GLOMAR', false );", file_get_contents( storage_path( 'tests/local-config.php' ) ) );
+
+        $this->assertFileExists( storage_path( 'tests/local-config.json') );
+        $this->assertSame( '"proxy": "squareone.tribe", "certs_path": "/home/test/.config/squareone/global/certs"', file_get_contents( storage_path( 'tests/local-config.json' ) ) );
+    }
+
+
     public function test_it_bootstraps_a_multisite_project() {
         Artisan::swap( $this->artisan );
 
@@ -164,6 +259,7 @@ final class BootstrapTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getComposeFile' )->andReturn( $this->composeFile );
         $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
         $this->config->shouldReceive( 'getProjectUrl' )->andReturn( 'https://squareone.tribe' );
+        $this->config->shouldReceive( 'skipFeBuild' )->andReturnFalse();
 
         $this->runner->shouldReceive( 'run' )
                      ->with( 'docker run --privileged --rm phpdockerio/php7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )
