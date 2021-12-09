@@ -80,7 +80,7 @@ class Config {
      *
      * @return $this
      */
-    public function setPath( string $path ) {
+    public function setPath( string $path ): Config {
         $this->path = trim( $path );
 
         return $this;
@@ -101,12 +101,12 @@ class Config {
                     break;
                 }
 
-                $path = $this->path ? $this->path : getcwd();
+                $path = $this->path ?: getcwd();
 
                 // If these either of these files exist, this is probably a SquareOne project
                 $squareOneFiles = [
-                    "{$path}/dev/docker/docker-compose.yml",
-                    "{$path}/squareone.yml",
+                    "$path/dev/docker/docker-compose.yml",
+                    "$path/squareone.yml",
                 ];
 
                 $squareOneFiles = array_filter( $squareOneFiles, 'file_exists' );
@@ -142,7 +142,7 @@ class Config {
     }
 
     /**
-     * Get the path to the the docker php.ini file.
+     * Get the path to the docker php.ini file.
      *
      * @return string
      */
