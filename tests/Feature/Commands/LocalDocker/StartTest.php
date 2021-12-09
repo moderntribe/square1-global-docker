@@ -1,13 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\LocalDocker;
 
+use App\Commands\Docker;
 use App\Commands\Open;
 use App\Services\ComposerVersion;
 use App\Services\Config\Env;
 use App\Commands\DockerCompose;
 use App\Services\Config\Github;
 use App\Commands\LocalDocker\Start;
+use App\Services\Docker\Container;
 use Illuminate\Console\OutputStyle;
 use App\Services\Docker\SystemClock;
 use App\Services\Certificate\Handler;
@@ -19,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Commands\BaseCommandTester;
 use App\Commands\GlobalDocker\Start as GlobalStart;
 
-class StartTest extends BaseCommandTester {
+final class StartTest extends BaseCommandTester {
 
     protected function setUp(): void {
         parent::setUp();
@@ -37,9 +39,9 @@ class StartTest extends BaseCommandTester {
                ->twice()
                ->andReturn( storage_path( 'tests/dev/docker/composer' ) );
 
-        $config->shouldReceive( 'getProjectName' )->times( 4 )->andReturn( 'squareone' );
+        $config->shouldReceive( 'getProjectName' )->times( 3 )->andReturn( 'squareone' );
         $config->shouldReceive( 'getProjectRoot' )->times( 5 )->andReturn( storage_path( 'tests' ) );
-        $config->shouldReceive( 'getDockerDir' )->twice()->andReturn( storage_path( 'tests/dev/docker' ) );
+        $config->shouldReceive( 'getDockerDir' )->once()->andReturn( storage_path( 'tests/dev/docker' ) );
         $config->shouldReceive( 'getProjectUrl' )->once()->andReturn( 'https://squareone.tribe' );
         $config->shouldReceive( 'setPath' )
                ->once()
@@ -135,14 +137,16 @@ class StartTest extends BaseCommandTester {
                    '--remove-orphans',
                ] );
 
+        $container = $this->mock( Container::class );
+        $container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
         // Assert prestissimo is installed in the php-fpm container
         Artisan::shouldReceive( 'call' )
                ->once()
-               ->with( DockerCompose::class, [
-                   '--project-name',
-                   'squareone',
+               ->with( Docker::class, [
                    'exec',
-                   'php-fpm',
+                   '--tty',
+                   'php-fpm-container-id',
                    'composer',
                    'global',
                    'require',
@@ -326,9 +330,9 @@ class StartTest extends BaseCommandTester {
                ->twice()
                ->andReturn( storage_path( 'tests/dev/docker/composer' ) );
 
-        $config->shouldReceive( 'getProjectName' )->times( 4 )->andReturn( 'squareone' );
+        $config->shouldReceive( 'getProjectName' )->times( 3 )->andReturn( 'squareone' );
         $config->shouldReceive( 'getProjectRoot' )->times( 4 )->andReturn( storage_path( 'tests' ) );
-        $config->shouldReceive( 'getDockerDir' )->twice()->andReturn( storage_path( 'tests/dev/docker' ) );
+        $config->shouldReceive( 'getDockerDir' )->once()->andReturn( storage_path( 'tests/dev/docker' ) );
         $config->shouldReceive( 'getProjectUrl' )->once()->andReturn( 'https://squareone.tribe' );
         $config->shouldReceive( 'setPath' )
                ->once()
@@ -432,20 +436,21 @@ class StartTest extends BaseCommandTester {
                    '--force-recreate',
                ] );
 
+        $container = $this->mock( Container::class );
+        $container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
         // Assert prestissimo is installed in the php-fpm container
         Artisan::shouldReceive( 'call' )
                ->once()
-               ->with( DockerCompose::class, [
-                   '--project-name',
-                   'squareone',
+               ->with( Docker::class, [
                    'exec',
-                   'php-fpm',
+                   '--tty',
+                   'php-fpm-container-id',
                    'composer',
                    'global',
                    'require',
                    'hirak/prestissimo',
                ] );
-
         // Assert composer install would be run.
         Artisan::shouldReceive( 'call' )->once()
                ->with( Composer::class, [

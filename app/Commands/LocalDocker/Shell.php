@@ -2,7 +2,8 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
+use App\Services\Docker\Container;
 use App\Services\Docker\Local\Config;
 use Illuminate\Support\Facades\Artisan;
 
@@ -31,21 +32,20 @@ class Shell extends BaseLocalDocker {
      * Execute the console command.
      *
      * @param  \App\Services\Docker\Local\Config  $config
+     * @param  \App\Services\Docker\Container     $container
      *
      * @return void
      */
-    public function handle( Config $config ): void {
+    public function handle( Config $config, Container $container ): void {
         $this->info( sprintf( '➜ Launching shell for %s...', $config->getProjectName() ) );
 
-        chdir( $config->getDockerDir() );
-
-        $result = Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
+        $result = Artisan::call( Docker::class, [
             'exec',
+            '--interactive',
+            '--tty',
             '--user',
             $this->option( 'user' ),
-            'php-fpm',
+            $container->getId(),
             '/bin/bash',
         ] );
 

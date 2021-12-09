@@ -2,9 +2,9 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Contracts\ArgumentRewriter;
-use App\Services\Docker\Local\Config;
+use App\Services\Docker\Container;
 use App\Traits\ArgumentRewriterTrait;
 use Illuminate\Support\Facades\Artisan;
 
@@ -34,16 +34,15 @@ class Composer extends BaseLocalDocker implements ArgumentRewriter {
     /**
      * Execute the console command.
      *
-     * @param  \App\Services\Docker\Local\Config  $config
+     * @param  \App\Services\Docker\Container  $container
      *
      * @return void
      */
-    public function handle( Config $config ): void {
+    public function handle( Container $container ): void {
         $params = [
-            '--project-name',
-            $config->getProjectName(),
             'exec',
-            'php-fpm',
+            '--tty',
+            $container->getId(),
             $this->arguments()['command'],
         ];
 
@@ -54,9 +53,7 @@ class Composer extends BaseLocalDocker implements ArgumentRewriter {
             '/application/www',
         ] );
 
-        chdir( $config->getDockerDir() );
-
-        Artisan::call( DockerCompose::class, $params );
+        Artisan::call( Docker::class, $params );
 
         $this->info( 'Done.' );
     }

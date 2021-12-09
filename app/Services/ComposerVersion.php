@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Contracts\ArgumentRewriter;
-use App\Services\Docker\Local\Config;
+use App\Services\Docker\Container;
 use Composer\Semver\Comparator;
 use Illuminate\Support\Facades\Artisan;
 
@@ -15,15 +15,19 @@ class ComposerVersion {
 
     public const MINIMUM_VERSION = 2;
 
-    public function isVersionOne( Config $config ): bool {
-        chdir( $config->getDockerDir() );
+    /**
+     * @var \App\Services\Docker\Container
+     */
+    protected $container;
 
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
+    public function __construct( Container $container ) {
+        $this->container = $container;
+    }
+
+    public function isVersionOne(): bool {
+        Artisan::call( Docker::class, [
             'exec',
-            '-T',
-            'php-fpm',
+            $this->container->getId(),
             'composer',
             ArgumentRewriter::OPTION_VERSION_PROXY,
         ] );

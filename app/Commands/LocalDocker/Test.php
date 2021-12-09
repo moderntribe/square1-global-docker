@@ -2,7 +2,8 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
+use App\Services\Docker\Container;
 use App\Services\Docker\Local\Config;
 use App\Services\XdebugValidator;
 use App\Traits\XdebugWarningTrait;
@@ -34,7 +35,7 @@ class Test extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $description = 'Run codeception tests in the SquareOne local container';
+    protected $description = 'Run codeception tests in the SquareOne php container';
 
     /**
      * The container to run tests in.
@@ -59,16 +60,14 @@ class Test extends BaseLocalDocker {
      *
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \App\Services\XdebugValidator      $xdebugValidator
+     * @param  \App\Services\Docker\Container     $container
      *
      * @return void
      */
-    public function handle( Config $config, XdebugValidator $xdebugValidator ): void {
+    public function handle( Config $config, XdebugValidator $xdebugValidator, Container $container ): void {
         $params = [
-            '--project-name',
-            $config->getProjectName(),
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
+            ! $this->option( 'notty' ) ? '--tty' : '',
         ];
 
         if ( $this->option( 'xdebug' ) ) {
@@ -86,13 +85,10 @@ class Test extends BaseLocalDocker {
             ] );
         }
 
-        if ( $this->option( 'notty' ) ) {
-            $params = array_merge( $params, [ '-T' ] );
-        }
+        $containerName = $this->option( 'container' ) ? $this->option( 'container' ) : $this->container;
+        $containerId   = $container->getId( $containerName );
 
-        $container = $this->option( 'container' ) ? $this->option( 'container' ) : $this->container;
-
-        $params = array_merge( $params, [ $container ] );
+        $params = array_merge( $params, [ $containerId ] );
 
         $exec = [
             'php',
@@ -101,17 +97,15 @@ class Test extends BaseLocalDocker {
             $this->option( 'path' ),
         ];
 
-        chdir( $config->getDockerDir() );
-
         // Clean codeception first.
         if ( ! $this->option( 'noclean' ) ) {
             $clean = array_merge( $params, $exec, [ 'clean' ] );
-            Artisan::call( DockerCompose::class, $clean );
+            Artisan::call( Docker::class, $clean );
         }
 
         $params = array_merge( $params, $exec, $this->argument( 'args' ) );
 
-        Artisan::call( DockerCompose::class, $params );
+        Artisan::call( Docker::class, $params );
     }
 
 }
