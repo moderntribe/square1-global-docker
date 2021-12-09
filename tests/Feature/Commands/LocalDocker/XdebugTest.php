@@ -1,30 +1,33 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Commands\LocalDocker\Xdebug;
 use Illuminate\Support\Facades\Artisan;
 
-class XdebugTest extends LocalDockerCommand {
+final class XdebugTest extends LocalDockerCommand {
 
     public function test_it_shows_xdebug_is_on() {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '--tty',
             '--user',
             'root',
-            'php-fpm',
+            'php-fpm-container-id',
             'bash',
             '-c',
             '[[ -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ]]',
         ] )->andReturn( 0 );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Xdebug::class );
 
@@ -38,19 +41,22 @@ class XdebugTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '--tty',
             '--user',
             'root',
-            'php-fpm',
+            'php-fpm-container-id',
             'bash',
             '-c',
             '[[ -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ]]',
         ] )->andReturn( 1 );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Xdebug::class );
 
@@ -64,32 +70,31 @@ class XdebugTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '-T',
             '--user',
             'root',
-            'php-fpm',
+            'php-fpm-container-id',
             'mv',
             '/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.disabled',
             '/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini',
         ] );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
             '--user',
             'root',
-            'php-fpm',
+            'php-fpm-container-id',
             'kill',
             '-USR2',
             '1',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Xdebug::class );
 
@@ -105,32 +110,31 @@ class XdebugTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '-T',
             '--user',
             'root',
-            'php-fpm',
+            'php-fpm-container-id',
             'mv',
             '/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini',
             '/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.disabled',
         ] );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
             '--user',
             'root',
-            'php-fpm',
+            'php-fpm-container-id',
             'kill',
             '-USR2',
             '1',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Xdebug::class );
 
@@ -146,7 +150,11 @@ class XdebugTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
 
-        Artisan::swap( $this->dockerCompose );
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Xdebug::class );
 
