@@ -27,6 +27,7 @@
         "laravel-zero/framework": "^8.0",
         "m1/env": "^2.2",
         "pragmarx/yaml": "^1.2",
+        "spatie/data-transfer-object": "^1.14",
         "symfony/config": "^5.0",
         "titasgailius/terminal": "^1.0",
         "tmarois/filebase": "^1.0"
