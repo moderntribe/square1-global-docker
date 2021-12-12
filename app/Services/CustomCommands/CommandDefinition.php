@@ -71,4 +71,18 @@ class CommandDefinition extends FlexibleDataTransferObject {
      */
     public $env = [];
 
+    /**
+     * The command arguments, populated late in execution.
+     *
+     * @var array
+     */
+    public $args = [];
+
+    /**
+     * The command options, populated late in execution.
+     *
+     * @var array
+     */
+    public $options = [];
+
 }
