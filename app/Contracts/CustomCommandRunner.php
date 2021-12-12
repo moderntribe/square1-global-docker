@@ -50,10 +50,20 @@ abstract class CustomCommandRunner {
             $env = [];
 
             foreach ( $command->env as $var => $value ) {
-                $env[] = [
-                    '--env',
-                    "$var=$value",
-                ];
+                // Support hyphen yaml syntax, e.g. - VAR: value
+                if ( is_array( $value ) ) {
+                    foreach ( $value as $subVar => $subValue ) {
+                        $env[] = [
+                            '--env',
+                            "$subVar=$subValue",
+                        ];
+                    }
+                } else {
+                    $env[] = [
+                        '--env',
+                        "$var=$value",
+                    ];
+                }
             }
 
             $this->execArgs = array_merge( $this->execArgs, $env );
