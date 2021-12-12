@@ -5,11 +5,10 @@ namespace App\Providers;
 use App\Services\CustomCommands\CommandCollection;
 use App\Services\CustomCommands\CommandFactory;
 use App\Services\CustomCommands\CommandLoader;
-use App\Services\CustomCommands\Runner\RunnerFactory;
+use App\Services\CustomCommands\Runner\RunnerCollection;
 use App\Services\CustomCommands\Runner\Runners\HostRunner;
 use App\Services\CustomCommands\Runner\Runners\MultiRunner;
 use App\Services\CustomCommands\Runner\Runners\ServiceRunner;
-use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -18,15 +17,13 @@ use Illuminate\Support\ServiceProvider;
 class CustomCommandsServiceProvider extends ServiceProvider {
 
     public function register(): void {
-        $this->app->when( RunnerFactory::class )
-                  ->needs( Collection::class )
-                  ->give( function () {
-                      return collect( [
-                          RunnerFactory::SERVICE_MULTI => $this->app->make( MultiRunner::class ),
-                          RunnerFactory::SERVICE       => $this->app->make( ServiceRunner::class ),
-                          RunnerFactory::HOST          => $this->app->make( HostRunner::class ),
-                      ] );
-                  } );
+        $this->app->bind( RunnerCollection::class, function () {
+            return new RunnerCollection( [
+                RunnerCollection::SERVICE_MULTI => $this->app->get( MultiRunner::class ),
+                RunnerCollection::SERVICE       => $this->app->get( ServiceRunner::class ),
+                RunnerCollection::HOST          => $this->app->get( HostRunner::class ),
+            ] );
+        } );
 
         $this->app->when( CommandFactory::class )
                   ->needs( '$commands' )
