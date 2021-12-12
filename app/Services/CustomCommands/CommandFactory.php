@@ -29,7 +29,7 @@ class CommandFactory {
         $collection = [];
 
         foreach ( $this->commands as $command ) {
-            if ( ! isset( $command['signature'] ) ) {
+            if ( empty( $command['signature'] ) || empty( $command['cmd'] ) ) {
                 continue;
             }
 
