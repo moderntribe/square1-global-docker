@@ -2,11 +2,11 @@
 
 namespace App\Services\CustomCommands;
 
-use Illuminate\Foundation\Console\ClosureCommand as FoundationClosureCommand;
+use Illuminate\Foundation\Console\ClosureCommand as ConsoleClosureCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClosureCommand extends FoundationClosureCommand {
+class ClosureCommand extends ConsoleClosureCommand {
 
     /**
      * Overload the existing execute method and pass all inputs to the
