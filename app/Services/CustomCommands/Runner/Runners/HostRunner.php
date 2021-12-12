@@ -6,31 +6,22 @@ use App\Contracts\CustomCommandRunner;
 use App\Contracts\Runner;
 use App\Services\CustomCommands\CommandDefinition;
 use App\Services\Docker\Container;
-use Illuminate\Console\Concerns\InteractsWithIO;
-use Symfony\Component\Console\Output\OutputInterface;
+use Illuminate\Console\BufferedConsoleOutput;
 
 /**
  * Run a command on the host computer.
  */
 class HostRunner extends CustomCommandRunner {
 
-    use InteractsWithIO;
-
     /**
      * @var \App\Contracts\Runner
      */
     protected $runner;
 
-    /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
-     */
-    protected $output;
-
-    public function __construct( Container $container, Runner $runner, OutputInterface $output ) {
+    public function __construct( Container $container, Runner $runner ) {
         parent::__construct( $container );
 
         $this->runner = $runner;
-        $this->output = $output;
     }
 
     /**
@@ -57,7 +48,7 @@ class HostRunner extends CustomCommandRunner {
         $args = array_filter( $args );
 
         $this->runner
-            ->output( $this->output )
+            ->output( new BufferedConsoleOutput() )
             ->run( $args )
             ->throw();
     }
