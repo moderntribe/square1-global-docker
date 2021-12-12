@@ -2,7 +2,6 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use PragmaRX\Yaml\Package\Yaml as YamlPackage;
@@ -45,8 +44,6 @@ class Yaml extends YamlPackage {
         if ( ! empty( $loaded ) ) {
             $loaded = array_replace_recursive( ...$loaded );
         }
-
-        $loaded = Arr::sortRecursive( $loaded );
 
         return $this->resolver->findAndReplaceExecutableCodeToExhaustion( $loaded, $configKey );
     }
