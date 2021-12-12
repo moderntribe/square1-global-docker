@@ -36,13 +36,20 @@ class Composer extends BaseLocalDocker implements ArgumentRewriter {
      *
      * @param  \App\Services\Docker\Container  $container
      *
-     * @return void
+     * @return int
      */
-    public function handle( Container $container ): void {
+    public function handle( Container $container ): int {
+        $containerId = $container->getId();
+
+        if ( empty( $containerId ) ) {
+            $this->error( 'Unable to find container. Has this project been started?' );
+            return self::EXIT_ERROR;
+        }
+
         $params = [
             'exec',
             '--tty',
-            $container->getId(),
+            $containerId,
             $this->arguments()['command'],
         ];
 
@@ -54,6 +61,8 @@ class Composer extends BaseLocalDocker implements ArgumentRewriter {
         ] );
 
         Artisan::call( Docker::class, $params );
+
+        return self::EXIT_SUCCESS;
     }
 
 }
