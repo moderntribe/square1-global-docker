@@ -1,12 +1,13 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Contracts;
 
 use App\Services\CustomCommands\CommandDefinition;
 use App\Services\Docker\Container;
+use Closure;
 
 /**
- * Custom Command Runner Strategy.
+ * Custom Command Runner run as a Pipeline stage.
  */
 abstract class CustomCommandRunner {
 
@@ -32,12 +33,9 @@ abstract class CustomCommandRunner {
      * Configure a command before execution.
      *
      * @param  \App\Services\CustomCommands\CommandDefinition  $command
-     * @param  array                                           $arguments
-     * @param  array                                           $options
-     *
-     * @return void
+     * @param  \Closure                                        $next
      */
-    public function run( CommandDefinition $command, array $arguments = [], array $options = [] ): void {
+    public function run( CommandDefinition $command, Closure $next ) {
         $this->execArgs = array_merge( $this->execArgs, array_filter( [
             $command->interactive ? '--interactive' : '',
             $command->tty ? '--tty' : '',
@@ -45,7 +43,7 @@ abstract class CustomCommandRunner {
             $command->user,
         ] ) );
 
-        // Add environment variables
+        // Add environment variables to pass to the container
         if ( ! empty( $command->env ) ) {
             $env = [];
 
@@ -69,18 +67,15 @@ abstract class CustomCommandRunner {
             $this->execArgs = array_merge( $this->execArgs, $env );
         }
 
-        $this->execute( $command, $arguments, $options );
+        return $this->execute( $command, $next );
     }
 
     /**
-     * Execute the custom command.
+     * Execute the pipe in the pipeline.
      *
      * @param  \App\Services\CustomCommands\CommandDefinition  $command
-     * @param  array<string, mixed>                            $arguments
-     * @param  array<string, mixed>                            $options
-     *
-     * @return void
+     * @param  \Closure                                        $next
      */
-    abstract protected function execute( CommandDefinition $command, array $arguments, array $options ): void;
+    abstract protected function execute( CommandDefinition $command, Closure $next );
 
 }

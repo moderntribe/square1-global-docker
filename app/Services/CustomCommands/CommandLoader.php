@@ -2,9 +2,10 @@
 
 namespace App\Services\CustomCommands;
 
-use App\Services\CustomCommands\Runner\RunnerFactory;
+use App\Services\CustomCommands\Runners\RunnerCollection;
 use Illuminate\Console\Application;
 use Illuminate\Console\Parser;
+use Illuminate\Contracts\Pipeline\Pipeline;
 
 /**
  * Load custom commands.
@@ -19,13 +20,27 @@ class CommandLoader {
     protected $commands;
 
     /**
-     * @var \App\Services\CustomCommands\Runner\RunnerFactory
+     * The Laravel Pipeline.
+     *
+     * @var \Illuminate\Contracts\Pipeline\Pipeline
      */
-    protected $runnerFactory;
+    protected $pipeline;
 
-    public function __construct( CommandCollection $commands, RunnerFactory $runnerFactory ) {
-        $this->commands      = $commands;
-        $this->runnerFactory = $runnerFactory;
+    /**
+     * The Pipeline stages to run when executing a custom command.
+     *
+     * @var \App\Services\CustomCommands\Runners\RunnerCollection
+     */
+    protected $pipes;
+
+    public function __construct(
+        CommandCollection $commands,
+        Pipeline $pipeline,
+        RunnerCollection $pipes
+    ) {
+        $this->commands = $commands;
+        $this->pipeline = $pipeline;
+        $this->pipes    = $pipes;
     }
 
     /**
@@ -35,36 +50,44 @@ class CommandLoader {
      */
     public function register(): void {
         $commands = $this->commands;
-        $factory  = $this->runnerFactory;
+        $pipeline = $this->pipeline->via( 'run' )->through( $this->pipes->toArray() );
 
-        Application::starting( function ( $artisan ) use ( $commands, $factory ) {
+        // Hook into the starting event and register the custom commands
+        Application::starting( function ( $artisan ) use ( $commands, $pipeline ) {
             foreach ( $commands as $command ) {
                 // Parse the command signature
                 [ $name, $arguments, $options ] = Parser::parse( $command->signature );
 
-                // Select the custom command runner
-                $runner = $factory->make( $command );
+                $c = new ClosureCommand(
+                    $command->signature,
+                    function ( ...$parameters )
+                    use ( $command, $arguments, $options, $pipeline ) {
+                        // The command is always the first item, remove it.
+                        array_shift( $parameters );
 
-                $c = new ClosureCommand( $command->signature, function ( ... $parameters ) use ( $command, $arguments, $options, $runner ) {
-                    // The command is always the first item, remove it.
-                    array_shift( $parameters );
+                        $argCount = count( $arguments );
 
-                    $argCount = count( $arguments );
+                        $commandArgs    = [];
+                        $commandOptions = [];
 
-                    $commandArgs    = [];
-                    $commandOptions = [];
+                        // Build command arguments
+                        foreach ( $arguments as $i => $arg ) {
+                            $commandArgs[ $arg->getName() ] = $parameters[ $i ];
+                        }
 
-                    foreach ( $arguments as $i => $arg ) {
-                        $commandArgs[ $arg->getName() ] = $parameters[ $i ];
-                    }
+                        // Build command options
+                        foreach ( $options as $i => $option ) {
+                            $commandOptions[ $option->getName() ] = $parameters[ $i + $argCount ];
+                        }
 
-                    foreach ( $options as $i => $option ) {
-                        $commandOptions[ $option->getName() ] = $parameters[ $i + $argCount ];
-                    }
+                        $command->args    = $commandArgs;
+                        $command->options = $commandOptions;
 
-                    // Run the command with the appropriate strategy
-                    $runner->run( $command, $commandArgs, $commandOptions );
-                } );
+                        // Run through the pipeline which will run the command with
+                        // the appropriate runner.
+                        $pipeline->send( $command )
+                                 ->thenReturn();
+                    } );
 
                 $c->purpose( $command->description );
 
