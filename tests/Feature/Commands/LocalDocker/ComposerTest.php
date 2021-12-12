@@ -36,7 +36,6 @@ final class ComposerTest extends LocalDockerCommand {
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
     }
 
     public function test_it_runs_composer_command_with_proxy_version_option() {
@@ -66,7 +65,6 @@ final class ComposerTest extends LocalDockerCommand {
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
     }
 
     public function test_it_runs_composer_command_with_proxy_version_flag() {
@@ -96,7 +94,6 @@ final class ComposerTest extends LocalDockerCommand {
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
     }
 
 }

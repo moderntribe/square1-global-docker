@@ -54,8 +54,6 @@ class Composer extends BaseLocalDocker implements ArgumentRewriter {
         ] );
 
         Artisan::call( Docker::class, $params );
-
-        $this->info( 'Done.' );
     }
 
 }
