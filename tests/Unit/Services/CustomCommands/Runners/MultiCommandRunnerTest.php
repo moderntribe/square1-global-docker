@@ -85,7 +85,7 @@ final class MultiCommandRunnerTest extends TestCase {
                  ] )->thenReturn();
     }
 
-    public function test_it_skips_multiple_command_running_for_single_commands() {
+    public function test_it_skips_multiple_commands_running_for_single_commands() {
         $command            = new CommandDefinition();
         $command->signature = 'ls';
         $command->cmd       = 'ls';
