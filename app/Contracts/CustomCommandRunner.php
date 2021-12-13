@@ -45,26 +45,19 @@ abstract class CustomCommandRunner {
 
         // Add environment variables to pass to the container
         if ( ! empty( $command->env ) ) {
-            $env = [];
-
             foreach ( $command->env as $var => $value ) {
+
                 // Support hyphen yaml syntax, e.g. - VAR: value
                 if ( is_array( $value ) ) {
                     foreach ( $value as $subVar => $subValue ) {
-                        $env[] = [
-                            '--env',
-                            "$subVar=$subValue",
-                        ];
+                        $this->execArgs[] = '--env';
+                        $this->execArgs[] = "$subVar=$subValue";
                     }
                 } else {
-                    $env[] = [
-                        '--env',
-                        "$var=$value",
-                    ];
+                    $this->execArgs[] = '--env';
+                    $this->execArgs[] = "$var=$value";
                 }
             }
-
-            $this->execArgs = array_merge( $this->execArgs, $env );
         }
 
         return $this->execute( $command, $next );

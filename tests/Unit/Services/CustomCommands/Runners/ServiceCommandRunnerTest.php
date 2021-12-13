@@ -36,6 +36,10 @@ final class ServiceCommandRunnerTest extends TestCase {
         $command->options   = [ 'color' => 'yes' ];
         $command->cmd       = 'ls';
         $command->service   = 'php-fpm';
+        $command->env       = [
+          'VAR1' => 'value1',
+          'VAR2' => 'value2',
+        ];
 
         $this->container->shouldReceive( 'getId' )
             ->once()
@@ -51,6 +55,59 @@ final class ServiceCommandRunnerTest extends TestCase {
                          '--tty',
                          '--user',
                          'squareone',
+                         '--env',
+                         'VAR1=value1',
+                         '--env',
+                         'VAR2=value2',
+                         'php-fpm-container-id',
+                         'ls',
+                         '-al',
+                         '--color=yes',
+                     ] )
+                     ->once()
+                     ->andReturn( BaseLocalDocker::EXIT_SUCCESS );
+
+        $closure        = function() {};
+        $serviceCommand = $this->app->make( ServiceCommandRunner::class );
+        $result = $serviceCommand->run( $command, $closure );
+
+        $this->assertNull( $result );
+    }
+
+    public function test_it_executes_a_service_command_with_alternative_env_var_syntax() {
+        $command            = new CommandDefinition();
+        $command->signature = 'ls';
+        $command->args      = [ '-al' ];
+        $command->options   = [ 'color' => 'yes' ];
+        $command->cmd       = 'ls';
+        $command->service   = 'php-fpm';
+        $command->env       = [
+            [
+                'VAR1' => 'value1',
+            ],
+            [
+                'VAR2' => 'value2',
+            ]
+        ];
+
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->with( 'php-fpm' )
+                        ->andReturn( 'php-fpm-container-id' );
+
+        Artisan::swap( $this->docker );
+
+        $this->docker->shouldReceive( 'call' )
+                     ->with( Docker::class, [
+                         'exec',
+                         '--interactive',
+                         '--tty',
+                         '--user',
+                         'squareone',
+                         '--env',
+                         'VAR1=value1',
+                         '--env',
+                         'VAR2=value2',
                          'php-fpm-container-id',
                          'ls',
                          '-al',
