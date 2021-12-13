@@ -15,13 +15,14 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.3|^8.0|^8.1",
         "ext-json": "*",
         "ext-openssl": "*",
         "alecrabbit/php-cli-snake": "^0.6.0",
         "composer/semver": "^3.0",
         "guzzlehttp/guzzle": "^6.5.5|^7.0",
         "illuminate/http": "^8.0",
+        "illuminate/log": "^8.75",
         "illuminate/validation": "^8.0",
         "laminas/laminas-text": "^2.7",
         "laravel-zero/framework": "^8.0",
