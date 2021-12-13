@@ -218,8 +218,8 @@ commands:
     tty: true # Optional: Allocate a pseudo-TTY, via docker exec
     interactive: true # Optional: Keep STDIN open even if not attached, via docker exec
     env: # Environment variables to pass to docker compose
-    VAR1: value1
-    VAR2: value2
+      VAR1: value1
+      VAR2: value2
   # A second command
   whoami:
     signature: whoami
