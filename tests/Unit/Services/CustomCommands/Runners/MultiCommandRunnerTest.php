@@ -91,7 +91,6 @@ final class MultiCommandRunnerTest extends TestCase {
         $command->cmd       = 'ls';
         $command->service   = 'php-fpm';
 
-        //$hostRunner    = $this->mock( HostCommandRunner::class );
         $serviceRunner = $this->mock( ServiceCommandRunner::class );
 
         $serviceRunner->shouldReceive( 'run' )
