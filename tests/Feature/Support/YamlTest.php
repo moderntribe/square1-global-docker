@@ -74,15 +74,15 @@ class YamlTest extends TestCase {
 
         $this->assertSame( [
             'item' => [
+                'item-3' => 'Item 3',
+                'sub-item' => [
+                    'sub-item-2' => 'Sub Item 2',
+                    'sub-item-1' => 'Sub Item 1',
+                    'sub-item-3' => 'Sub Item 3',
+                ],
                 'item-1' => 'Item 1',
                 'item-2' => 'Item 2',
-                'item-3' => 'Item 3',
                 'item-4' => 'Item 4',
-                'sub-item' => [
-                    'sub-item-1' => 'Sub Item 1',
-                    'sub-item-2' => 'Sub Item 2',
-                    'sub-item-3' => 'Sub Item 3',
-                ]
             ],
         ], $config->toArray() );
     }
@@ -116,11 +116,11 @@ class YamlTest extends TestCase {
         $this->assertSame( [
             'item' => [
                 'item-1' => 'Item 1',
-                'item-2' => 'Item 2',
                 'sub' => [
-                    'item-1' => 'Item 1',
                     'item-2' => 'Item 2',
-                ]
+                    'item-1' => 'Item 1',
+                ],
+                'item-2' => 'Item 2',
             ],
         ], $config->toArray() );
     }
