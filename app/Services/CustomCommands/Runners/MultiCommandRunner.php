@@ -11,7 +11,7 @@ use Closure;
  */
 class MultiCommandRunner extends CustomCommandRunner {
 
-    public function execute( CommandDefinition $command, Closure $next ) {
+    protected function execute( CommandDefinition $command, Closure $next ) {
         if ( ! is_array( $command->cmd ) ) {
             return $next( $command );
         }

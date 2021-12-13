@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Artisan;
  */
 class ServiceCommandRunner extends CustomCommandRunner {
 
-    public function execute( CommandDefinition $command, Closure $next ) {
+    protected function execute( CommandDefinition $command, Closure $next ) {
         if ( empty( $command->service ) ) {
             return $next( $command );
         }

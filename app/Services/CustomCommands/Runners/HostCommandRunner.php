@@ -25,7 +25,7 @@ class HostCommandRunner extends CustomCommandRunner {
         $this->runner = $runner;
     }
 
-    public function execute( CommandDefinition $command, Closure $next ) {
+    protected function execute( CommandDefinition $command, Closure $next ) {
         if ( ! empty( $command->service ) ) {
             return $next( $command );
         }
