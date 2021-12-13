@@ -3,7 +3,7 @@
 namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\BaseCommand;
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Commands\LocalDocker\Wp;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -17,15 +17,18 @@ class WpTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getWorkdir' )->andReturn( $this->workdir );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '--tty',
             '-w',
             '/application/www',
             '--env',
             'WP_CLI_PHP_ARGS',
-            'php-fpm',
+            'php-fpm-container-id',
             '/usr/local/bin/wp',
             '--allow-root',
             'option',
@@ -33,7 +36,7 @@ class WpTest extends LocalDockerCommand {
             'home',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Wp::class );
 
@@ -56,16 +59,18 @@ class WpTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getWorkdir' )->andReturn( $this->workdir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '',
             '-w',
             '/application/www',
-            '-T',
             '--env',
             BaseCommand::XDEBUG_ENV,
-            'php-fpm',
+            'php-fpm-container-id',
             '/usr/local/bin/wp',
             '--allow-root',
             'option',
@@ -73,7 +78,7 @@ class WpTest extends LocalDockerCommand {
             'home',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Wp::class );
 
@@ -99,16 +104,18 @@ class WpTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getWorkdir' )->andReturn( $this->workdir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '',
             '-w',
             '/application/www',
-            '-T',
             '--env',
             BaseCommand::XDEBUG_ENV,
-            'php-fpm',
+            'php-fpm-container-id',
             '/usr/local/bin/wp',
             '--allow-root',
             'option',
@@ -116,7 +123,7 @@ class WpTest extends LocalDockerCommand {
             'home',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Wp::class );
 

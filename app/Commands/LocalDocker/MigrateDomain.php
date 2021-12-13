@@ -35,9 +35,10 @@ class MigrateDomain extends BaseLocalDocker {
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \App\Recorders\ResultRecorder      $recorder
      *
+     * @throws \App\Exceptions\SystemExitException
+     * @throws \Exception
      * @return void
      *
-     * @throws \App\Exceptions\SystemExitException
      */
     public function handle( Config $config, ResultRecorder $recorder ): void {
         Artisan::call( Wp::class, [
@@ -86,7 +87,7 @@ class MigrateDomain extends BaseLocalDocker {
             'args' => [
                 'db',
                 'query',
-                "UPDATE ${dbPrefix}options SET option_value = REPLACE( option_value, '${sourceDomain}', '${targetDomain}' ) WHERE option_name = 'siteurl'",
+                "UPDATE ${dbPrefix}options SET option_value = REPLACE( option_value, '$sourceDomain', '$targetDomain' ) WHERE option_name = 'siteurl'",
             ],
         ] );
 
@@ -94,8 +95,8 @@ class MigrateDomain extends BaseLocalDocker {
         Artisan::call( Wp::class, [
             'args' => [
                 'search-replace',
-                "${sourceDomain}",
-                "${targetDomain}",
+                "$sourceDomain",
+                "$targetDomain",
                 '--all-tables-with-prefix',
                 '--verbose',
             ],

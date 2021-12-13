@@ -1,27 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\LocalDocker;
 
 use App\Commands\BaseCommand;
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Commands\LocalDocker\Test;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
-class TestTest extends LocalDockerCommand {
+final class TestTest extends LocalDockerCommand {
 
     public function test_it_calls_local_test_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->with( 'php-tests' )
+                        ->andReturn( 'php-tests-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
-            'php-tests',
+            '--tty',
+            'php-tests-container-id',
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
@@ -29,13 +31,10 @@ class TestTest extends LocalDockerCommand {
             'clean',
         ] );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
-            'php-tests',
+            '--tty',
+            'php-tests-container-id',
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
@@ -44,7 +43,7 @@ class TestTest extends LocalDockerCommand {
             'integration',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Test::class );
 
@@ -65,18 +64,19 @@ class TestTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->with( 'php-fpm' )
+                        ->andReturn( 'php-tests-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
+            '',
             '--env',
             'PHP_IDE_CONFIG=serverName=squareone.tribe',
             '--env',
             BaseCommand::XDEBUG_ENV,
-            '-T',
-            'php-fpm',
+            'php-tests-container-id',
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
@@ -84,18 +84,14 @@ class TestTest extends LocalDockerCommand {
             'clean',
         ] );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
+            '',
             '--env',
             'PHP_IDE_CONFIG=serverName=squareone.tribe',
             '--env',
             BaseCommand::XDEBUG_ENV,
-            '-T',
-            'php-fpm',
+            'php-tests-container-id',
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
@@ -104,7 +100,7 @@ class TestTest extends LocalDockerCommand {
             'integration',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Test::class );
 
@@ -130,18 +126,19 @@ class TestTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
         $this->config->shouldReceive( 'getPhpIni' )->andReturn( storage_path( 'tests/dev/docker/php/php-ini-overrides.ini' ) );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )
+                        ->once()
+                        ->with( 'php-fpm' )
+                        ->andReturn( 'php-tests-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
+            '',
             '--env',
             'PHP_IDE_CONFIG=serverName=squareone.tribe',
             '--env',
             BaseCommand::XDEBUG_ENV,
-            '-T',
-            'php-fpm',
+            'php-tests-container-id',
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
@@ -149,18 +146,14 @@ class TestTest extends LocalDockerCommand {
             'clean',
         ] );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '--env',
-            'COMPOSE_INTERACTIVE_NO_CLI=1',
+            '',
             '--env',
             'PHP_IDE_CONFIG=serverName=squareone.tribe',
             '--env',
             BaseCommand::XDEBUG_ENV,
-            '-T',
-            'php-fpm',
+            'php-tests-container-id',
             'php',
             '/application/www/vendor/bin/codecept',
             '-c',
@@ -169,7 +162,7 @@ class TestTest extends LocalDockerCommand {
             'integration',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Test::class );
 

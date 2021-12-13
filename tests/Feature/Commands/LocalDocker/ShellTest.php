@@ -1,28 +1,30 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Commands\LocalDocker\Shell;
 use Illuminate\Support\Facades\Artisan;
 
-class ShellTest extends LocalDockerCommand {
+final class ShellTest extends LocalDockerCommand {
 
     public function test_it_calls_local_shell_command() {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '--interactive',
+            '--tty',
             '--user',
             'squareone',
-            'php-fpm',
+            'php-fpm-container-id',
             '/bin/bash',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Shell::class );
 
@@ -36,17 +38,19 @@ class ShellTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
+            '--interactive',
+            '--tty',
             '--user',
             'squareone',
-            'php-fpm',
+            'php-fpm-container-id',
             '/bin/bash',
         ] )->andReturn( 1 );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Shell::class );
 

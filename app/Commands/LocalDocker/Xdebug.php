@@ -2,8 +2,8 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
-use App\Services\Docker\Local\Config;
+use App\Commands\Docker;
+use App\Services\Docker\Container;
 use Illuminate\Support\Facades\Artisan;
 
 /**
@@ -35,23 +35,21 @@ class Xdebug extends BaseLocalDocker {
     /**
      * Execute the console command.
      *
-     * @param  \App\Services\Docker\Local\Config  $config
+     * @param  \App\Services\Docker\Container  $container
      *
      * @return int
      */
-    public function handle( Config $config ) {
-        $action = $this->argument( 'action' );
-
-        chdir( $config->getDockerDir() );
+    public function handle( Container $container ): int {
+        $action      = $this->argument( 'action' );
+        $containerId = $container->getId();
 
         if ( empty( $action ) ) {
-            $result = Artisan::call( DockerCompose::class, [
-                '--project-name',
-                $config->getProjectName(),
+            $result = Artisan::call( Docker::class, [
                 'exec',
+                '--tty',
                 '--user',
                 'root',
-                'php-fpm',
+                $containerId,
                 'bash',
                 '-c',
                 sprintf( '[[ -f %s ]]', self::XDEBUG_CONFIG_PATH ),
@@ -67,12 +65,12 @@ class Xdebug extends BaseLocalDocker {
         }
 
         if ( 'on' === $action ) {
-            $this->enable( $config );
-            $this->reload( $config );
+            $this->enable( $containerId );
+            $this->reload( $containerId );
             $this->info( 'xdebug enabled' );
         } elseif ( 'off' === $action ) {
-            $this->disable( $config );
-            $this->reload( $config );
+            $this->disable( $containerId );
+            $this->reload( $containerId );
             $this->info( 'xdebug disabled' );
         } else {
             $this->error( sprintf( 'Invalid argument: %s. Allowed values: on|off', $action ) );
@@ -84,17 +82,14 @@ class Xdebug extends BaseLocalDocker {
     /**
      * Enable xdebug by renaming the .ini file.
      *
-     * @param  \App\Services\Docker\Local\Config  $config
+     * @param  string  $containerId
      */
-    protected function enable( Config $config ): void {
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
+    protected function enable( string $containerId ): void {
+        Artisan::call( Docker::class, [
             'exec',
-            '-T',
             '--user',
             'root',
-            'php-fpm',
+            $containerId,
             'mv',
             sprintf( '%s', self::XDEBUG_CONFIG_PATH . '.disabled' ),
             sprintf( '%s', self::XDEBUG_CONFIG_PATH ),
@@ -104,17 +99,14 @@ class Xdebug extends BaseLocalDocker {
     /**
      * Disable xdebug by renaming the .ini file back.
      *
-     * @param  \App\Services\Docker\Local\Config  $config
+     * @param  string  $containerId
      */
-    protected function disable( Config $config ): void {
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
+    protected function disable( string $containerId ): void {
+        Artisan::call( Docker::class, [
             'exec',
-            '-T',
             '--user',
             'root',
-            'php-fpm',
+            $containerId,
             'mv',
             sprintf( '%s', self::XDEBUG_CONFIG_PATH ),
             sprintf( '%s', self::XDEBUG_CONFIG_PATH . '.disabled' ),
@@ -124,16 +116,14 @@ class Xdebug extends BaseLocalDocker {
     /**
      * Reload PHP in the container.
      *
-     * @param  \App\Services\Docker\Local\Config  $config
+     * @param  string  $containerId
      */
-    protected function reload( Config $config ): void {
-        Artisan::call( DockerCompose::class, [
-            '--project-name',
-            $config->getProjectName(),
+    protected function reload( string $containerId ): void {
+        Artisan::call( Docker::class, [
             'exec',
             '--user',
             'root',
-            'php-fpm',
+            $containerId,
             'kill',
             '-USR2',
             '1',

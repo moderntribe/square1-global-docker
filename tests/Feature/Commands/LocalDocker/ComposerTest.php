@@ -1,8 +1,8 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
 use App\Commands\LocalDocker\Composer;
 use App\Contracts\ArgumentRewriter;
 use Illuminate\Support\Facades\Artisan;
@@ -13,19 +13,19 @@ final class ComposerTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
-        $this->dockerCompose = $this->mock( DockerCompose::class );
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            'php-fpm',
+            '--tty',
+            'php-fpm-container-id',
             'composer',
             'install',
             '-d',
             '/application/www',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Composer::class );
 
@@ -43,19 +43,19 @@ final class ComposerTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
-        $this->dockerCompose = $this->mock( DockerCompose::class );
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            'php-fpm',
+            '--tty',
+            'php-fpm-container-id',
             'composer',
             ArgumentRewriter::OPTION_VERSION_PROXY,
             '-d',
             '/application/www',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Composer::class );
 
@@ -73,19 +73,19 @@ final class ComposerTest extends LocalDockerCommand {
         $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
         $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
 
-        $this->dockerCompose = $this->mock( DockerCompose::class );
-        $this->dockerCompose->shouldReceive( 'call' )->with( DockerCompose::class, [
-            '--project-name',
-            $this->project,
+        $this->container->shouldReceive( 'getId' )->once()->andReturn( 'php-fpm-container-id' );
+
+        $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            'php-fpm',
+            '--tty',
+            'php-fpm-container-id',
             'composer',
             ArgumentRewriter::FLAG_VERSION_PROXY,
             '-d',
             '/application/www',
         ] );
 
-        Artisan::swap( $this->dockerCompose );
+        Artisan::swap( $this->docker );
 
         $command = $this->app->make( Composer::class );
 

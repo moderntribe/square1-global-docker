@@ -2,7 +2,8 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Commands\DockerCompose;
+use App\Commands\Docker;
+use App\Services\Docker\Container;
 use App\Services\XdebugValidator;
 use App\Traits\XdebugWarningTrait;
 use App\Services\Docker\Local\Config;
@@ -38,21 +39,17 @@ class Wp extends BaseLocalDocker {
      *
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \App\Services\XdebugValidator      $xdebugValidator
+     * @param  \App\Services\Docker\Container     $container
      *
      * @return int|null
      */
-    public function handle( Config $config, XdebugValidator $xdebugValidator ): ?int {
+    public function handle( Config $config, XdebugValidator $xdebugValidator, Container $container ): ?int {
         $params = [
-            '--project-name',
-            $config->getProjectName(),
             'exec',
+            ! $this->option( 'notty' ) ? '--tty' : '',
             '-w',
             $config->getWorkdir(),
         ];
-
-        if ( $this->option( 'notty' ) ) {
-            $params = array_merge( $params, [ '-T' ] );
-        }
 
         if ( $this->option( 'xdebug' ) ) {
 
@@ -78,11 +75,11 @@ class Wp extends BaseLocalDocker {
             '--allow-root',
         ];
 
-        $params = array_merge( $params, $env, [ 'php-fpm' ], $exec, $this->argument( 'args' ) );
+        $containerId = $container->getId();
 
-        chdir( $config->getDockerDir() );
+        $params = array_merge( $params, $env, [ $containerId ], $exec, $this->argument( 'args' ) );
 
-        return Artisan::call( DockerCompose::class, $params );
+        return Artisan::call( Docker::class, $params );
     }
 
 }

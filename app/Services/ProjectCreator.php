@@ -32,8 +32,8 @@ class ProjectCreator {
      *
      * @return $this
      */
-    public function setProjectId( string $project ) {
-        $this->filesystem->replace( "{$project}/dev/docker/.projectID", $project );
+    public function setProjectId( string $project ): ProjectCreator {
+        $this->filesystem->replace( "$project/dev/docker/.projectID", $project );
 
         return $this;
     }
@@ -46,8 +46,8 @@ class ProjectCreator {
      * @return $this
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function updateNginxConf( string $project ) {
-        $file    = "{$project}/dev/docker/nginx/nginx.conf";
+    public function updateNginxConf( string $project ): ProjectCreator {
+        $file    = "$project/dev/docker/nginx/nginx.conf";
         $content = $this->filesystem->get( $file );
 
         $content = str_replace( 'square1.tribe', "{$project}.tribe", $content );
@@ -65,11 +65,11 @@ class ProjectCreator {
      * @return $this
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function updateDockerCompose( string $project ) {
-        $file    = "{$project}/dev/docker/docker-compose.yml";
+    public function updateDockerCompose( string $project ): ProjectCreator {
+        $file    = "$project/dev/docker/docker-compose.yml";
         $content = $this->filesystem->get( $file );
 
-        $content = str_replace( 'square1.tribe', "{$project}.tribe", $content );
+        $content = str_replace( 'square1.tribe', "$project.tribe", $content );
         $content = str_replace( 'square1test.tribe', "{$project}test.tribe", $content );
         $content = str_replace( 'tribe_square1', 'tribe_' . str_replace( '-', '_', $project ), $content );
 
@@ -86,11 +86,11 @@ class ProjectCreator {
      * @return $this
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function updateWpCli( string $project ) {
-        $file    = "${project}/dev/docker/wp-cli.yml";
+    public function updateWpCli( string $project ): ProjectCreator {
+        $file    = "$project/dev/docker/wp-cli.yml";
         $content = $this->filesystem->get( $file );
 
-        $content = str_replace( 'square1.tribe', "${project}.tribe", $content );
+        $content = str_replace( 'square1.tribe', "$project.tribe", $content );
 
         $this->filesystem->put( $file, $content );
 
@@ -106,8 +106,8 @@ class ProjectCreator {
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function updateGitWorkflows( string $project ) {
-        $file = "${project}/.github/workflows/ci.yml";
+    public function updateGitWorkflows( string $project ): ProjectCreator {
+        $file = "$project/.github/workflows/ci.yml";
 
         $content = $this->filesystem->get( $file );
         $content = str_replace( 'tribe_square1', str_replace( '-', '_', "tribe_${project}" ), $content );
@@ -127,12 +127,12 @@ class ProjectCreator {
      * @return $this
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function updateCodeceptionConfig( string $project ) {
-        $file    = "${project}/dev/tests/.env-dist";
+    public function updateCodeceptionConfig( string $project ): ProjectCreator {
+        $file    = "$project/dev/tests/.env-dist";
         $content = $this->filesystem->get( $file );
 
         $content = str_replace( 'square1test.tribe', "${project}test.tribe", $content );
-        $content = str_replace( 'tribe_square1', str_replace( '-', '_', "tribe_${project}" ), $content );
+        $content = str_replace( 'tribe_square1', str_replace( '-', '_', "tribe_$project" ), $content );
 
         $this->filesystem->put( $file, $content );
         $this->filesystem->copy( $file, str_replace( '-dist', '', $file ) );
@@ -148,8 +148,8 @@ class ProjectCreator {
      * @return $this
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function updateTestDumpSql( string $project ) {
-        $file    = "${project}/dev/tests/tests/_data/dump.sql";
+    public function updateTestDumpSql( string $project ): ProjectCreator {
+        $file    = "$project/dev/tests/tests/_data/dump.sql";
         $content = $this->filesystem->get( $file );
 
         $content = str_replace( 'square1test.tribe', "${project}test.tribe", $content );

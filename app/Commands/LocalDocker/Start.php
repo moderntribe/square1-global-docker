@@ -2,18 +2,20 @@
 
 namespace App\Commands\LocalDocker;
 
-use App\Services\ComposerVersion;
-use M1\Env\Parser;
+use App\Commands\Docker;
+use App\Commands\DockerCompose;
+use App\Commands\GlobalDocker\Start as GlobalStart;
 use App\Commands\Open;
+use App\Services\Certificate\Handler;
+use App\Services\ComposerVersion;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
-use App\Commands\DockerCompose;
-use App\Services\Docker\SystemClock;
+use App\Services\Docker\Container;
 use App\Services\Docker\Local\Config;
-use App\Services\Certificate\Handler;
+use App\Services\Docker\SystemClock;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
-use App\Commands\GlobalDocker\Start as GlobalStart;
+use M1\Env\Parser;
 
 /**
  * Local docker start command
@@ -52,18 +54,20 @@ class Start extends BaseLocalDocker {
      * @param  \App\Services\Config\Env           $env
      * @param  \App\Services\Docker\SystemClock   $clock
      * @param  \App\Services\ComposerVersion      $composerVersion
+     * @param  \App\Services\Docker\Container     $container
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @return void
-     *
      */
-    public function handle( Config $config,
+    public function handle(
+        Config $config,
         Handler $certificateHandler,
         Filesystem $filesystem,
         Github $github,
         Env $env,
         SystemClock $clock,
-        ComposerVersion $composerVersion
+        ComposerVersion $composerVersion,
+        Container $container
     ): void {
         // Set a custom project path, if provided
         if ( $path = $this->option( 'path' ) ) {
@@ -113,7 +117,7 @@ class Start extends BaseLocalDocker {
         chdir( $workdir );
 
         // Install hirak/prestissimo to speed up composer installs
-        $this->prestissimo( $config, $filesystem, $composerVersion );
+        $this->prestissimo( $config, $filesystem, $composerVersion, $container );
 
         // Run composer
         Artisan::call( Composer::class, [
@@ -175,9 +179,10 @@ class Start extends BaseLocalDocker {
      * @param  \App\Services\Docker\Local\Config  $config
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      * @param  \App\Services\ComposerVersion      $composerVersion
+     * @param  \App\Services\Docker\Container     $container
      */
-    protected function prestissimo( Config $config, Filesystem $filesystem, ComposerVersion $composerVersion ): void {
-        if ( ! $composerVersion->isVersionOne( $config ) ) {
+    protected function prestissimo( Config $config, Filesystem $filesystem, ComposerVersion $composerVersion, Container $container ): void {
+        if ( ! $composerVersion->isVersionOne() ) {
             return;
         }
 
@@ -187,13 +192,10 @@ class Start extends BaseLocalDocker {
 
         if ( $filesystem->missing( $global ) ) {
 
-            chdir( $config->getDockerDir() );
-
-            Artisan::call( DockerCompose::class, [
-                '--project-name',
-                $config->getProjectName(),
+            Artisan::call( Docker::class, [
                 'exec',
-                'php-fpm',
+                '--tty',
+                $container->getId(),
                 'composer',
                 'global',
                 'require',
@@ -251,7 +253,7 @@ class Start extends BaseLocalDocker {
 
             foreach ( $vars as $key => $value ) {
                 $secret  = $this->licenseKey( $key );
-                $content .= "${key}='${secret}'" . PHP_EOL;
+                $content .= "$key='$secret'" . PHP_EOL;
             }
 
             // Save to config directory
