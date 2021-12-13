@@ -20,6 +20,11 @@ class ClosureCommand extends ConsoleClosureCommand {
     protected function execute( InputInterface $input, OutputInterface $output ): int {
         $inputs = array_merge( $input->getArguments(), $input->getOptions() );
 
+        // Sometimes we're receiving a duplicated command name at index 0.
+        if ( isset( $inputs[0] ) ) {
+            unset( $inputs[0] );
+        }
+
         return (int) $this->laravel->call(
             $this->callback->bindTo( $this, $this ), $inputs
         );
