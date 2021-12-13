@@ -3,11 +3,11 @@
 namespace App\Services\CustomCommands\Runners;
 
 use App\Contracts\CustomCommandRunner;
+use App\Contracts\Runner as RunnerContract;
 use App\Services\CustomCommands\CommandDefinition;
 use App\Services\Docker\Container;
 use Closure;
 use Illuminate\Console\BufferedConsoleOutput;
-use App\Contracts\Runner as RunnerContract;
 
 /**
  * Run a custom command on the host computer.
@@ -39,9 +39,12 @@ class HostCommandRunner extends CustomCommandRunner {
         $args = array_merge( [], explode( ' ', $command->cmd ), $parameters );
         $args = array_filter( $args );
 
+        // Convert back to string, so it calls Process::fromShellCommandline()
+        $cmd = implode( ' ', $args );
+
         $this->runner
             ->output( new BufferedConsoleOutput() )
-            ->run( $args )
+            ->run( $cmd )
             ->throw();
 
         return $next( $command );

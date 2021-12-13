@@ -35,11 +35,8 @@ final class HostCommandRunnerTest extends TestCase {
                      ->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( [
-                         'ls',
-                         '-al',
-                         '--color=yes',
-                     ] )->andReturnSelf();
+                     ->with( 'ls -al --color=yes' )
+                     ->andReturnSelf();
 
         $closure = function() {};
         $hostRunner = $this->app->make( HostCommandRunner::class );
