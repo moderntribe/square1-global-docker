@@ -66,7 +66,7 @@ final class MultiCommandRunnerTest extends TestCase {
         $hostRunner->shouldReceive( 'run' )
                             ->twice()
                             ->with( Mockery::on( function ( $command ) {
-                                if ( $command->cmd == 'ls -al' || $command->cmd === 'ls' ) {
+                                if ( $command->cmd === 'ls -al' || $command->cmd === 'ls' ) {
                                     return true;
                                 }
 
