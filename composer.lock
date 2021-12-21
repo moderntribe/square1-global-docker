@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1ec1484132b806fd900d994e729dcd89",
+    "content-hash": "388b4d1042d05f961f33215932993552",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -1052,7 +1052,7 @@
         },
         {
             "name": "illuminate/bus",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/bus.git",
@@ -1105,16 +1105,16 @@
         },
         {
             "name": "illuminate/cache",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/cache.git",
-                "reference": "90f65f0e64cd504b9229addc6774cf344996b4e3"
+                "reference": "c35ef641da433daf8bf7827e632710931dc465c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/cache/zipball/90f65f0e64cd504b9229addc6774cf344996b4e3",
-                "reference": "90f65f0e64cd504b9229addc6774cf344996b4e3",
+                "url": "https://api.github.com/repos/illuminate/cache/zipball/c35ef641da433daf8bf7827e632710931dc465c6",
+                "reference": "c35ef641da433daf8bf7827e632710931dc465c6",
                 "shasum": ""
             },
             "require": {
@@ -1161,11 +1161,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-12-07T08:18:44+00:00"
+            "time": "2021-12-14T14:40:44+00:00"
         },
         {
             "name": "illuminate/collections",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -1219,7 +1219,7 @@
         },
         {
             "name": "illuminate/config",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/config.git",
@@ -1267,16 +1267,16 @@
         },
         {
             "name": "illuminate/console",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/console.git",
-                "reference": "1f952710c671b8ca90bb10be585ebcc94f72166a"
+                "reference": "5db4a34711a08347fad5b775c58746a7103a3094"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/console/zipball/1f952710c671b8ca90bb10be585ebcc94f72166a",
-                "reference": "1f952710c671b8ca90bb10be585ebcc94f72166a",
+                "url": "https://api.github.com/repos/illuminate/console/zipball/5db4a34711a08347fad5b775c58746a7103a3094",
+                "reference": "5db4a34711a08347fad5b775c58746a7103a3094",
                 "shasum": ""
             },
             "require": {
@@ -1323,11 +1323,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-11-30T14:13:40+00:00"
+            "time": "2021-12-14T14:40:44+00:00"
         },
         {
             "name": "illuminate/container",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -1378,16 +1378,16 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "b07755f7c456cf587dfbfd6f0854f9f7c1a34b2f"
+                "reference": "9baa9f781071e67d7b171775bd3be7ead13ddd29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/b07755f7c456cf587dfbfd6f0854f9f7c1a34b2f",
-                "reference": "b07755f7c456cf587dfbfd6f0854f9f7c1a34b2f",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/9baa9f781071e67d7b171775bd3be7ead13ddd29",
+                "reference": "9baa9f781071e67d7b171775bd3be7ead13ddd29",
                 "shasum": ""
             },
             "require": {
@@ -1422,11 +1422,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-12-07T08:18:44+00:00"
+            "time": "2021-12-14T14:40:44+00:00"
         },
         {
             "name": "illuminate/events",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -1481,7 +1481,7 @@
         },
         {
             "name": "illuminate/filesystem",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/filesystem.git",
@@ -1543,16 +1543,16 @@
         },
         {
             "name": "illuminate/http",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/http.git",
-                "reference": "9750b34b7df8f5a3ef66328dc10a7a51e5d13f6c"
+                "reference": "8960cb26a7c43e9bcadfb29412c6ef762075c744"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/http/zipball/9750b34b7df8f5a3ef66328dc10a7a51e5d13f6c",
-                "reference": "9750b34b7df8f5a3ef66328dc10a7a51e5d13f6c",
+                "url": "https://api.github.com/repos/illuminate/http/zipball/8960cb26a7c43e9bcadfb29412c6ef762075c744",
+                "reference": "8960cb26a7c43e9bcadfb29412c6ef762075c744",
                 "shasum": ""
             },
             "require": {
@@ -1597,11 +1597,60 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-11-30T21:48:40+00:00"
+            "time": "2021-12-11T16:35:32+00:00"
+        },
+        {
+            "name": "illuminate/log",
+            "version": "v8.76.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/log.git",
+                "reference": "ac693c06fbc60ac344c55925d34aa811b85f1455"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/log/zipball/ac693c06fbc60ac344c55925d34aa811b85f1455",
+                "reference": "ac693c06fbc60ac344c55925d34aa811b85f1455",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.0",
+                "illuminate/support": "^8.0",
+                "monolog/monolog": "^2.0",
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Log\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Log package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2021-11-17T15:04:30+00:00"
         },
         {
             "name": "illuminate/macroable",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -1647,7 +1696,7 @@
         },
         {
             "name": "illuminate/pipeline",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pipeline.git",
@@ -1695,7 +1744,7 @@
         },
         {
             "name": "illuminate/session",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/session.git",
@@ -1751,16 +1800,16 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "f542bb78a8a1013ab33fbe14974c45b2a88993d0"
+                "reference": "f40e85d5b0dfd1714a29ccde128de4b8cfa1786f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/f542bb78a8a1013ab33fbe14974c45b2a88993d0",
-                "reference": "f542bb78a8a1013ab33fbe14974c45b2a88993d0",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/f40e85d5b0dfd1714a29ccde128de4b8cfa1786f",
+                "reference": "f40e85d5b0dfd1714a29ccde128de4b8cfa1786f",
                 "shasum": ""
             },
             "require": {
@@ -1815,11 +1864,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-12-03T15:33:45+00:00"
+            "time": "2021-12-13T15:09:28+00:00"
         },
         {
             "name": "illuminate/testing",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/testing.git",
@@ -1877,7 +1926,7 @@
         },
         {
             "name": "illuminate/translation",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/translation.git",
@@ -1929,16 +1978,16 @@
         },
         {
             "name": "illuminate/validation",
-            "version": "v8.75.0",
+            "version": "v8.76.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/validation.git",
-                "reference": "09dc9206918c341ffc567d4faa977f5ea6d29760"
+                "reference": "cf3dbf8f01b8edd151a223ab4a7e12ac62b9c112"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/validation/zipball/09dc9206918c341ffc567d4faa977f5ea6d29760",
-                "reference": "09dc9206918c341ffc567d4faa977f5ea6d29760",
+                "url": "https://api.github.com/repos/illuminate/validation/zipball/cf3dbf8f01b8edd151a223ab4a7e12ac62b9c112",
+                "reference": "cf3dbf8f01b8edd151a223ab4a7e12ac62b9c112",
                 "shasum": ""
             },
             "require": {
@@ -1985,7 +2034,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-11-30T14:13:40+00:00"
+            "time": "2021-12-14T14:38:22+00:00"
         },
         {
             "name": "jolicode/jolinotif",
@@ -2669,6 +2718,105 @@
                 "source": "https://github.com/m1/Env/tree/2.2.0"
             },
             "time": "2020-02-19T09:02:13+00:00"
+        },
+        {
+            "name": "monolog/monolog",
+            "version": "2.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "fd4380d6fc37626e2f799f29d91195040137eba9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fd4380d6fc37626e2f799f29d91195040137eba9",
+                "reference": "fd4380d6fc37626e2f799f29d91195040137eba9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr/log": "^1.0.1 || ^2.0 || ^3.0"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0.0 || 2.0.0 || 3.0.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^2.4.9 || ^3.0",
+                "doctrine/couchdb": "~1.0@dev",
+                "elasticsearch/elasticsearch": "^7",
+                "graylog2/gelf-php": "^1.4.2",
+                "mongodb/mongodb": "^1.8",
+                "php-amqplib/php-amqplib": "~2.4 || ^3",
+                "php-console/php-console": "^3.1.3",
+                "phpspec/prophecy": "^1.6.1",
+                "phpstan/phpstan": "^0.12.91",
+                "phpunit/phpunit": "^8.5",
+                "predis/predis": "^1.1",
+                "rollbar/rollbar": "^1.3",
+                "ruflin/elastica": ">=0.90@dev",
+                "swiftmailer/swiftmailer": "^5.3|^6.0"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "ext-openssl": "Required to send log messages using SSL",
+                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "php-console/php-console": "Allow sending log messages to Google Chrome",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Monolog\\": "src/Monolog"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "https://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/2.3.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-10-01T21:08:31+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -3761,67 +3909,6 @@
                 }
             ],
             "time": "2021-09-25T23:10:38+00:00"
-        },
-        {
-            "name": "spatie/data-transfer-object",
-            "version": "1.14.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/data-transfer-object.git",
-                "reference": "1d38761b13732ce9cddf358a552fdfd3eaac0efc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/data-transfer-object/zipball/1d38761b13732ce9cddf358a552fdfd3eaac0efc",
-                "reference": "1d38761b13732ce9cddf358a552fdfd3eaac0efc",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1|^8.0"
-            },
-            "require-dev": {
-                "larapack/dd": "^1.1",
-                "phpunit/phpunit": "^7.0|^9.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\DataTransferObject\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Brent Roose",
-                    "email": "brent@spatie.be",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Data transfer objects with batteries included",
-            "homepage": "https://github.com/spatie/data-transfer-object",
-            "keywords": [
-                "data-transfer-object",
-                "spatie"
-            ],
-            "support": {
-                "issues": "https://github.com/spatie/data-transfer-object/issues",
-                "source": "https://github.com/spatie/data-transfer-object/tree/1.14.0"
-            },
-            "funding": [
-                {
-                    "url": "https://spatie.be/open-source/support-us",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2021-08-31T06:13:17+00:00"
         },
         {
             "name": "symfony/config",
@@ -5998,16 +6085,16 @@
         },
         {
             "name": "titasgailius/terminal",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TitasGailius/terminal.git",
-                "reference": "33396b5128d8fb1ee108bb1b4ed64ba74c85c642"
+                "reference": "97e4ec277a64e4f6a0794715ebf1eebaedb2e71c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TitasGailius/terminal/zipball/33396b5128d8fb1ee108bb1b4ed64ba74c85c642",
-                "reference": "33396b5128d8fb1ee108bb1b4ed64ba74c85c642",
+                "url": "https://api.github.com/repos/TitasGailius/terminal/zipball/97e4ec277a64e4f6a0794715ebf1eebaedb2e71c",
+                "reference": "97e4ec277a64e4f6a0794715ebf1eebaedb2e71c",
                 "shasum": ""
             },
             "require": {
@@ -6047,7 +6134,7 @@
                 "issues": "https://github.com/TitasGailius/terminal/issues",
                 "source": "https://github.com/TitasGailius/terminal"
             },
-            "time": "2021-01-24T15:15:06+00:00"
+            "time": "2021-12-14T14:25:50+00:00"
         },
         {
             "name": "tmarois/filebase",
@@ -6108,16 +6195,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v5.4.0",
+            "version": "v5.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "d4394d044ed69a8f244f3445bcedf8a0d7fe2403"
+                "reference": "264dce589e7ce37a7ba99cb901eed8249fbec92f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/d4394d044ed69a8f244f3445bcedf8a0d7fe2403",
-                "reference": "d4394d044ed69a8f244f3445bcedf8a0d7fe2403",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/264dce589e7ce37a7ba99cb901eed8249fbec92f",
+                "reference": "264dce589e7ce37a7ba99cb901eed8249fbec92f",
                 "shasum": ""
             },
             "require": {
@@ -6155,11 +6242,13 @@
             "authors": [
                 {
                     "name": "Graham Campbell",
-                    "email": "hello@gjcampbell.co.uk"
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
                 },
                 {
                     "name": "Vance Lucas",
-                    "email": "vance@vancelucas.com"
+                    "email": "vance@vancelucas.com",
+                    "homepage": "https://github.com/vlucas"
                 }
             ],
             "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
@@ -6170,7 +6259,7 @@
             ],
             "support": {
                 "issues": "https://github.com/vlucas/phpdotenv/issues",
-                "source": "https://github.com/vlucas/phpdotenv/tree/v5.4.0"
+                "source": "https://github.com/vlucas/phpdotenv/tree/v5.4.1"
             },
             "funding": [
                 {
@@ -6182,7 +6271,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-10T01:08:39+00:00"
+            "time": "2021-12-12T23:22:04+00:00"
         },
         {
             "name": "voku/portable-ascii",
@@ -8745,7 +8834,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3|^8.0",
+        "php": "^7.3|^8.0|^8.1",
         "ext-json": "*",
         "ext-openssl": "*"
     },
