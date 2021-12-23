@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\LocalDocker;
 
@@ -9,13 +9,6 @@ use App\Exceptions\SystemExitException;
 use App\Recorders\ResultRecorder;
 use Illuminate\Support\Facades\Artisan;
 
-/**
- * Class MigrateDomainTest
- *
- * @runTestsInSeparateProcesses
- *
- * @package Tests\Feature\Commands\LocalDocker
- */
 class MigrateDomainTest extends LocalDockerCommand {
 
     private $wpCommand;

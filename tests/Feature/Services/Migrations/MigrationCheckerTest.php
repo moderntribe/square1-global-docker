@@ -9,8 +9,6 @@ use Tests\TestCase;
 
 /**
  * Migration Checker Test
- *
- * @runTestsInSeparateProcesses
  */
 final class MigrationCheckerTest extends TestCase {
 
