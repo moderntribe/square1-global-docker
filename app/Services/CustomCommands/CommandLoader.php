@@ -58,10 +58,8 @@ class CommandLoader {
                 // Parse the command signature
                 [ $name, $arguments, $options ] = Parser::parse( $command->signature );
 
-                $c = new ClosureCommand(
-                    $command->signature,
-                    function ( ...$parameters )
-                    use ( $command, $arguments, $options, $pipeline ) {
+                $c = new ClosureCommand( $command->signature,
+                    function ( ...$parameters ) use ( $command, $arguments, $options, $pipeline ) {
                         // The command is always the first item, remove it.
                         array_shift( $parameters );
 
