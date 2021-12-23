@@ -26,7 +26,7 @@ class ServiceCommandRunner extends CustomCommandRunner {
         $parameters = $command->args;
 
         foreach ( $command->options as $name => $value ) {
-            $parameters[] = '--' . $name . '=' . $value;
+            $parameters[] = sprintf( '--%s=%s', $name, $value );
         }
 
         $args = array_merge( $args, explode( ' ', $command->cmd ), $parameters );
