@@ -9,10 +9,17 @@ use App\Runners\CommandRunner;
 use App\Commands\LocalDocker\Share;
 use Illuminate\Support\Facades\Storage;
 
-class ShareTest extends LocalDockerCommand {
+final class ShareTest extends LocalDockerCommand {
 
-    protected $settings;
-    protected $runner;
+    /**
+     * @var Database
+     */
+    private $settings;
+
+    /**
+     * @var \App\Contracts\Runner
+     */
+    private $runner;
 
     protected function setUp(): void {
         parent::setUp();
@@ -205,7 +212,7 @@ class ShareTest extends LocalDockerCommand {
         $this->assertStringContainsString( 'Unable to write to .gitignore.', $tester->getDisplay() );
     }
 
-    public function test_it_bypass_git_ignore_functionality_when_it_already_exists() {
+    public function test_it_bypasses_git_ignore_functionality_when_it_already_exists() {
         Storage::disk( 'local' )->put( 'tests/share-test/.gitignore', '*.local.php' );
 
         $document = new Document( $this->settings );
@@ -238,7 +245,7 @@ class ShareTest extends LocalDockerCommand {
         $this->assertStringContainsString( '*.local.php', $contents );
     }
 
-    public function test_it_shows_error_if_custom_wp_content_folder() {
+    public function test_it_shows_error_if_custom_wp_content_folder_or_non_wordpress_project() {
         Storage::disk( 'local' )->makeDirectory( 'tests/share-test-custom-content-dir/content/mu-plugins' );
 
         $document = new Document( $this->settings );
@@ -253,7 +260,42 @@ class ShareTest extends LocalDockerCommand {
         $tester  = $this->runCommand( $command );
 
         $this->assertSame( 1, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'try "so share -c <directory-name>"', $tester->getDisplay() );
+        $this->assertStringContainsString( 'Does this project have a renamed wp-content folder?', $tester->getDisplay() );
+        $this->assertStringContainsString( 'Try "so share -c <directory-name>"', $tester->getDisplay() );
+        $this->assertStringContainsString( '"so share --not-wordpress"', $tester->getDisplay() );
+    }
+
+    public function test_it_bypasses_non_wordpress_projects() {
+        $document = new Document( $this->settings );
+        $document->ngrok_token = 'savedtoken';
+
+        $this->settings->shouldReceive( 'get' )->with( 'user_secrets' )->once()->andReturn( $document );
+
+        $this->config->shouldReceive( 'getProjectRoot' )->andReturn( storage_path( 'tests/share-test' ) );
+        $this->config->shouldReceive( 'getProjectDomain' )->andReturn( 'squareone.tribe' );
+
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'docker run --rm -it --net global_proxy --link tribe-proxy wernight/ngrok ngrok http --authtoken {{ $token }} -host-header={{ $domain }} tribe-proxy:443' )
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'with' )->with( [
+            'domain' => 'squareone.tribe',
+            'token'  => 'savedtoken',
+        ] )->andReturnSelf();
+
+        $this->runner->shouldReceive( 'tty' )->with( true )->andReturnSelf();
+
+        $this->runner->shouldReceive( 'throw' )->andReturnSelf();
+
+        $command = new Share( $this->settings );
+        $tester  = $this->runCommand( $command, [
+            '--not-wordpress' => true,
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+        $this->assertFileDoesNotExist( storage_path( 'tests/share-test/.gitignore' ) );
+        $this->assertStringNotContainsString( 'Your project is missing', $tester->getDisplay() );
+        $this->assertStringNotContainsString( 'Does this project have a renamed wp-content folder?', $tester->getDisplay() );
     }
 
 }

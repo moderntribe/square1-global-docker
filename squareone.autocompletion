@@ -25,8 +25,16 @@ _so()
 
         case "$com" in
 
+            _complete)
+            opts="${opts} --shell --input --current --symfony"
+            ;;
+
             bootstrap)
             opts="${opts} --multisite"
+            ;;
+
+            completion)
+            opts="${opts} --debug"
             ;;
 
             composer)
@@ -35,6 +43,10 @@ _so()
 
             create)
             opts="${opts} --remote --no-bootstrap"
+            ;;
+
+            docker)
+            opts="${opts} "
             ;;
 
             docker-compose)
@@ -66,7 +78,7 @@ _so()
             ;;
 
             share)
-            opts="${opts} --content-dir"
+            opts="${opts} --content-dir --not-wordpress"
             ;;
 
             shell)
@@ -167,7 +179,7 @@ _so()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="bootstrap composer create docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
+        coms="_complete bootstrap completion composer create docker docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"

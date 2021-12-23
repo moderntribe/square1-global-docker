@@ -1,6 +1,6 @@
 function __fish_so_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i bootstrap composer create docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish
+        if contains -- $i _complete bootstrap completion composer create docker docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish
             return 1
         end
     end
@@ -18,9 +18,12 @@ complete -c so -n '__fish_so_no_subcommand' -l no-interaction -d 'Do not ask any
 complete -c so -n '__fish_so_no_subcommand' -l env -d 'The environment the command should run under'
 
 # commands
+complete -c so -f -n '__fish_so_no_subcommand' -a _complete -d 'Internal command to provide shell completion suggestions'
 complete -c so -f -n '__fish_so_no_subcommand' -a bootstrap -d 'Bootstrap WordPress: Install core, create an admin user'
+complete -c so -f -n '__fish_so_no_subcommand' -a completion -d 'Dump the shell completion script'
 complete -c so -f -n '__fish_so_no_subcommand' -a composer -d 'Run a composer command in the local docker container'
 complete -c so -f -n '__fish_so_no_subcommand' -a create -d 'Create a new SquareOne project based off of the square-one framework'
+complete -c so -f -n '__fish_so_no_subcommand' -a docker -d 'Pass through for the docker binary'
 complete -c so -f -n '__fish_so_no_subcommand' -a docker-compose -d 'Pass through for docker-compose binary'
 complete -c so -f -n '__fish_so_no_subcommand' -a help -d 'Display help for a command'
 complete -c so -f -n '__fish_so_no_subcommand' -a list -d 'List commands'
@@ -32,7 +35,7 @@ complete -c so -f -n '__fish_so_no_subcommand' -a share -d 'Share your local pro
 complete -c so -f -n '__fish_so_no_subcommand' -a shell -d 'Gives you a bash shell into the php-fpm docker container'
 complete -c so -f -n '__fish_so_no_subcommand' -a start -d 'Starts your local SquareOne project, run anywhere in a project folder'
 complete -c so -f -n '__fish_so_no_subcommand' -a stop -d 'Stops your local SquareOne project, run anywhere in a project folder'
-complete -c so -f -n '__fish_so_no_subcommand' -a test -d 'Run codeception tests in the SquareOne local container'
+complete -c so -f -n '__fish_so_no_subcommand' -a test -d 'Run codeception tests in the SquareOne php container'
 complete -c so -f -n '__fish_so_no_subcommand' -a wp -d 'Run WP CLI commands in the SquareOne local container'
 complete -c so -f -n '__fish_so_no_subcommand' -a xdebug -d 'Enable/disable Xdebug in the php-fpm container to increase performance on MacOS'
 complete -c so -f -n '__fish_so_no_subcommand' -a config:compose-copy -d 'Copies the Global docker-compose.yml file to the local config folder for customization'
@@ -54,14 +57,25 @@ complete -c so -f -n '__fish_so_no_subcommand' -a vendor:publish -d 'Publish any
 
 # command options
 
+# _complete
+complete -c so -A -n '__fish_seen_subcommand_from _complete' -l shell -d 'The shell type ("bash")'
+complete -c so -A -n '__fish_seen_subcommand_from _complete' -l input -d 'An array of input tokens (e.g. COMP_WORDS or argv)'
+complete -c so -A -n '__fish_seen_subcommand_from _complete' -l current -d 'The index of the "input" array that the cursor is in (e.g. COMP_CWORD)'
+complete -c so -A -n '__fish_seen_subcommand_from _complete' -l symfony -d 'The version of the completion script'
+
 # bootstrap
 complete -c so -A -n '__fish_seen_subcommand_from bootstrap' -l multisite -d 'Bootstrap for a multisite project'
+
+# completion
+complete -c so -A -n '__fish_seen_subcommand_from completion' -l debug -d 'Tail the completion debug log'
 
 # composer
 
 # create
 complete -c so -A -n '__fish_seen_subcommand_from create' -l remote -d 'Sets a new git remote, e.g. https://github.com/moderntribe/$project/'
 complete -c so -A -n '__fish_seen_subcommand_from create' -l no-bootstrap -d 'Do not attempt to automatically configure the project'
+
+# docker
 
 # docker-compose
 
@@ -84,6 +98,7 @@ complete -c so -A -n '__fish_seen_subcommand_from list' -l short -d 'To skip des
 
 # share
 complete -c so -A -n '__fish_seen_subcommand_from share' -l content-dir -d 'The name of the wp-content directory, if renamed'
+complete -c so -A -n '__fish_seen_subcommand_from share' -l not-wordpress -d 'Attempt to share a non-WordPress project'
 
 # shell
 complete -c so -A -n '__fish_seen_subcommand_from shell' -l user -d 'The username or UID of the account to use'
