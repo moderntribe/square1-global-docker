@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\Self;
 
@@ -9,11 +9,7 @@ use App\Services\Update\Updater;
 use App\Commands\Self\SelfUpdate;
 use Tests\Feature\Commands\BaseCommandTester;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
-class SelfUpdateTest extends BaseCommandTester {
+final class SelfUpdateTest extends BaseCommandTester {
 
     public function testItWontRunWithoutaPhar() {
         $this->expectException( RuntimeException::class );

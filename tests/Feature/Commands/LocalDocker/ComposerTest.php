@@ -36,7 +36,6 @@ final class ComposerTest extends LocalDockerCommand {
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
     }
 
     public function test_it_runs_composer_command_with_proxy_version_option() {
@@ -66,7 +65,6 @@ final class ComposerTest extends LocalDockerCommand {
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
     }
 
     public function test_it_runs_composer_command_with_proxy_version_flag() {
@@ -96,7 +94,27 @@ final class ComposerTest extends LocalDockerCommand {
         ] );
 
         $this->assertSame( 0, $tester->getStatusCode() );
-        $this->assertStringContainsString( 'Done.', $tester->getDisplay() );
+    }
+
+    public function test_it_shows_error_message_if_the_project_is_not_running() {
+        $this->config->shouldReceive( 'getProjectName' )->andReturn( $this->project );
+        $this->config->shouldReceive( 'getDockerDir' )->andReturn( $this->dockerDir );
+
+        $this->container->shouldReceive( 'getId' )->once()->andReturn( '' );
+
+        $command = $this->app->make( Composer::class );
+
+        $tester = $this->runCommand( $command, [
+            'args' => [
+                ArgumentRewriter::FLAG_VERSION
+            ],
+        ] );
+
+        $this->assertSame( 1, $tester->getStatusCode() );
+        $this->assertStringContainsString(
+            'Unable to find container. Has this project been started?',
+            $tester->getDisplay()
+        );
     }
 
 }

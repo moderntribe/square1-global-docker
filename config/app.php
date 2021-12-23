@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 return [
 
@@ -57,6 +57,7 @@ return [
     'providers' => [
         PragmaRX\Yaml\Package\ServiceProvider::class,
         App\Providers\AppServiceProvider::class,
+        App\Providers\CustomCommandsServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class

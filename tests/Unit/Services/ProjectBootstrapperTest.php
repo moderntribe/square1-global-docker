@@ -153,6 +153,7 @@ class ProjectBootstrapperTest extends TestCase {
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -183,6 +184,7 @@ class ProjectBootstrapperTest extends TestCase {
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -195,6 +197,7 @@ class ProjectBootstrapperTest extends TestCase {
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */

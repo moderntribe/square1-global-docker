@@ -12,13 +12,6 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
 use Tests\TestCase;
 
-/**
- * Class MigrationTest
- *
- * @runTestsInSeparateProcesses
- *
- * @package Tests\Feature\Services\Migrations
- */
 final class MigrationTest extends TestCase {
 
     private $filesystem;
@@ -34,8 +27,7 @@ final class MigrationTest extends TestCase {
         Storage::disk( 'local' )->makeDirectory( 'tests/migrations' );
 
         $this->filesystem = new Filesystem();
-        $this->creator = $this->app->make( MigrationCreator::class );
-
+        $this->creator    = $this->app->make( MigrationCreator::class );
         $this->migrations = $this->getMigrations();
 
         $this->db = new Database( [
@@ -44,8 +36,7 @@ final class MigrationTest extends TestCase {
 
         Storage::disk( 'local' )->makeDirectory( 'tests/fakeroot' );
 
-        $this->checker = new MigrationChecker( new \Symfony\Component\Filesystem\Filesystem(), storage_path( 'tests/fakeroot' ) );
-
+        $this->checker  = new MigrationChecker( new \Symfony\Component\Filesystem\Filesystem(), storage_path( 'tests/fakeroot' ) );
         $this->migrator = new Migrator( $this->db, $this->filesystem, $this->app, $this->checker );
     }
 
@@ -65,6 +56,15 @@ final class MigrationTest extends TestCase {
         return $finder;
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @return void
+     */
     public function test_it_fails_to_run_a_bad_migration() {
         $name = 'bad_migration';
         $path = storage_path( 'tests/migrations' );

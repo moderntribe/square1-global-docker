@@ -193,15 +193,112 @@ You may be running a project using a non-standard domain, in which case you'll n
 ### Stop all running docker containers
 
 1. To stop just the global containers run `so global:stop`.
-1. To stop **all** running docker containers on your system, not just created from SquareOne, run `so global:stop-all`.
+2. To stop **all** running docker containers on your system, not just created from SquareOne, run `so global:stop-all`.
+
+### Custom Commands
+
+Projects often contain unique services and features. `so` allows developers to create custom commands on a per-project basis, extending `so`'s core commands that can run on the host computer or inside one of the project's docker service containers. 
+
+> All custom commands are prefixed with "project:", if a project has custom commands, cd into the project folder and run `so` and they will appear in the command list.
+
+#### Usage
+
+A custom command is added to a project's `squareone.yml` file, the configuration is as follows:
+
+> The "signature" for the command is a Laravel command signature, see the [docs](https://laravel.com/docs/8.x/artisan#defining-input-expectations) for examples. Arguments and options are then passed on to the command when its executed.
+
+```yaml
+commands:
+  listdir: # The command key
+    signature: 'listdir {file : The filename to output to} {--color=}' # The Laravel command signature. 
+    service: php-fpm # Optional: The docker compose service to run the command in. If left blank, runs on the host machine
+    description: Outputs a directory listing to a file # Appears in the output if you run "so" in the project folder
+    cmd: ls -al # The actual command that is run. The arguments and options from the signature above are passed to the end of this.
+    user: squareone # Optional: the user to run as in the container. You could pass "root" for more permissions.
+    tty: true # Optional: Allocate a pseudo-TTY, via docker exec
+    interactive: true # Optional: Keep STDIN open even if not attached, via docker exec
+    env: # Environment variables to pass to docker compose
+      VAR1: value1
+      VAR2: value2
+  # A second command
+  whoami:
+    signature: whoami
+    service: php-fpm
+    description: Shows which user I am in the FPM docker container
+    cmd: whoami
+  # More commands here...
+```
+
+#### Running a Sequence of Commands
+
+You can create a single `so` custom command to run a sequence of commands. If you specify the service, all commands will be run in that service, but if you leave it out, you can set the service as the yaml key on the command level.
+
+```yaml
+commands:
+    printenv:
+        signature: printenv
+        description: Displays environment variables from multiple locations
+        cmd: # Run a sequence of commands in different containers
+            - php-fpm: printenv # Runs in the php-fpm container
+            - php-tests: printenv # Runs in the php-tests container
+            - printenv # Runs on the host machine
+
+```
+Run `so project:printenv` in the project folder.
+
+#### Example Custom Commands
+
+**Index ElasticPress**
+
+If your project uses ElasticPress and you want to provide a simple way to fully re-index the data:
+
+```yaml
+commands:
+    index-es:
+        signature: index
+        service: php-fpm
+        description: Re-index ElasticPress
+        cmd: 'wp elasticpress index --setup'
+```
+Run `so project:index` in the project folder.
+
+**Create Pass Through Commands**
+
+Although this already exists in `so`, it's a good example of how you can create a pass through command to a docker service:
+
+```yaml
+commands:
+    wp:
+        signature: 'wp {args?* : arguments and options passed to wp}'
+        service: php-fpm
+        description: 'Runs a WP CLI command'
+        cmd: 'wp'
+```
+Run `so project:wp option get home` in the project folder.
+
+**Reload PHP in the FPM container**
+
+Reloads PHP inside the container. Note the user must be "root" to perform this action.
+
+```yaml
+commands:
+  reload:
+    signature: reload
+    service: php-fpm
+    user: root
+    cmd: 
+      - 'kill -USR2 1'
+      - 'echo PHP Reloaded!'
+```
+Run `so project:reload` in the project folder.
 
 ### Updating "so"
 
 This tool checks for updates automatically, however this is cached for some time.
 
 1. Check for an update (cached): `so self:update-check`.
-1. Check for an uncached update: `so self:update-check --force`.
-1. Update `so` to the latest version with: `so self:update`.
+2. Check for an uncached update: `so self:update-check --force`.
+3. Update `so` to the latest version with: `so self:update`.
 
 ### Add additional Top Level Domains (TLDs)
 

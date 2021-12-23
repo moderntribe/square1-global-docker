@@ -65,18 +65,18 @@ class MigrationCreator {
      *
      * @throws RuntimeException
      *
-     * @throws \ReflectionException
+     * @throws \ReflectionException|\Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function checkForExistingMigration( string $name, string $path ) {
 
-        foreach ( $this->filesystem->glob( "{$path}/*.php" ) as $file ) {
+        foreach ( $this->filesystem->glob( "$path/*.php" ) as $file ) {
             $this->filesystem->requireOnce( $file );
         }
 
         if ( class_exists( $className = $this->getClassName( $name ) ) ) {
             $class = new ReflectionClass( $className );
 
-            throw new RuntimeException( "{$class->getFileName()} already exists as class '{$className}'" );
+            throw new RuntimeException( "{$class->getFileName()} already exists as class '$className'" );
         }
     }
 
@@ -137,7 +137,7 @@ class MigrationCreator {
      *
      * @return string
      */
-    protected function getClassName( $name ): string {
+    protected function getClassName( string $name ): string {
         return Str::studly( $name );
     }
 
