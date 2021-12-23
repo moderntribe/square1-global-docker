@@ -37,7 +37,7 @@ jobs:
 
       # Github workflows/actions have no tty, the script command captures the output as a work around
       - name: PHPUnit Testing
-        run: script -e -c vendor/bin/phpunit
+        run: php vendor/bin/phpunit
 
       - name: Build
         run: php so app:build --build-version=0.0
