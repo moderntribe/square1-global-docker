@@ -33,7 +33,7 @@ jobs:
           coverage: pcov
 
       - name: Install Composer dependencies
-        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest --optimize-autoloader
+        run: composer install --prefer-stable --no-interaction --prefer-dist --no-suggest --optimize-autoloader
 
       # Github workflows/actions have no tty, the script command captures the output as a work around
       - name: PHPUnit Testing
