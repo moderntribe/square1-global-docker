@@ -2,10 +2,10 @@
 
 namespace App\Commands\LocalDocker;
 
-use Filebase\Database;
 use App\Contracts\File;
 use App\Contracts\Runner;
 use App\Services\Docker\Local\Config;
+use Filebase\Database;
 use Illuminate\Filesystem\Filesystem;
 
 /**
@@ -22,7 +22,8 @@ class Share extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'share {--c|content-dir=wp-content : The name of the wp-content directory, if renamed}';
+    protected $signature = 'share {--c|content-dir=wp-content : The name of the wp-content directory, if renamed}
+                           {--N|not-wordpress                 : Attempt to share a non-WordPress project}';
 
     /**
      * The description of the command.
@@ -76,28 +77,33 @@ class Share extends BaseLocalDocker {
             $settings->save();
         }
 
-        $this->checkGitIgnore( $file, $config->getProjectRoot() );
+        if ( ! $this->option( 'not-wordpress' ) ) {
 
-        $source  = storage_path( sprintf( 'wordpress/mu-plugins/%s', self::MU_PLUGIN ) );
-        $content = $filesystem->get( $source );
-        $target  = sprintf( '%s/%s', $config->getProjectRoot(),
-            sprintf( '%s/mu-plugins/%s',
-                basename( $this->option( 'content-dir' ) ),
-                self::MU_PLUGIN
-            )
-        );
+            $this->checkGitIgnore( $file, $config->getProjectRoot() );
 
-        $targetDir = dirname( $target );
-
-        if ( ! $filesystem->exists( $targetDir ) ) {
-            $this->error(
-                sprintf( 'The directory "%s" does not exist! Does this project have a renamed wp-content folder? try "so share -c <directory-name>"', $targetDir )
+            $source  = storage_path( sprintf( 'wordpress/mu-plugins/%s', self::MU_PLUGIN ) );
+            $content = $filesystem->get( $source );
+            $target  = sprintf( '%s/%s', $config->getProjectRoot(),
+                sprintf( '%s/mu-plugins/%s',
+                    basename( $this->option( 'content-dir' ) ),
+                    self::MU_PLUGIN
+                )
             );
 
-            return self::EXIT_ERROR;
-        }
+            $targetDir = dirname( $target );
 
-        $filesystem->replace( $target, $content );
+            if ( ! $filesystem->exists( $targetDir ) ) {
+                $this->error(
+                    sprintf( 'The directory "%s" does not exist! Does this project have a renamed wp-content folder?', $targetDir )
+                );
+
+                $this->warn( 'Try "so share -c <directory-name>" to specify your wp-content folder or "so share --not-wordpress" to try to share a non-WordPress project' );
+
+                return self::EXIT_ERROR;
+            }
+
+            $filesystem->replace( $target, $content );
+        }
 
         $runner->with( [
             'domain' => $config->getProjectDomain(),
@@ -106,7 +112,9 @@ class Share extends BaseLocalDocker {
                ->run( 'docker run --rm -it --net global_proxy --link tribe-proxy wernight/ngrok ngrok http --authtoken {{ $token }} -host-header={{ $domain }} tribe-proxy:443' )
                ->throw();
 
-        $filesystem->delete( $target );
+        if ( ! $this->option( 'not-wordpress' ) ) {
+            $filesystem->delete( $target );
+        }
 
         return self::EXIT_SUCCESS;
     }

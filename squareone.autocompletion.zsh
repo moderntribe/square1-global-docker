@@ -82,7 +82,7 @@ _so()
             ;;
 
             share)
-            opts+=("--content-dir:The name of the wp-content directory, if renamed")
+            opts+=("--content-dir:The name of the wp-content directory, if renamed" "--not-wordpress:Attempt to share a non-WordPress project")
             ;;
 
             shell)

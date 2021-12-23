@@ -78,7 +78,7 @@ _so()
             ;;
 
             share)
-            opts="${opts} --content-dir"
+            opts="${opts} --content-dir --not-wordpress"
             ;;
 
             shell)

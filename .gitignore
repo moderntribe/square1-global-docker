@@ -7,3 +7,4 @@
 /coverage
 .phpunit.result.cache
 /storage/tests
+/storage/logs/laravel.log

@@ -98,6 +98,7 @@ complete -c so -A -n '__fish_seen_subcommand_from list' -l short -d 'To skip des
 
 # share
 complete -c so -A -n '__fish_seen_subcommand_from share' -l content-dir -d 'The name of the wp-content directory, if renamed'
+complete -c so -A -n '__fish_seen_subcommand_from share' -l not-wordpress -d 'Attempt to share a non-WordPress project'
 
 # shell
 complete -c so -A -n '__fish_seen_subcommand_from shell' -l user -d 'The username or UID of the account to use'
