@@ -26,7 +26,7 @@ final class DockerTest extends BaseCommandTester {
     public function test_it_can_proxy_docker_commands() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
-                     ->with( "docker exec --tty php-fpm-container-id '/bin/bash'" )
+                     ->with( "docker exec -i --tty php-fpm-container-id '/bin/bash'" )
                      ->once()
                      ->andReturnSelf();
         $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
@@ -47,7 +47,7 @@ final class DockerTest extends BaseCommandTester {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( sprintf(
-                         "docker exec --tty php-fpm-container-id php %s",
+                         "docker exec -i --tty php-fpm-container-id php %s",
                          ArgumentRewriter::OPTION_VERSION )
                      )
                      ->once()
@@ -71,7 +71,7 @@ final class DockerTest extends BaseCommandTester {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( sprintf(
-                         "docker exec --tty php-fpm-container-id composer %s",
+                         "docker exec -i --tty php-fpm-container-id composer %s",
                          ArgumentRewriter::FLAG_VERSION )
                      )
                      ->once()
@@ -94,7 +94,7 @@ final class DockerTest extends BaseCommandTester {
     public function test_it_can_disable_tty() {
         $this->runner->shouldReceive( 'tty' )->with( false )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
-                     ->with( "docker exec php-fpm-container-id '/bin/bash'" )
+                     ->with( "docker exec -i php-fpm-container-id '/bin/bash'" )
                      ->once()
                      ->andReturnSelf();
         $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
@@ -113,7 +113,7 @@ final class DockerTest extends BaseCommandTester {
     public function test_it_returns_failed_exit_code_on_bad_command() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
-                     ->with( "docker exec --tty php-fpm-container-id '/bin/invalid-command'" )
+                     ->with( "docker exec -i --tty php-fpm-container-id '/bin/invalid-command'" )
                      ->once()
                      ->andReturnSelf();
         $this->runner->shouldReceive( 'ok' )->once()->andReturnFalse();
@@ -128,6 +128,48 @@ final class DockerTest extends BaseCommandTester {
         ] );
 
         $this->assertSame( 1, $tester->getStatusCode() );
+    }
+
+    public function test_it_does_not_add_duplicate_interactive_flags() {
+        $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( "docker exec --tty -i php-fpm-container-id '/bin/bash'" )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
+
+        $command = $this->app->make( Docker::class );
+
+        $tester = $this->runCommand( $command, [
+            'exec',
+            '--tty',
+            '-i',
+            'php-fpm-container-id',
+            '/bin/bash',
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
+    }
+
+    public function test_it_does_not_add_duplicate_interactive_options() {
+        $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->with( "docker exec --tty --interactive php-fpm-container-id '/bin/bash'" )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();
+
+        $command = $this->app->make( Docker::class );
+
+        $tester = $this->runCommand( $command, [
+            'exec',
+            '--tty',
+            '--interactive',
+            'php-fpm-container-id',
+            '/bin/bash',
+        ] );
+
+        $this->assertSame( 0, $tester->getStatusCode() );
     }
 
 }

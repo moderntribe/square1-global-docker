@@ -59,6 +59,11 @@ class Docker extends BaseCommand implements ArgumentRewriter {
             $tty = true;
         }
 
+        // Force all docker exec commands to be interactive so the user can provide input, if required
+        if ( str_contains( $command, 'exec' ) && ! str_contains( $command, ' -i ' ) && ! str_contains( $command, ' --interactive ' ) ) {
+            $command = str_replace( 'exec', 'exec -i', $command );
+        }
+
         $response = $runner->output( $this )
                            ->tty( $tty )
                            ->withEnvironmentVariables( [
@@ -69,11 +74,7 @@ class Docker extends BaseCommand implements ArgumentRewriter {
 
         $recorder->add( $response->process()->getOutput() );
 
-        if ( ! $response->ok() ) {
-            return self::EXIT_ERROR;
-        }
-
-        return self::EXIT_SUCCESS;
+        return $response->ok() ? self::SUCCESS : self::FAILURE;
     }
 
 }
