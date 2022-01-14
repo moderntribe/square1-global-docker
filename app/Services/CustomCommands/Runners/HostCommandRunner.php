@@ -8,6 +8,7 @@ use App\Services\CustomCommands\CommandDefinition;
 use App\Services\Docker\Container;
 use Closure;
 use Illuminate\Console\BufferedConsoleOutput;
+use Illuminate\Support\Arr;
 
 /**
  * Run a custom command on the host computer.
@@ -32,8 +33,12 @@ class HostCommandRunner extends CustomCommandRunner {
 
         $parameters = $command->args;
 
+        // Convert any of Laravel's input arrays into raw arguments/options
+        $parameters = Arr::flatten( $parameters );
+
+        // Add any Laravel command options that were passed
         foreach ( $command->options as $name => $value ) {
-            $parameters[] = '--' . $name . '=' . $value;
+            $parameters[] = sprintf( '--%s=%s', $name, $value );
         }
 
         $args = array_merge( [], explode( ' ', $command->cmd ), $parameters );
@@ -49,4 +54,5 @@ class HostCommandRunner extends CustomCommandRunner {
 
         return $next( $command );
     }
+
 }

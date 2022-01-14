@@ -23,9 +23,7 @@ final class HostCommandRunnerTest extends TestCase {
     public function test_it_executes_a_host_command() {
         $command            = new CommandDefinition();
         $command->signature = 'ls';
-        $command->args      = [ '-al' ];
-        $command->options   = [ 'color' => 'yes' ];
-        $command->cmd       = 'ls';
+        $command->cmd       = 'ls --color=yes';
 
         $this->runner->shouldReceive( 'throw' )
                      ->once()
@@ -35,7 +33,34 @@ final class HostCommandRunnerTest extends TestCase {
                      ->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->once()
-                     ->with( 'ls -al --color=yes' )
+                     ->with( 'ls --color=yes' )
+                     ->andReturnSelf();
+
+        $closure = function() {};
+        $hostRunner = $this->app->make( HostCommandRunner::class );
+        $hostRunner->run( $command, $closure );
+    }
+
+    public function test_it_executes_a_host_command_with_input_arrays_and_defaults() {
+        $command            = new CommandDefinition();
+        $command->signature = 'ls {args?*}';
+        $command->args      = [ 'args' => [
+            '-al',
+            '-t',
+            '--context',
+        ] ];
+        $command->options   = [];
+        $command->cmd       = 'ls -h --color=yes';
+
+        $this->runner->shouldReceive( 'throw' )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'output' )
+                     ->once()
+                     ->andReturnSelf();
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'ls -h --color=yes -al -t --context' )
                      ->andReturnSelf();
 
         $closure = function() {};
