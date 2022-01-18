@@ -3,7 +3,7 @@
 use App\Services\Migrations\Migration;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class UpdateGlobalCompose extends Migration {
+final class UpdateGlobalComposeHealthCheck extends Migration {
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem;

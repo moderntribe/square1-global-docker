@@ -7,8 +7,8 @@ services:
     cap_add:
       - NET_ADMIN
     ports:
-      - 53:53/udp
-      - 53:53/tcp
+      - '53:53/udp'
+      - '53:53/tcp'
     network_mode: bridge
   dns-internal:
     image: andyshinn/dnsmasq:latest
@@ -35,7 +35,7 @@ services:
     ports:
       - 3306:3306
     healthcheck:
-      test: mysqladmin ping -h mysql -u root --password=$$MYSQL_PASSWORD
+      test: mysqladmin ping -h mysql -u root --password=$$MYSQL_ROOT_PASSWORD
       timeout: ${TRIBE_HC_TIMEOUT:-60s}
       interval: ${TRIBE_HC_INTERVAL:-10s}
       retries: 60
