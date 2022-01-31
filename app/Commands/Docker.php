@@ -62,18 +62,12 @@ class Docker extends BaseCommand implements ArgumentRewriter {
     public function handle( Runner $runner, ResultRecorder $recorder ): int {
         $input = $this->factory->make( $this->input );
 
-        // Ensure executed commands are run by the host user
-        if ( ! $input->has( [ '--user' ] ) ) {
-            $user = $input->add( [
+        // Ensure "docker exec" commands contain a --user option
+        if ( $input->has( [ 'exec' ] ) && ! $input->has( [ '--user' ] ) ) {
+            $input->add( [
                 '--user',
                 sprintf( '%s:%s', Config::uid(), Config::gid() ),
             ], 'exec' );
-
-            if ( ! $user ) {
-                $this->error( 'Unable to assign user permissions to docker exec' );
-
-                return self::FAILURE;
-            }
         }
 
         $tty = false;
