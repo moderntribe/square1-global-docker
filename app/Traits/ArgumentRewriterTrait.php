@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Contracts\ArgumentRewriter;
+use App\Input\ParameterManager;
 
 /**
  * Symfony Console has hard coded --version and -V options,
@@ -36,19 +37,15 @@ trait ArgumentRewriterTrait {
     /**
      * Restore the original version options/flags.
      *
-     * @param  string  $command  The full command with all arguments/options.
+     * @param  \App\Input\ParameterManager  $input
      *
-     * @return string
+     * @return void
      */
-    protected function restoreVersionArguments( string $command ): string {
-        $args         = explode( ' ', $command );
-        $argument_map = array_flip( ArgumentRewriter::ARGUMENT_MAP );
-
-        $args = array_map( static function ( string $argument ) use ( $argument_map ) {
-            return $argument_map[ $argument ] ?? $argument;
-        }, $args );
-
-        return implode( ' ', $args );
+    protected function restoreVersionArguments( ParameterManager $input ): void {
+        $input->replaceMany( [
+            ArgumentRewriter::OPTION_VERSION_PROXY => ArgumentRewriter::OPTION_VERSION,
+            ArgumentRewriter::FLAG_VERSION_PROXY   => ArgumentRewriter::FLAG_VERSION,
+        ] );
     }
 
 }

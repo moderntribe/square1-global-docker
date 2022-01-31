@@ -147,7 +147,7 @@ final class DockerComposeTest extends BaseCommandTester {
     public function test_it_can_run_an_alternate_docker_compose_binary() {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
-                     ->with( "docker compose --project-name test --file '/tmp/docker compose.yml' up" )
+                     ->with( "docker compose --project-name test --file '/tmp/docker-compose.yml' up" )
                      ->once()
                      ->andReturnSelf();
         $this->runner->shouldReceive( 'ok' )->once()->andReturnTrue();

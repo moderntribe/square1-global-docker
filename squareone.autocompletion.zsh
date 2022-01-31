@@ -86,7 +86,7 @@ _so()
             ;;
 
             shell)
-            opts+=("--user:The username or UID of the account to use")
+            opts+=("--user:The user, uid or "user:group" to enter the shell as")
             ;;
 
             start)

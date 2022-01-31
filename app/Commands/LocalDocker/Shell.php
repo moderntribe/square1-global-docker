@@ -19,7 +19,7 @@ class Shell extends BaseLocalDocker {
      *
      * @var string
      */
-    protected $signature = 'shell {--user=squareone : The username or UID of the account to use}';
+    protected $signature = 'shell {--user=squareone : The user, uid or "user:group" to enter the shell as}';
 
     /**
      * The description of the command.

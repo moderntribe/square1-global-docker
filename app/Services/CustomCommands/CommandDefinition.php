@@ -46,7 +46,7 @@ class CommandDefinition extends FlexibleDataTransferObject {
      *
      * @var string
      */
-    public $user = 'squareone';
+    public $user = 'squareone:squareone';
 
     /**
      * Allocate a pseudo-TTY.

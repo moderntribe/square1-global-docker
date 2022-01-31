@@ -101,7 +101,7 @@ complete -c so -A -n '__fish_seen_subcommand_from share' -l content-dir -d 'The 
 complete -c so -A -n '__fish_seen_subcommand_from share' -l not-wordpress -d 'Attempt to share a non-WordPress project'
 
 # shell
-complete -c so -A -n '__fish_seen_subcommand_from shell' -l user -d 'The username or UID of the account to use'
+complete -c so -A -n '__fish_seen_subcommand_from shell' -l user -d 'The user, uid or "user:group" to enter the shell as'
 
 # start
 complete -c so -A -n '__fish_seen_subcommand_from start' -l browser -d 'Automatically open the project in your browser'
