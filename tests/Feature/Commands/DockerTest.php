@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 
 namespace Tests\Feature\Commands;
 
@@ -51,10 +51,10 @@ final class DockerTest extends BaseCommandTester {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( sprintf(
-                         "docker exec --interactive --user '%d:%d' --tty php-fpm-container-id php %s",
-                                $this->uid,
-                         $this->gid,
-                         ArgumentRewriter::OPTION_VERSION )
+                             "docker exec --interactive --user '%d:%d' --tty php-fpm-container-id php %s",
+                             $this->uid,
+                             $this->gid,
+                             ArgumentRewriter::OPTION_VERSION )
                      )
                      ->once()
                      ->andReturnSelf();
@@ -77,10 +77,10 @@ final class DockerTest extends BaseCommandTester {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( sprintf(
-                         "docker exec --interactive --user '%d:%d' --tty php-fpm-container-id composer %s",
-                         $this->uid,
-                         $this->gid,
-                         ArgumentRewriter::FLAG_VERSION )
+                             "docker exec --interactive --user '%d:%d' --tty php-fpm-container-id composer %s",
+                             $this->uid,
+                             $this->gid,
+                             ArgumentRewriter::FLAG_VERSION )
                      )
                      ->once()
                      ->andReturnSelf();
@@ -126,8 +126,8 @@ final class DockerTest extends BaseCommandTester {
         $this->runner->shouldReceive( 'tty' )->with( true )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( sprintf( "docker exec --interactive --user '%d:%d' --tty php-fpm-container-id '/bin/invalid-command'",
-                        $this->uid,
-                     $this->gid,
+                         $this->uid,
+                         $this->gid,
                      ) )
                      ->once()
                      ->andReturnSelf();
