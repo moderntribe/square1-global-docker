@@ -42,7 +42,9 @@ class ParameterManager {
      * @return string
      */
     public function command(): string {
-        return $this->parameters[ 'command' ] ?? $this->parameters[0];
+        $command = $this->parameters[ 'command' ] ?? $this->parameters[0];
+
+        return is_array( $command ) ? implode( ' ', $command ) : $command;
     }
 
     /**
