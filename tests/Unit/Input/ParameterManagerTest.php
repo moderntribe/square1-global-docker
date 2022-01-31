@@ -196,6 +196,11 @@ final class ParameterManagerTest extends TestCase {
             '-c',
             '"hey"',
         ], $manager->parameters() );
+
+        $this->assertSame(
+            "docker exec --user 'squareone:squareone' --tty --interactive -d containerId '/bin/bash' -c '\"hey\"'",
+            (string) $manager
+        );
     }
 
     public function test_it_replaces_a_value(): void {
