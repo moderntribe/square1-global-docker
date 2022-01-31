@@ -7,7 +7,7 @@ use App\Input\ParameterManager;
 use Symfony\Component\Console\Input\ArrayInput;
 use Tests\TestCase;
 
-class ParameterFactoryTest extends TestCase {
+final class ParameterFactoryTest extends TestCase {
 
     public function test_it_creates_parameter_manager_instance(): void {
         $factory = new ParameterFactory( $this->app );
