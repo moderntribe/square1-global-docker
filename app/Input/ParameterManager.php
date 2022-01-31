@@ -24,7 +24,7 @@ class ParameterManager {
      * @throws \ReflectionException
      */
     public function __construct( InputInterface $input ) {
-        $this->parameters = $this->rebuildInput( $input );
+        $this->parameters = $this->getParametersFromInput( $input );
     }
 
     /**
@@ -159,7 +159,7 @@ class ParameterManager {
      *
      * @return array
      */
-    protected function rebuildInput( InputInterface $input ): array {
+    protected function getParametersFromInput( InputInterface $input ): array {
         $arrayInput = new ReflectionObject( $input );
         $parameters = $arrayInput->getProperty( 'parameters' );
         $parameters->setAccessible( true );
