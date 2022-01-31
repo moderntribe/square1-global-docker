@@ -94,7 +94,6 @@ final class ParameterManagerTest extends TestCase {
         $this->assertTrue( $manager->has( [ 'docker' ] ) );
         $this->assertTrue( $manager->has( [ 'docker', 'exec' ] ) );
         $this->assertTrue( $manager->has( [ 'exec', 'docker' ] ) );
-        $this->assertTrue( $manager->has( [ 'exec', 'docker' ] ) );
         $this->assertTrue( $manager->has( [ 'docker', 'exec', '--user' ] ) );
         $this->assertTrue( $manager->has( [ 'squareone:squareone' ] ) );
         $this->assertTrue( $manager->has( [ '/bin/bash' ] ) );
