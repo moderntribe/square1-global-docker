@@ -8,6 +8,27 @@ use Tests\TestCase;
 
 final class ParameterManagerTest extends TestCase {
 
+    public function test_it_copies_parameters(): void {
+        $input = new ArrayInput( [
+            'docker',
+            'exec',
+            '-i',
+            'containerId',
+            '/bin/bash',
+        ] );
+
+        $manager = new ParameterManager( $input );
+
+        $this->assertSame( (string) $input, (string) $manager );
+        $this->assertSame( [
+            'docker',
+            'exec',
+            '-i',
+            'containerId',
+            '/bin/bash',
+        ], $manager->parameters() );
+    }
+
     public function test_it_replaces_a_symfony_command(): void {
         $manager = new ParameterManager( new ArrayInput( [
             'command' => 'hello-world',
@@ -31,27 +52,6 @@ final class ParameterManagerTest extends TestCase {
         ], $manager->parameters() );
 
         $this->assertSame( "hello there world --path '/some/place'", (string) $manager );
-    }
-
-    public function test_it_copies_parameters(): void {
-        $input = new ArrayInput( [
-            'docker',
-            'exec',
-            '-i',
-            'containerId',
-            '/bin/bash',
-        ] );
-
-        $manager = new ParameterManager( $input );
-
-        $this->assertSame( (string) $input, (string) $manager );
-        $this->assertSame( [
-            'docker',
-            'exec',
-            '-i',
-            'containerId',
-            '/bin/bash',
-        ], $manager->parameters() );
     }
 
     public function test_it_replaces_a_laravel_command(): void {
