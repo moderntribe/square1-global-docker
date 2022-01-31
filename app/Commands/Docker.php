@@ -66,7 +66,7 @@ class Docker extends BaseCommand implements ArgumentRewriter {
         if ( $input->has( [ 'exec' ] ) && ! $input->has( [ '--user' ] ) ) {
             $input->add( [
                 '--user',
-                sprintf( '%s:%s', Config::uid(), Config::gid() ),
+                sprintf( '%d:%d', Config::uid(), Config::gid() ),
             ], 'exec' );
         }
 
