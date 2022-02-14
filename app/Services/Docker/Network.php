@@ -43,8 +43,8 @@ class Network {
      * @return string|null
      */
     public function getGateWayIP(): ?string {
-        if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
-            return $this->getMacOSGatewayIP();
+        if ( OperatingSystem::MAC_OS === $this->os->getFamily() || $this->os->isWsl2() ) {
+            return $this->getHostDockerInternalIP();
         }
 
         return $this->getLinuxGatewayIP();
@@ -66,11 +66,11 @@ class Network {
     }
 
     /**
-     * Get the docker gateway IP address in Mac OS.
+     * Get the docker gateway IP address in macOS or Windows Subsystem for Linux.
      *
      * @return string The IP address.
      */
-    protected function getMacOSGatewayIP(): string {
+    protected function getHostDockerInternalIP(): string {
         $response = $this->runner->run( 'docker run --rm -t alpine:3.11.5 nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
                                  ->throw();
 

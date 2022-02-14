@@ -13,7 +13,7 @@ use App\Services\OperatingSystem;
  *
  * @package Tests\Unit\Services
  */
-class OperatingSystemTest extends TestCase {
+final class OperatingSystemTest extends TestCase {
 
     private $os;
 
@@ -77,6 +77,21 @@ class OperatingSystemTest extends TestCase {
         PHPMockery::mock( 'App\Services', 'shell_exec' )->with( 'lsb_release -is')->once()->andReturn( 'ManjaroLinux' );
 
         $this->assertSame( 'Manjaro', $this->os->getLinuxFlavor() );
+    }
+
+    public function test_non_windows_subsystem_missing_env_var() {
+        PHPMockery::mock( 'App\Services', 'getenv' )->andReturnFalse();
+        $this->assertFalse( $this->os->isWsl2() );
+    }
+
+    public function test_non_windows_subsystem_empty_env_var() {
+        PHPMockery::mock( 'App\Services', 'getenv' )->andReturn( '' );
+        $this->assertFalse( $this->os->isWsl2() );
+    }
+
+    public function test_windows_subsystem() {
+        PHPMockery::mock( 'App\Services', 'getenv' )->andReturn( 'Ubuntu-20.04' );
+        $this->assertTrue( $this->os->isWsl2() );
     }
 
     public function test_unknown_operating_system() {

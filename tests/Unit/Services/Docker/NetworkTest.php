@@ -6,12 +6,18 @@ use Mockery;
 use App\Runners\CommandRunner;
 use App\Services\Docker\Network;
 use App\Services\OperatingSystem;
-use Mockery\Mock;
 use Tests\TestCase;
 
-class NetworkTest extends TestCase {
+final class NetworkTest extends TestCase {
 
+    /**
+     * @var CommandRunner
+     */
     private $runner;
+
+    /**
+     * @var OperatingSystem
+     */
     private $os;
 
     protected function setUp(): void {
@@ -23,6 +29,7 @@ class NetworkTest extends TestCase {
 
     public function test_it_gets_docker_ip_on_linux() {
         $this->os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
+        $this->os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
         $this->runner->shouldReceive( 'run' )
                      ->with( 'docker network inspect bridge' )
@@ -44,6 +51,7 @@ class NetworkTest extends TestCase {
 
     public function test_it_gets_docker_ip_on_osx() {
         $this->os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::MAC_OS );
+        $this->os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
         $this->runner->shouldReceive( 'run' )
                      ->with( 'docker run --rm -t alpine:3.11.5 nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
@@ -65,9 +73,10 @@ class NetworkTest extends TestCase {
         $this->assertEquals( '172.1.20.0', $ip );
     }
 
-    public function testItCanGetTheDockerGatewayIpInLinux() {
+    public function test_it_gets_docker_gateway_ip_on_linux() {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
+        $os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
         $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
         $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getLinuxGatewayIP' )->once()->andReturn( '172.1.20.0' );
@@ -75,12 +84,24 @@ class NetworkTest extends TestCase {
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
     }
 
-    public function testItCanGetTheDockerGatewayIpInMacOs() {
+    public function test_it_gets_host_docker_internal_ip_on_osx() {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::MAC_OS );
+        $os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
         $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
-        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getMacOSGatewayIP' )->once()->andReturn( '172.1.20.0' );
+        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getHostDockerInternalIP' )->once()->andReturn( '172.1.20.0' );
+
+        $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
+    }
+
+    public function test_it_gets_host_docker_internal_ip_in_windows_subsystem() {
+        $os = $this->partialMock( OperatingSystem::class );
+        $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
+        $os->shouldReceive( 'isWsl2' )->andReturnTrue();
+
+        $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
+        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getHostDockerInternalIP' )->once()->andReturn( '172.1.20.0' );
 
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
     }
@@ -90,7 +111,7 @@ class NetworkTest extends TestCase {
      *
      * @return string
      */
-    protected function getDockerNetworkInspectOutput() {
+    protected function getDockerNetworkInspectOutput(): string {
         return '[
     {
         "Name": "bridge",
