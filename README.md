@@ -1,7 +1,7 @@
 # SquareOne Docker
 
-> SquareOne Docker is a command line application that provides a local docker based development environment for projects 
-> based on the [SquareOne](https://github.com/moderntribe/square-one) framework. This is an internal Modern Tribe project, 
+> SquareOne Docker is a command line application that provides a local docker based development environment for projects
+> based on the [SquareOne](https://github.com/moderntribe/square-one) framework. This is an internal Modern Tribe project,
 > while you may use it, it's heavily based on our internal tools and workflow and many features will not work out of the box.
 
 Status: **Stable**
@@ -42,9 +42,11 @@ The following ports should be available:
 
 - [x] MacOS
 - [x] Linux (Debian, Arch, openSUSE or RedHat based distros with systemd)
-- [ ] Windows (Works on WSL2, but without DNS) ¯\_(ツ)_/¯
+- [x] Windows 10+ (Using Windows Subsystem for Linux 2)
 
 ### Installation
+
+> **Windows Users:** Follow [these instructions](docs/windows.md)
 
 Copy the following in your terminal:
 
@@ -52,6 +54,7 @@ Copy the following in your terminal:
 
 <sup>Note for macOS users: This script will install brew and all the requirements listed above.</sup>  
 <sup>Note for Debian users: This script will install and configure all the required packages.</sup>
+
 
 ### Usage
 
@@ -87,8 +90,8 @@ Stopping projects not in use will free up computer resources.
 
 1. cd into a directory where you'd like to create your new SquareOne project
 2. Run `so create` or `so create my-project --remote=https://github.com/moderntribe/my-project/` to automatically set
-the project name/directory and git remote.
-3. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project. 
+   the project name/directory and git remote.
+3. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project.
 
 ### Bootstrap a project
 
@@ -117,12 +120,12 @@ For existing projects where you don't have a local database yet.
 ### Run a WP CLI command in the php-fpm container
 
 1. cd anywhere in your SquareOne project.
-1. Run `so wp -- <wp cli arguments here>`, e.g to run `wp option get active_plugins --format=json` run 
-`so wp -- option get active_plugins --format=json`.
+1. Run `so wp -- <wp cli arguments here>`, e.g to run `wp option get active_plugins --format=json` run
+   `so wp -- option get active_plugins --format=json`.
 1. To enable xdebug to debug a CLI command, run `so wp -x -- option get active_plugins --format=json`. **Note:** ensure
-you set a breakpoint in your IDE, otherwise the `so` CLI tool may be debugged itself.
+   you set a breakpoint in your IDE, otherwise the `so` CLI tool may be debugged itself.
 1. Alternatively, you can run `so shell` and then cd `/application/www` and run WP CLI commands directly in the container
-without using `so`.
+   without using `so`.
 
 ### Run a composer command in the php-fpm container
 
@@ -180,7 +183,7 @@ You may be running a project using a non-standard domain, in which case you'll n
 ### Launch phpMyAdmin
 
 1. Run `so global:myadmin` and phpMyAdmin will be launched in your default browser.
-1. Log in with `root` and `password` to gain access to all of your MariaDB databases. 
+1. Log in with `root` and `password` to gain access to all of your MariaDB databases.
 
 ### View all running docker containers
 
@@ -197,7 +200,7 @@ You may be running a project using a non-standard domain, in which case you'll n
 
 ### Custom Commands
 
-Projects often contain unique services and features. `so` allows developers to create custom commands on a per-project basis, extending `so`'s core commands that can run on the host computer or inside one of the project's docker service containers. 
+Projects often contain unique services and features. `so` allows developers to create custom commands on a per-project basis, extending `so`'s core commands that can run on the host computer or inside one of the project's docker service containers.
 
 > All custom commands are prefixed with "project:", if a project has custom commands, cd into the project folder and run `so` and they will appear in the command list.
 
@@ -209,24 +212,24 @@ A custom command is added to a project's `squareone.yml` file, the configuration
 
 ```yaml
 commands:
-  listdir: # The command key
-    signature: 'listdir {file : The filename to output to} {--color=}' # The Laravel command signature. 
-    service: php-fpm # Optional: The docker compose service to run the command in. If left blank, runs on the host machine
-    description: Outputs a directory listing to a file # Appears in the output if you run "so" in the project folder
-    cmd: ls -al # The actual command that is run. The arguments and options from the signature above are passed to the end of this.
-    user: squareone # Optional: the user to run as in the container. You could pass "root" for more permissions.
-    tty: true # Optional: Allocate a pseudo-TTY, via docker exec
-    interactive: true # Optional: Keep STDIN open even if not attached, via docker exec
-    env: # Environment variables to pass to docker compose
-      VAR1: value1
-      VAR2: value2
-  # A second command
-  whoami:
-    signature: whoami
-    service: php-fpm
-    description: Shows which user I am in the FPM docker container
-    cmd: whoami
-  # More commands here...
+    listdir: # The command key
+        signature: 'listdir {file : The filename to output to} {--color=}' # The Laravel command signature. 
+        service: php-fpm # Optional: The docker compose service to run the command in. If left blank, runs on the host machine
+        description: Outputs a directory listing to a file # Appears in the output if you run "so" in the project folder
+        cmd: ls -al # The actual command that is run. The arguments and options from the signature above are passed to the end of this.
+        user: squareone # Optional: the user to run as in the container. You could pass "root" for more permissions.
+        tty: true # Optional: Allocate a pseudo-TTY, via docker exec
+        interactive: true # Optional: Keep STDIN open even if not attached, via docker exec
+        env: # Environment variables to pass to docker compose
+            VAR1: value1
+            VAR2: value2
+    # A second command
+    whoami:
+        signature: whoami
+        service: php-fpm
+        description: Shows which user I am in the FPM docker container
+        cmd: whoami
+    # More commands here...
 ```
 
 #### Running a Sequence of Commands
@@ -282,13 +285,13 @@ Reloads PHP inside the container. Note the user must be "root" to perform this a
 
 ```yaml
 commands:
-  reload:
-    signature: reload
-    service: php-fpm
-    user: root
-    cmd: 
-      - 'kill -USR2 1'
-      - 'echo PHP Reloaded!'
+    reload:
+        signature: reload
+        service: php-fpm
+        user: root
+        cmd:
+            - 'kill -USR2 1'
+            - 'echo PHP Reloaded!'
 ```
 Run `so project:reload` in the project folder.
 
