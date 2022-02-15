@@ -27,7 +27,7 @@ final class NetworkTest extends TestCase {
         $this->os     = $this->mock( OperatingSystem::class );
     }
 
-    public function test_it_gets_docker_ip_on_linux() {
+    public function test_it_gets_docker_ip_on_linux(): void {
         $this->os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
         $this->os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
@@ -49,7 +49,7 @@ final class NetworkTest extends TestCase {
         $this->assertEquals( '172.17.0.1', $ip );
     }
 
-    public function test_it_gets_docker_ip_on_osx() {
+    public function test_it_gets_docker_ip_on_osx(): void {
         $this->os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::MAC_OS );
         $this->os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
@@ -73,7 +73,7 @@ final class NetworkTest extends TestCase {
         $this->assertEquals( '172.1.20.0', $ip );
     }
 
-    public function test_it_gets_docker_gateway_ip_on_linux() {
+    public function test_it_gets_docker_gateway_ip_on_linux(): void {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
         $os->shouldReceive( 'isWsl2' )->andReturnFalse();
@@ -84,7 +84,7 @@ final class NetworkTest extends TestCase {
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
     }
 
-    public function test_it_gets_host_docker_internal_ip_on_osx() {
+    public function test_it_gets_host_docker_internal_ip_on_osx(): void {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::MAC_OS );
         $os->shouldReceive( 'isWsl2' )->andReturnFalse();
@@ -95,7 +95,7 @@ final class NetworkTest extends TestCase {
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
     }
 
-    public function test_it_gets_host_docker_internal_ip_in_windows_subsystem() {
+    public function test_it_gets_host_docker_internal_ip_in_windows_subsystem(): void {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
         $os->shouldReceive( 'isWsl2' )->andReturnTrue();
