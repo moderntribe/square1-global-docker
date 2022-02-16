@@ -8,6 +8,7 @@ use App\Factories\ParameterFactory;
 use App\Recorders\ResultRecorder;
 use App\Services\Docker\Local\Config;
 use App\Services\Docker\Network;
+use App\Services\PermissionManager;
 use App\Traits\ArgumentRewriterTrait;
 
 /**
@@ -66,13 +67,14 @@ class DockerCompose extends BaseCommand implements ArgumentRewriter {
     /**
      * Execute the console command.
      *
-     * @param  \App\Contracts\Runner          $runner    The command runner.
-     * @param  \App\Services\Docker\Network   $network   The network manager.
-     * @param  \App\Recorders\ResultRecorder  $recorder  The command result recorder.
+     * @param  \App\Contracts\Runner            $runner    The command runner.
+     * @param  \App\Services\Docker\Network     $network   The network manager.
+     * @param  \App\Recorders\ResultRecorder    $recorder  The command result recorder.
+     * @param  \App\Services\PermissionManager  $permission The permission manager.
      *
      * @return int
      */
-    public function handle( Runner $runner, Network $network, ResultRecorder $recorder ): int {
+    public function handle( Runner $runner, Network $network, ResultRecorder $recorder, PermissionManager $permission ): int {
         $input = $this->factory->make( $this->input );
 
         // Replace version options and flags
@@ -95,8 +97,8 @@ class DockerCompose extends BaseCommand implements ArgumentRewriter {
         $response = $runner->output( $this )
                            ->tty( $tty )
                            ->withEnvironmentVariables( [
-                               Config::ENV_UID => Config::uid(),
-                               Config::ENV_GID => Config::gid(),
+                               Config::ENV_UID => $permission->uid(),
+                               Config::ENV_GID => $permission->gid(),
                                'HOSTIP'        => $network->getGateWayIP(),
                            ] )
                            ->run( $command );

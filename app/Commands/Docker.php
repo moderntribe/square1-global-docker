@@ -6,7 +6,7 @@ use App\Contracts\ArgumentRewriter;
 use App\Contracts\Runner;
 use App\Factories\ParameterFactory;
 use App\Recorders\ResultRecorder;
-use App\Services\Docker\Local\Config;
+use App\Services\PermissionManager;
 use App\Traits\ArgumentRewriterTrait;
 
 /**
@@ -54,19 +54,20 @@ class Docker extends BaseCommand implements ArgumentRewriter {
     /**
      * Execute the console command.
      *
-     * @param  \App\Contracts\Runner          $runner    The command runner.
-     * @param  \App\Recorders\ResultRecorder  $recorder  The command result recorder.
+     * @param  \App\Contracts\Runner            $runner    The command runner.
+     * @param  \App\Recorders\ResultRecorder    $recorder  The command result recorder.
+     * @param  \App\Services\PermissionManager  $permission The permission manager.
      *
      * @return int
      */
-    public function handle( Runner $runner, ResultRecorder $recorder ): int {
+    public function handle( Runner $runner, ResultRecorder $recorder, PermissionManager $permission ): int {
         $input = $this->factory->make( $this->input );
 
         // Ensure "docker exec" commands contain a --user option
         if ( $input->has( [ 'exec' ] ) && ! $input->has( [ '--user' ] ) ) {
             $input->add( [
                 '--user',
-                sprintf( '%d:%d', Config::uid(), Config::gid() ),
+                sprintf( '%d:%d', $permission->uid(), $permission->gid() ),
             ], 'exec' );
         }
 
