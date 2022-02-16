@@ -51,6 +51,10 @@ enable_autocomplete() {
   fi
 }
 
+is_wsl() {
+    [ -n "${WSL_DISTRO_NAME}" ]
+}
+
 install_phar() {
   PHAR_DOWNLOAD=$(curl -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
         | grep browser_download_url \
@@ -167,6 +171,13 @@ if [[ -x "$(command -v apt-get)" ]]; then
     sudo systemctl disable systemd-resolved
     sudo systemctl stop systemd-resolved
     sudo rm -rf /etc/resolv.conf
+
+    # Windows Subsystem
+    if is_wsl; then
+        echo "* Detected Windows Subsystem, installing custom /etc/wsl.conf..."
+        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/wsl.conf -o /etc/wsl.conf
+    fi
+
     echo "* Generating a new /etc/resolv.conf..."
     sudo resolvconf -u
 
@@ -198,10 +209,14 @@ echo ""
 echo "************************************"
 echo "If everything went smoothly, you should see the '${BIN_NAME}' command list above. Reboot to properly complete installation."
 echo "************************************"
-echo "* Reboot now to complete the installation [y/n]?"
-read -r CHOICE
-if [[ ${CHOICE} == y* ]]; then
-    sudo reboot
+if is_wsl; then
+    echo "* Start a new powershell in Widows and run: wsl --shutdown and then wsl to restart the VM."
 else
-    echo "* Done! Make sure you reboot to complete the installation."
+    echo "* Reboot now to complete the installation [y/n]?"
+    read -r CHOICE
+    if [[ ${CHOICE} == y* ]]; then
+        sudo reboot
+    else
+        echo "* Done! Make sure you reboot to complete the installation."
+    fi
 fi
