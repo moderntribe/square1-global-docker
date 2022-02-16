@@ -11,3 +11,4 @@ php-cli
 php-curl
 php-xml
 php-zip
+xdg-utils
