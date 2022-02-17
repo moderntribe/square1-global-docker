@@ -1,0 +1,42 @@
+name: Release Phar
+
+on: release
+
+jobs:
+  build-and-release-phar:
+    name: Build and attach so.phar to the release
+    runs-on: ubuntu-latest
+
+    env:
+      PHAR_NAME: so.phar
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # Currently, phars built with 8.1 still work on 7.3+
+          php-version: '8.1'
+          tools: composer:v2
+          coverage: none
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install optimized composer dependencies
+        run: composer install --no-dev -no-progress --no-suggest --classmap-authoritative
+
+      - name: Build phar
+        run: php so app:build ${{ env.PHAR_NAME }} --build-version=${{ github.ref_name }}
+
+      - name: Version check
+        run: php builds/${{ env.PHAR_NAME }} --version
+
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@v0.1.1
+        with:
+          args: builds/${{ env.PHAR_NAME }} application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
