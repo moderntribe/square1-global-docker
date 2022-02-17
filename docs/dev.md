@@ -1,6 +1,6 @@
 # Development / Contributing
 
-Hey there! It's great you want to help out! This tool is built on [Laravel Zero](https://laravel-zero.com/docs/introduction/) so 
+Hey there! It's great you want to help out! This tool is built on [Laravel Zero](https://laravel-zero.com/docs/introduction/), so 
 it would be best to start with their documentation.
 
 ### Prerequisites
@@ -46,9 +46,8 @@ so you can see which code is missing tests.
 ### Releasing a new version
 
 - Update the version in the [app.php](../config/app.php) file.
-- Run `composer build` to package a phar to the [builds](../builds) directory.
-- Create a new release/tag on GitHub and attach the generated `./builds/so.phar` in the binaries box in the 
-[GitHub UI](https://docs.github.com/assets/images/help/releases/releases_adding_binary.gif).
+- Run `composer build` to package a phar to the [builds](../builds) directory, commit any changes made to the autocompletion files and push those up.
+- [Create a new release on GitHub](https://github.com/moderntribe/square1-global-docker/releases/new) and the Release Phar GitHub action will automatically build the phar and attach it to the release.
 
 ### Configuration
 
@@ -66,4 +65,4 @@ There are a few options to override the configuration options.
 Run `so config:copy-compose` to save the latest `docker-compose.yml` to  `~/.config/squareone/global/docker-compose.override.yml` for customization.
 
 > Note: The original docker-compose.yml will always load first, only change what you need
-> in the override and delete the rest so you continue to get important updates.
+> in the override and delete the rest, so you continue to get important updates.
