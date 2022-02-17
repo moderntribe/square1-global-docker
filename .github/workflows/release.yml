@@ -25,7 +25,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install optimized composer dependencies
-        run: composer install --no-dev -no-progress --no-suggest --classmap-authoritative
+        run: |
+          composer install --no-progress --no-suggest --classmap-authoritative
+          composer dump-autoload --no-dev --classmap-authoritative
 
       - name: Build phar
         run: php so app:build ${{ env.PHAR_NAME }} --build-version=${{ github.ref_name }}
