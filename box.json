@@ -1,17 +1,12 @@
 {
-    "directories": [
-        "app",
-        "bootstrap",
-        "config",
-        "storage",
-        "vendor"
-    ],
     "files": [
         "composer.json"
     ],
     "finder": [
         {
+            "notName": "/README|.*\\.md|LICENSE|.*\\.md|phpunit5|.*\\.xml|.*\\.neon|.*\\.dist|Makefile|composer\\.json|composer\\.lock/",
             "exclude": [
+                "bin",
                 "docs",
                 "bamarni",
                 "behat",
@@ -33,10 +28,27 @@
                 "Tests",
                 "Tester",
                 "theseer",
-                "webmozart",
-                "vendor/nunomaduro/collision/src/Adapters/Laravel/Commands/TestCommand.php"
+                "webmozart"
             ],
             "in": "vendor"
+        },
+        {
+            "exclude": [
+                "tests"
+            ],
+            "in": "config"
+        },
+        {
+            "exclude": [
+                "logs"
+            ],
+            "in": "storage"
+        },
+        {
+            "in": "app"
+        },
+        {
+            "in": "bootstrap"
         }
     ],
     "php-scoper": null,
