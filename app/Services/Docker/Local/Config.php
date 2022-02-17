@@ -13,10 +13,8 @@ use RuntimeException;
  */
 class Config {
 
-    public const ENV_UID     = 'SQ1_UID';
-    public const ENV_GID     = 'SQ1_GID';
-    public const DEFAULT_UID = 1000;
-    public const DEFAULT_GID = 1000;
+    public const ENV_UID = 'SQ1_UID';
+    public const ENV_GID = 'SQ1_GID';
 
     /**
      * The command runner.
@@ -51,26 +49,8 @@ class Config {
      * @param  \Illuminate\Config\Repository  $config
      */
     public function __construct( Runner $runner, Repository $config ) {
-        $this->runner  = $runner;
+        $this->runner = $runner;
         $this->config = $config;
-    }
-
-    /**
-     * The user's user ID.
-     *
-     * @return int
-     */
-    public static function uid(): int {
-        return getmyuid() ?: self::DEFAULT_UID;
-    }
-
-    /**
-     * The user's group ID.
-     *
-     * @return int
-     */
-    public static function gid(): int {
-        return getmygid() ?: self::DEFAULT_GID;
     }
 
     /**
