@@ -39,7 +39,7 @@ We're going to configure the Ubuntu VM with the proper packages and install the 
 1. Launch Windows Terminal.
 2. Run `wsl` to start the VM and create your username and password when asked.
 3. Copy the installation command from the main [README](../README.md#installation) and paste it into the terminal window.
-4. Once the installation complete, open a new Windows Terminal tab and restart the VM by running: `wsl --shutdown` and then `wsl` to start it back up again.
+4. Once the installation is complete, open a new Windows Terminal tab and restart the VM by running: `wsl --shutdown` and then `wsl` to start it back up again.
 5. Once back inside the VM shell, run the following to create a projects folder in your home directory and clone the SquareOne framework: `mkdir ~/projects; cd ~/projects; git clone https://github.com/moderntribe/square-one/ && cd square-one`
 6. Start the project to download docker containers and generate SSL certificates: `so start`. Watch carefully for any errors, if everything goes smoothly, continue to the next section.
 
