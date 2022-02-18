@@ -14,7 +14,8 @@ class OperatingSystem {
     /**
      * @see http://0pointer.de/blog/projects/os-release
      */
-    public const OS_RELEASE = '/etc/os-release';
+    public const OS_RELEASE  = '/etc/os-release';
+    public const WSL_ENV_VAR = 'WSL_DISTRO_NAME';
 
     public const MAC_OS  = 'Darwin';
     public const LINUX   = 'Linux';
@@ -60,6 +61,15 @@ class OperatingSystem {
         } );
 
         return (string) current( $flavor );
+    }
+
+    /**
+     * Whether this is running in a Windows Subsystem VM.
+     *
+     * @return bool
+     */
+    public function isWsl2(): bool {
+        return ! empty( getenv( self::WSL_ENV_VAR ) );
     }
 
     /**
