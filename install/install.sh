@@ -179,13 +179,14 @@ if [[ -x "$(command -v apt-get)" ]]; then
     if is_wsl; then
         echo "* Detected Windows Subsystem..."
         echo "* Allowing the docker service to be started by all users. Editing /etc/sudoers"
-        echo '%sudo ALL=(ALL) NOPASSWD: /usr/sbin/service docker start' | sudo tee -a /etc/sudoers
+        echo "%sudo ALL=(ALL) NOPASSWD: /usr/sbin/service docker start" | sudo tee -a /etc/sudoers
         
-        echo '* Adding docker start up commands to ~/.bashrc. Copy this over if you change shells'
-        echo '# Start docker service if not running' >> ~/.bashrc
-        echo 'DOCKER_RUNNING=`ps aux | grep dockerd | grep -v grep`' >> ~/.bashrc
-        echo '  sudo service docker start' >> ~/.bashrc
-        echo 'fi' >> ~/.bashrc
+        echo "* Adding docker start up commands to ~/.bashrc. Copy this over if you change shells"
+        echo "# Start docker service if not running" >> ~/.bashrc
+        echo "DOCKER_RUNNING=`ps aux | grep dockerd | grep -v grep`" >> ~/.bashrc
+        echo 'if [ -z "$DOCKER_RUNNING" ]; then' >> ~/.bashrc
+        echo "  sudo service docker start" >> ~/.bashrc
+        echo "fi" >> ~/.bashrc
         
         echo "* Disabling Windows DNS via custom /etc/wsl.conf..."
         sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/wsl.conf -o /etc/wsl.conf
