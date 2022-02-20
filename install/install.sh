@@ -47,7 +47,9 @@ enable_autocomplete() {
     curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.zsh' -o ~/."${AUTOCOMPLETE_ZSH}" && echo "source ~/.${AUTOCOMPLETE_ZSH}" >> ~/.zshrc
   else
     sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/"${AUTOCOMPLETE_BASH}"
-    curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.fish' -o ~/.config/fish/completions/"${AUTOCOMPLETE_FISH}"
+    if [[ -d "~/.config/fish/completions" ]] ; then
+        curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.fish' -o ~/.config/fish/completions/"${AUTOCOMPLETE_FISH}"
+    fi
   fi
 }
 
