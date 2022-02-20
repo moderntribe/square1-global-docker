@@ -164,18 +164,32 @@ if [[ -x "$(command -v apt-get)" ]]; then
     sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/resolv.conf.head -o /etc/resolv.conf.head
 
     echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
-    sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
+    if [[ -f "/etc/NetworkManager/NetworkManager.conf" ]]; then
+        sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
+    fi
     sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
 
-    echo "* Disabling systemd-resolved DNS service..."
-    sudo systemctl disable systemd-resolved
-    sudo systemctl stop systemd-resolved
-    sudo rm -rf /etc/resolv.conf
+    if ! is_wsl; then
+        echo "* Disabling systemd-resolved DNS service..."
+        sudo systemctl disable systemd-resolved
+        sudo systemctl stop systemd-resolved
+    fi
 
     # Windows Subsystem
     if is_wsl; then
-        echo "* Detected Windows Subsystem, installing custom /etc/wsl.conf..."
+        echo "* Detected Windows Subsystem..."
+        echo "* Allowing the docker service to be started by all users. Editing /etc/sudoers"
+        echo '%sudo ALL=(ALL) NOPASSWD: /usr/sbin/service docker start' | sudo tee -a /etc/sudoers
+        
+        echo '* Adding docker start up commands to ~/.bashrc. Copy this over if you change shells"
+        echo '# Start docker service if not running' >> ~/.bashrc
+        echo 'DOCKER_RUNNING=`ps aux | grep dockerd | grep -v grep`' >> ~/.bashrc
+        echo '  sudo service docker start' >> ~/.bashrc
+        echo 'fi' >> ~/.bashrc
+        
+        echo "* Disabling Windows DNS via custom /etc/wsl.conf..."
         sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/wsl.conf -o /etc/wsl.conf
+        sleep 8
     fi
 
     echo "* Generating a new /etc/resolv.conf..."
