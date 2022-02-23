@@ -195,6 +195,11 @@ if [[ -x "$(command -v apt-get)" ]]; then
         echo "* Disabling Windows DNS via custom /etc/wsl.conf..."
         sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/wsl.conf -o /etc/wsl.conf
         sleep 8
+        
+        if [[ -L "/etc/resolv.conf" ]]; then
+            echo "* Removing /etc/resolv.conf symlink..."
+            sudo unlink /etc/resolv.conf
+        fi
     fi
 
     echo "* Generating a new /etc/resolv.conf..."
