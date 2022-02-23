@@ -43,8 +43,12 @@ class Network {
      * @return string|null
      */
     public function getGateWayIP(): ?string {
-        if ( OperatingSystem::MAC_OS === $this->os->getFamily() || $this->os->isWsl2() ) {
-            return $this->getHostDockerInternalIP();
+        if ( OperatingSystem::MAC_OS === $this->os->getFamily() ) {
+            return $this->getMacOSGatewayIP();
+        }
+
+        if ( $this->os->isWsl2() ) {
+            return $this->getWslGatewayIP();
         }
 
         return $this->getLinuxGatewayIP();
@@ -66,12 +70,24 @@ class Network {
     }
 
     /**
-     * Get the docker gateway IP address in macOS or Windows Subsystem for Linux.
+     * Get the docker gateway IP address in macOS.
      *
      * @return string The IP address.
      */
-    protected function getHostDockerInternalIP(): string {
+    protected function getMacOSGatewayIP(): string {
         $response = $this->runner->run( 'docker run --rm -t alpine:3.11.5 nslookup host.docker.internal. | grep "Address:" | awk \'{ print $2 }\' | tail -1' )
+                                 ->throw();
+
+        return trim( (string) $response );
+    }
+
+    /**
+     * The /etc/hosts file should contain host.docker.internal on WSL2 VM's.
+     *
+     * @return string The IP address.
+     */
+    protected function getWslGatewayIP(): string {
+        $response = $this->runner->run( 'getent ahostsv4 host.docker.internal | awk \'{ print $1 }\' | tail -1' )
                                  ->throw();
 
         return trim( (string) $response );

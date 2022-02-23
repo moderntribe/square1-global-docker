@@ -1,0 +1,10 @@
+bash-completion
+composer
+git
+libnss3-tools
+mariadb-client
+php-cli
+php-curl
+php-xml
+php-zip
+xdg-utils

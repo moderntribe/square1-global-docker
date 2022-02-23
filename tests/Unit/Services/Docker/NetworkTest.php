@@ -73,6 +73,28 @@ final class NetworkTest extends TestCase {
         $this->assertEquals( '172.1.20.0', $ip );
     }
 
+    public function test_it_gets_docker_ip_on_windows_subsystem(): void {
+        $this->os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
+        $this->os->shouldReceive( 'isWsl2' )->andReturnTrue();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->with( 'getent ahostsv4 host.docker.internal | awk \'{ print $1 }\' | tail -1' )
+                     ->once()
+                     ->andReturn( $this->runner );
+
+        $this->runner->shouldReceive( 'throw' )->once()->andReturn( $this->runner );
+
+        $this->runner->shouldReceive( '__toString' )
+                     ->once()
+                     ->andReturn( '192.168.86.29' );
+
+        $network = new Network( $this->os, $this->runner );
+
+        $ip = $network->getGateWayIP();
+
+        $this->assertEquals( '192.168.86.29', $ip );
+    }
+
     public function test_it_gets_docker_gateway_ip_on_linux(): void {
         $os = $this->partialMock( OperatingSystem::class );
         $os->shouldReceive( 'getFamily' )->andReturn( OperatingSystem::LINUX );
@@ -90,7 +112,7 @@ final class NetworkTest extends TestCase {
         $os->shouldReceive( 'isWsl2' )->andReturnFalse();
 
         $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
-        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getHostDockerInternalIP' )->once()->andReturn( '172.1.20.0' );
+        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getMacOSGatewayIP' )->once()->andReturn( '172.1.20.0' );
 
         $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
     }
@@ -101,9 +123,9 @@ final class NetworkTest extends TestCase {
         $os->shouldReceive( 'isWsl2' )->andReturnTrue();
 
         $mock = Mockery::mock( Network::class, [ $os, $this->runner ] )->makePartial();
-        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getHostDockerInternalIP' )->once()->andReturn( '172.1.20.0' );
+        $mock->shouldAllowMockingProtectedMethods()->shouldReceive( 'getWslGatewayIP' )->once()->andReturn( '192.168.86.29' );
 
-        $this->assertEquals( '172.1.20.0', $mock->getGateWayIP() );
+        $this->assertEquals( '192.168.86.29', $mock->getGateWayIP() );
     }
 
     /**
