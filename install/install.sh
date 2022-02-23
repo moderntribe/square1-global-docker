@@ -138,9 +138,9 @@ if [[ -x "$(command -v apt-get)" ]]; then
     # WSL with Docker Desktop for Windows should not have docker installed
     # https://docs.docker.com/desktop/windows/wsl/#best-practices
     if is_wsl; then
-        APT_URL=https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/apt.txt
+        APT_URL="https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/apt.txt"
     else
-        APT_URL=https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt
+        APT_URL="https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt"
 
         echo "* Preparing docker sources..."
         sudo apt-get install -y \
