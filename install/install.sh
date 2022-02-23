@@ -127,86 +127,72 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   brew link php@7.4 --force
 fi
 
-# Debian Linux flavors
+# Debian Linux flavors including WSL2
 if [[ -x "$(command -v apt-get)" ]]; then
+
     echo "* Installing dependencies via apt, enter your sudo password when requested..."
 
     echo "* Removing legacy docker installs..."
-    sudo apt-get remove docker docker-engine docker.io containerd runc
+    sudo apt-get purge docker docker-engine docker.io containerd runc
 
-    echo "* Preparing docker sources..."
-    sudo apt-get install -y \
-        apt-transport-https \
-        ca-certificates \
-        curl \
-        gnupg \
-        lsb-release
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    echo \
-      "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    # WSL with Docker Desktop for Windows should not have docker installed
+    # https://docs.docker.com/desktop/windows/wsl/#best-practices
+    if is_wsl; then
+        APT_URL=https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/apt.txt
+    else
+        APT_URL=https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt
+
+        echo "* Preparing docker sources..."
+        sudo apt-get install -y \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg \
+            lsb-release
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo \
+          "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+        echo "* Installing docker-compose..."
+        sudo curl -fsSL "https://github.com/docker/compose/releases/download/${DC_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+
+        echo "* Installing docker-compose bash completion"
+        sudo curl \
+            -L https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose \
+            -o /etc/bash_completion.d/docker-compose
+    fi
 
     echo "* Updating and upgrading apt..."
     sudo apt-get update -y && sudo apt-get upgrade -y
-    curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt -o "${CONFIG_DIR}/apt.txt"
-
-    echo "* Installing docker-compose..."
-    sudo curl -fsSL "https://github.com/docker/compose/releases/download/${DC_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
+    curl -fsSL "${APT_URL}" -o "${CONFIG_DIR}/apt.txt"
 
     echo "* Installing packages..."
     xargs -a "${CONFIG_DIR}/apt.txt" sudo apt-get install -y
 
-    echo "* Installing docker-compose bash completion"
-    sudo curl \
-        -L https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/bash/docker-compose \
-        -o /etc/bash_completion.d/docker-compose
-
-    echo "* Installing nameservers to /etc/resolv.conf.head..."
-    sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/resolv.conf.head -o /etc/resolv.conf.head
-
-    echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
-    if [[ -f "/etc/NetworkManager/NetworkManager.conf" ]]; then
-        sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
-    fi
-    sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
-
     if ! is_wsl; then
+        echo "* Installing nameservers to /etc/resolv.conf.head..."
+        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/resolv.conf.head -o /etc/resolv.conf.head
+
+        echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
+
+        if [[ -f "/etc/NetworkManager/NetworkManager.conf" ]]; then
+            sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
+        fi
+
+        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
+
         echo "* Disabling systemd-resolved DNS service..."
         sudo systemctl disable systemd-resolved
         sudo systemctl stop systemd-resolved
+
+        echo "* Generating a new /etc/resolv.conf..."
+        sudo resolvconf -u
+
+        echo "* Fixing docker permissions"
+        sudo usermod -a -G docker "${USER}"
     fi
-
-    # Windows Subsystem
-    if is_wsl; then
-        echo "* Detected Windows Subsystem..."
-        echo "* Allowing the docker service and resolvconf to be started by all users. Editing /etc/sudoers"
-        echo "%sudo ALL=(ALL) NOPASSWD: /usr/sbin/service docker start" | sudo tee -a /etc/sudoers
-        echo "%sudo ALL=(ALL) NOPASSWD: /usr/sbin/resolvconf *" | sudo tee -a /etc/sudoers
-        
-        echo "* Adding docker start up commands to ~/.bashrc. Copy this over if you change shells"
-        echo "# Start docker service if not running" >> ~/.bashrc
-        echo "DOCKER_RUNNING=$(ps aux | grep dockerd | grep -v grep)" >> ~/.bashrc
-        echo 'if [ -z "$DOCKER_RUNNING" ]; then' >> ~/.bashrc
-        echo "  sudo service docker start" >> ~/.bashrc
-        echo "fi" >> ~/.bashrc
-        echo "sudo resolvconf -u" >> ~/.bashrc
-        
-        echo "* Disabling Windows DNS via custom /etc/wsl.conf..."
-        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/wsl.conf -o /etc/wsl.conf
-        sleep 8
-        
-        if [[ -L "/etc/resolv.conf" ]]; then
-            echo "* Removing /etc/resolv.conf symlink..."
-            sudo unlink /etc/resolv.conf
-        fi
-    fi
-
-    echo "* Generating a new /etc/resolv.conf..."
-    sudo resolvconf -u
-
-    echo "* Fixing docker permissions"
-    sudo usermod -a -G docker "${USER}"
 fi
 
 echo "* Installing nvm"
