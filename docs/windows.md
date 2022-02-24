@@ -22,7 +22,7 @@
 
 1. Install Windows Terminal from the [Windows App Store](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab).
 2. Launch Windows Terminal as an administrator (search for terminal, right click and **run as administrator**).
-3. Disable any built in Windows HTTP instances: `net stop http`.
+3. Stop any built in Windows HTTP instances using port 80: `net stop http /y` and disable from start up: `sc.exe config "W3SVC" start= disabled`
 4. Install WSL: `wsl --install` to install the default Ubuntu VM (Virtual Machine) and reboot once asked to.
 
 ### Install Docker Desktop For Windows
