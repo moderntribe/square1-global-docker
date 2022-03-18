@@ -65,7 +65,6 @@ class WpTest extends LocalDockerCommand {
 
         $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '',
             '-w',
             '/application/www',
             '--env',
@@ -110,7 +109,6 @@ class WpTest extends LocalDockerCommand {
 
         $this->docker->shouldReceive( 'call' )->with( Docker::class, [
             'exec',
-            '',
             '-w',
             '/application/www',
             '--env',
