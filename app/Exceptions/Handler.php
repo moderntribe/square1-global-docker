@@ -1,9 +1,9 @@
-<?php
+<?php declare( strict_types=1 );
 
 namespace App\Exceptions;
 
-use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 
 /**
  * Class Handler
@@ -26,14 +26,14 @@ class Handler extends ExceptionHandler {
     /**
      * Report or log an exception.
      *
-     * @param  \Throwable  $exception
+     * @param  \Throwable  $e
+     *
+     * @throws \Exception|\Throwable
      *
      * @return void
-     *
-     * @throws \Exception
      */
-    public function report( Throwable $exception ) {
-        parent::report( $exception );
+    public function report( Throwable $e ) {
+        parent::report( $e );
     }
 
 }
