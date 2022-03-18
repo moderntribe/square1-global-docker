@@ -103,7 +103,9 @@ class DockerCompose extends BaseCommand implements ArgumentRewriter {
                            ] )
                            ->run( $command );
 
-        $recorder->add( $response->process()->getOutput() );
+        $output = $response->process()->getOutput() ?: $response->process()->getErrorOutput();
+
+        $recorder->add( trim( (string) $output ) );
 
         return $response->ok() ? self::SUCCESS : self::FAILURE;
     }

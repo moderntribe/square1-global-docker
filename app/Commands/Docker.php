@@ -92,7 +92,9 @@ class Docker extends BaseCommand implements ArgumentRewriter {
                            ->tty( $tty )
                            ->run( $command );
 
-        $recorder->add( $response->process()->getOutput() );
+        $output = $response->process()->getOutput() ?: $response->process()->getErrorOutput();
+
+        $recorder->add( trim( (string) $output ) );
 
         return $response->ok() ? self::SUCCESS : self::FAILURE;
     }
