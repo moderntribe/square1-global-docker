@@ -41,15 +41,15 @@ class Wp extends BaseLocalDocker {
      * @param  \App\Services\XdebugValidator      $xdebugValidator
      * @param  \App\Services\Docker\Container     $container
      *
-     * @return int|null
+     * @return int
      */
-    public function handle( Config $config, XdebugValidator $xdebugValidator, Container $container ): ?int {
-        $params = [
+    public function handle( Config $config, XdebugValidator $xdebugValidator, Container $container ): int {
+        $params = array_filter( [
             'exec',
             ! $this->option( 'notty' ) ? '--tty' : '',
             '-w',
             $config->getWorkdir(),
-        ];
+        ] );
 
         if ( $this->option( 'xdebug' ) ) {
 
@@ -79,7 +79,7 @@ class Wp extends BaseLocalDocker {
 
         $params = array_merge( $params, $env, [ $containerId ], $exec, $this->argument( 'args' ) );
 
-        return Artisan::call( Docker::class, $params );
+        return (int) Artisan::call( Docker::class, $params );
     }
 
 }

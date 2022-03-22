@@ -2,10 +2,11 @@
 
 namespace App\Commands\LocalDocker;
 
-use Exception;
+use App\Exceptions\DockerException;
+use App\Exceptions\SystemExitException;
 use App\Recorders\ResultRecorder;
 use App\Services\Docker\Local\Config;
-use App\Exceptions\SystemExitException;
+use Exception;
 use Illuminate\Support\Facades\Artisan;
 
 /**
@@ -36,12 +37,12 @@ class MigrateDomain extends BaseLocalDocker {
      * @param  \App\Recorders\ResultRecorder      $recorder
      *
      * @throws \App\Exceptions\SystemExitException
-     * @throws \Exception
-     * @return void
+     * @throws \Exception|\App\Exceptions\DockerException
      *
+     * @return int
      */
-    public function handle( Config $config, ResultRecorder $recorder ): void {
-        Artisan::call( Wp::class, [
+    public function handle( Config $config, ResultRecorder $recorder ): int {
+        $result = Artisan::call( Wp::class, [
             'args'    => [
                 'db',
                 'prefix',
@@ -50,9 +51,13 @@ class MigrateDomain extends BaseLocalDocker {
             '--quiet' => true,
         ] );
 
-        $dbPrefix = trim( $recorder->first() );
+        if ( $result === self::FAILURE ) {
+            throw new DockerException( $recorder->first() );
+        }
 
-        Artisan::call( Wp::class, [
+        $dbPrefix = $recorder->first();
+
+        $result = Artisan::call( Wp::class, [
             'args'    => [
                 'db',
                 'query',
@@ -63,11 +68,15 @@ class MigrateDomain extends BaseLocalDocker {
             '--quiet' => true,
         ] );
 
-        $domain       = trim( $recorder->offsetGet( 1 ) );
+        if ( $result === self::FAILURE ) {
+            throw new DockerException( $recorder->offsetGet( 1 ) );
+        }
+
+        $domain       = $recorder->offsetGet( 1 );
         $sourceDomain = parse_url( $domain, PHP_URL_HOST );
 
         if ( empty( $sourceDomain ) ) {
-            throw new Exception( sprintf( 'Invalid siteurl found in options table: %s', $domain ) );
+            throw new Exception( sprintf( 'Invalid siteurl found in options table: "%s". Verify your project is using the same table_prefix as the imported database.', $domain ) );
         }
 
         $targetDomain = $config->getProjectDomain();
@@ -111,6 +120,8 @@ class MigrateDomain extends BaseLocalDocker {
         ] );
 
         $this->info( 'Done.' );
+
+        return self::SUCCESS;
     }
 
 }
