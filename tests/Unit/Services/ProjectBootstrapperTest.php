@@ -8,8 +8,11 @@ use App\Services\Docker\HealthChecker;
 use App\Services\HomeDir;
 use App\Services\ProjectBootstrapper;
 use Illuminate\Filesystem\Filesystem;
+use Mockery;
 use phpmock\mockery\PHPMockery;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
 class ProjectBootstrapperTest extends TestCase {
@@ -88,7 +91,132 @@ class ProjectBootstrapperTest extends TestCase {
                      ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
                      ->andReturnSelf();
 
-        $this->runner->shouldReceive( 'throw' )->once()->andReturnSelf();
+        $this->runner->shouldReceive( 'throw' )->twice()->andReturnSelf();
+
+        $this->bootstrapper->createDatabases( $projectName, new NullOutput() );
+    }
+
+    public function test_it_does_not_create_databases_if_they_exist() {
+        PHPMockery::mock( 'App\Services', 'usleep' )->andReturnTrue();
+
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnFalse();
+        $this->spinner->shouldReceive( 'spin' )->once();
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnTrue();
+        $this->spinner->shouldReceive( 'end' )->once();
+
+        $projectName = 'squareone';
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->andReturnSelf();
+
+        $process = $this->mock( Process::class );
+        $process->shouldReceive( 'isSuccessful' )->andReturnFalse();
+        $process->shouldReceive( 'getCommandLine' )->andReturn( '' );
+        $process->shouldReceive( 'getExitCode' )->andReturn( 1 );
+        $process->shouldReceive( 'getExitCodeText' )->andReturn( "Can't create database 'tribe_squareone'; database exists." );
+        $process->shouldReceive( 'getWorkingDirectory' )->andReturn( '' );
+        $process->shouldReceive( 'isOutputDisabled' )->andReturnTrue();
+
+        $this->runner->shouldReceive( 'throw' )
+                     ->twice()
+                     ->andThrowExceptions( [
+                         new ProcessFailedException( $process ),
+                     ] );
+
+        $output = $this->mock( NullOutput::class );
+        $output->shouldReceive( 'writeln' )
+               ->with( 'Waiting for database container to become active...' );
+        $output->shouldReceive( 'writeln' )->with(
+            sprintf(
+                '<question>Warning: one or more databases already exist: %s. Delete the databases and rerun this command if you run into problems.</question>',
+                'tribe_squareone, tribe_squareone_tests, tribe_squareone_acceptance'
+            )
+        );
+
+        $this->bootstrapper->createDatabases( $projectName, $output );
+    }
+
+    public function test_it_throws_exception_when_trying_to_make_primary_database() {
+        $this->expectException( ProcessFailedException::class );
+        $this->expectExceptionMessage( 'Some serious error when trying to create the primary database' );
+
+        PHPMockery::mock( 'App\Services', 'usleep' )->andReturnTrue();
+
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnFalse();
+        $this->spinner->shouldReceive( 'spin' )->once();
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnTrue();
+        $this->spinner->shouldReceive( 'end' )->once();
+
+        $projectName = 'squareone';
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
+                     ->andReturnSelf();
+
+        $process = $this->mock( Process::class );
+        $process->shouldReceive( 'isSuccessful' )->andReturnFalse();
+        $process->shouldReceive( 'getCommandLine' )->andReturn( '' );
+        $process->shouldReceive( 'getExitCode' )->andReturn( 1 );
+        $process->shouldReceive( 'getExitCodeText' )->andReturn( 'Some serious error when trying to create the primary database' );
+        $process->shouldReceive( 'getWorkingDirectory' )->andReturn( '' );
+        $process->shouldReceive( 'isOutputDisabled' )->andReturnTrue();
+
+        $this->runner->shouldReceive( 'throw' )
+                     ->once()
+                     ->andThrowExceptions( [
+                         new ProcessFailedException( $process ),
+                     ] );
+
+        $this->bootstrapper->createDatabases( $projectName, new NullOutput() );
+    }
+
+    public function test_it_throws_exception_when_trying_to_make_test_databases() {
+        $this->expectException( ProcessFailedException::class );
+        $this->expectExceptionMessage( 'Some serious error when trying to create the test database' );
+
+        PHPMockery::mock( 'App\Services', 'usleep' )->andReturnTrue();
+
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnFalse();
+        $this->spinner->shouldReceive( 'spin' )->once();
+        $this->healthChecker->shouldReceive( 'healthy' )->once()->andReturnTrue();
+        $this->spinner->shouldReceive( 'end' )->once();
+
+        $projectName = 'squareone';
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone;"' )
+                     ->andReturnSelf();
+
+        $this->runner->shouldReceive( 'run' )
+                     ->once()
+                     ->with( 'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_squareone_tests; CREATE DATABASE tribe_squareone_acceptance;"' )
+                     ->andReturnSelf();
+
+        $process = $this->mock( Process::class );
+        $process->shouldReceive( 'isSuccessful' )->andReturnFalse();
+        $process->shouldReceive( 'getCommandLine' )->andReturn( '' );
+        $process->shouldReceive( 'getExitCode' )->andReturn( 1 );
+        $process->shouldReceive( 'getExitCodeText' )->andReturn( 'Some serious error when trying to create the test database' );
+        $process->shouldReceive( 'getWorkingDirectory' )->andReturn( '' );
+        $process->shouldReceive( 'isOutputDisabled' )->andReturnTrue();
+
+        // Primary database creation.
+        $this->runner->shouldReceive( 'throw' )
+                     ->once()
+                     ->andReturnSelf();
+
+        // Throw on test database creation.
+        $this->runner->shouldReceive( 'throw' )
+                     ->once()
+                     ->andThrowExceptions( [
+                         new ProcessFailedException( $process ),
+                     ] );
 
         $this->bootstrapper->createDatabases( $projectName, new NullOutput() );
     }
