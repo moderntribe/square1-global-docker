@@ -135,7 +135,7 @@ class ProjectBootstrapper {
                 throw $e;
             } else {
                 $existingDatabases = [
-                  sprintf( 'tribe_%s', $projectName ),
+                    sprintf( 'tribe_%s', $projectName ),
                 ];
             }
         }
