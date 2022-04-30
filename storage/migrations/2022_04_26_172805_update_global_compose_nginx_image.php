@@ -1,18 +1,15 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 use App\Services\Migrations\Migration;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class UpdateGlobalComposeHealthCheck extends Migration {
+final class UpdateGlobalComposeNginxImage extends Migration {
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem;
      */
     private $filesystem;
 
-    /**
-     * RefreshConfig constructor.
-     */
     public function __construct() {
         parent::__construct();
 
@@ -20,7 +17,7 @@ final class UpdateGlobalComposeHealthCheck extends Migration {
     }
 
     /**
-     * Run the Migration
+     * Run the Migration.
      *
      * @param OutputInterface $output
      *
