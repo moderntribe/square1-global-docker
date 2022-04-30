@@ -7,6 +7,7 @@ use App\Contracts\Runner;
 use App\Services\Docker\HealthChecker;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 /**
  * Bootstrap a local SquareOne project.
@@ -105,6 +106,8 @@ class ProjectBootstrapper {
      * @param string $projectName
      * @param OutputInterface $output
      *
+     * @throws \Symfony\Component\Process\Exception\ProcessFailedException
+     *
      * @return \App\Services\ProjectBootstrapper
      */
     public function createDatabases( string $projectName, OutputInterface $output ): self {
@@ -119,18 +122,45 @@ class ProjectBootstrapper {
 
         $projectName = str_replace( '-', '_', $projectName );
 
-        // Create the WordPress database
-        $this->runner->run( sprintf(
-            'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_%s;"',
-            $projectName
-        ) );
+        $existingDatabases = [];
 
-        // Create test databases
-        $this->runner->run( sprintf(
-            'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_%s_tests; CREATE DATABASE tribe_%s_acceptance;"',
-            $projectName,
-            $projectName
-        ) )->throw();
+        // Try to create the primary WordPress database.
+        try {
+            $this->runner->run( sprintf(
+                'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_%s;"',
+                $projectName
+            ) )->throw();
+        } catch ( ProcessFailedException $e ) {
+            if ( ! str_contains( $e->getMessage(), 'database exists' ) ) {
+                throw $e;
+            } else {
+                $existingDatabases = [
+                    sprintf( 'tribe_%s', $projectName ),
+                ];
+            }
+        }
+
+        // Try to create the test databases.
+        try {
+            $this->runner->run( sprintf(
+                'docker exec -i tribe-mysql mysql -uroot -ppassword -e "CREATE DATABASE tribe_%s_tests; CREATE DATABASE tribe_%s_acceptance;"',
+                $projectName,
+                $projectName
+            ) )->throw();
+        } catch ( ProcessFailedException $e ) {
+            if ( ! str_contains( $e->getMessage(), 'database exists' ) ) {
+                throw $e;
+            } else {
+                $existingDatabases = array_merge( $existingDatabases, [
+                    sprintf( 'tribe_%s_tests', $projectName ),
+                    sprintf( 'tribe_%s_acceptance', $projectName ),
+                ] );
+            }
+        }
+
+        if ( $existingDatabases ) {
+            $output->writeln( sprintf( '<question>Warning: one or more databases already exist: %s. Delete the databases and rerun this command if you run into problems.</question>', implode( ', ', $existingDatabases )  ) );
+        }
 
         return $this;
     }
