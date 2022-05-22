@@ -27,6 +27,7 @@ use App\Services\Certificate\Trust\Strategies\Linux;
 use App\Services\Certificate\Trust\Strategies\MacOs;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
+use App\Services\Config\PhpStormMeta;
 use App\Services\Docker\Dns\Factory;
 use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
@@ -234,6 +235,10 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->when( Env::class )
                   ->needs( '$directory' )
                   ->give( config( 'squareone.config-dir' ) );
+
+        $this->app->when( PhpStormMeta::class )
+                  ->needs( '$directory' )
+                  ->give( storage_path() );
 
         $this->app->bind( SpinnerInterface::class, Spinner::class );
 

@@ -10,12 +10,14 @@ use App\Services\Certificate\Handler;
 use App\Services\ComposerVersion;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
+use App\Services\Config\PhpStormMeta;
 use App\Services\Docker\Container;
 use App\Services\Docker\Local\Config;
 use App\Services\Docker\SystemClock;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use M1\Env\Parser;
+use Throwable;
 
 /**
  * Local docker start command
@@ -52,6 +54,7 @@ class Start extends BaseLocalDocker {
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      * @param  \App\Services\Config\Github        $github
      * @param  \App\Services\Config\Env           $env
+     * @param  \App\Services\Config\PhpStormMeta  $phpStormMeta
      * @param  \App\Services\Docker\SystemClock   $clock
      * @param  \App\Services\ComposerVersion      $composerVersion
      * @param  \App\Services\Docker\Container     $container
@@ -65,6 +68,7 @@ class Start extends BaseLocalDocker {
         Filesystem $filesystem,
         Github $github,
         Env $env,
+        PhpStormMeta $phpStormMeta,
         SystemClock $clock,
         ComposerVersion $composerVersion,
         Container $container
@@ -85,6 +89,7 @@ class Start extends BaseLocalDocker {
         }
 
         $this->prepareComposer( $config, $filesystem, $github );
+        $this->copyPhpStormMetaFile( $config, $phpStormMeta );
 
         // Start global containers
         if ( ! $this->option( 'skip-global') ) {
@@ -166,7 +171,7 @@ class Start extends BaseLocalDocker {
                 $this->secret( 'We have detected you have not configured a GitHub oAuth token. Please go to https://github.com/settings/tokens/new?scopes=repo and create one or enter an existing token' );
 
             // Save the default token to the so config directory.
-            $github->save( $token );
+            $github->save( (string) $token );
 
             // Copy to local project.
             $github->copy( $composerDirectory );
@@ -315,6 +320,21 @@ class Start extends BaseLocalDocker {
         $filesystem->put( $file, $content );
 
         $this->info( sprintf( '.env file created at %s', $file ) );
+    }
+
+    protected function copyPhpStormMetaFile( Config $config, PhpStormMeta $phpStormMeta ): void {
+        $projectRoot = $config->getProjectRoot();
+        $warning     = 'Unable to copy .phpstorm.meta.php file';
+
+        if ( ! $phpStormMeta->existsInProject( $projectRoot ) ) {
+            try {
+                if ( ! $phpStormMeta->copy( $projectRoot ) ) {
+                    $this->warn( $warning );
+                }
+            } catch ( Throwable $e ) {
+                $this->warn( $warning );
+            }
+        }
     }
 
 }
