@@ -121,7 +121,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
   echo "* Installing dependencies via brew..."
   curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o "${CONFIG_DIR}/packages.txt"
-  xargs brew install "${CONFIG_DIR}/packages.txt"
+  xargs brew install < "${CONFIG_DIR}/packages.txt"
   echo "* Setting the default PHP version to 8.0..."
   brew link php@8.0 --force
 fi
