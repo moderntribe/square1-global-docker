@@ -9,7 +9,7 @@ PHAR_NAME="so.phar"
 CONFIG_DIR=~/.config/squareone
 BIN_NAME="so"
 DC_VERSION="1.29.2"
-NVM_VERSION="0.38.0"
+NVM_VERSION="0.39.1"
 AUTOCOMPLETE_BASH="squareone.autocompletion"
 AUTOCOMPLETE_ZSH="squareone_completion.zsh"
 AUTOCOMPLETE_FISH="so.fish"
@@ -43,7 +43,6 @@ install_homebrew() {
 
 enable_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o "$(brew --prefix)/etc/bash_completion.d/${AUTOCOMPLETE_BASH}"
     curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.zsh' -o ~/."${AUTOCOMPLETE_ZSH}" && echo "source ~/.${AUTOCOMPLETE_ZSH}" >> ~/.zshrc
   else
     sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/"${AUTOCOMPLETE_BASH}"
@@ -123,8 +122,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "* Installing dependencies via brew..."
   curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o "${CONFIG_DIR}/packages.txt"
   brew install "$(<${CONFIG_DIR}/packages.txt)"
-  echo "* Setting the default PHP version to 7.4..."
-  brew link php@7.4 --force
+  echo "* Setting the default PHP version to 8.0..."
+  brew link php@8.0 --force
 fi
 
 # Debian Linux flavors including WSL2
