@@ -124,6 +124,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   xargs brew install < "${CONFIG_DIR}/packages.txt"
   echo "* Setting the default PHP version to 8.0..."
   brew link php@8.0 --force
+  echo "* Setting proper version of openssl..."
+  brew link openssl --force
 fi
 
 # Debian Linux flavors including WSL2

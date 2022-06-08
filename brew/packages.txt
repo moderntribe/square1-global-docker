@@ -3,4 +3,5 @@ coreutils
 curl
 docker-credential-helper
 git
+openssl
 php@8.0
