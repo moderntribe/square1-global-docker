@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Feature\Commands\GlobalDocker;
 
@@ -8,7 +8,7 @@ use App\Runners\CommandRunner;
 use Illuminate\Support\Facades\Artisan;
 use Tests\Feature\Commands\BaseCommandTester;
 
-class MyAdminTest extends BaseCommandTester {
+final class MyAdminTest extends BaseCommandTester {
 
     private $runner;
 
@@ -44,7 +44,7 @@ class MyAdminTest extends BaseCommandTester {
 
         $this->runner->shouldReceive( 'run' )
                ->twice()
-               ->with( 'docker run -d --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin/phpmyadmin' )
+               ->with( 'docker run -d --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin' )
                ->andReturn( $this->runner );
 
         $open = $this->mock( Open::class );
