@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Docker;
 
@@ -30,10 +30,10 @@ class SystemClock {
     /**
      * Synchronize VM time with system time.
      *
-     * This fixes a docker host/container time sync bug on Mac OS.
+     * This fixes a docker host/vm/container time drift bug on macOS.
      */
     public function sync(): void {
-        $this->runner->run( 'docker run --privileged --rm php:7.4.7-fpm date -s "$(date -u "+%Y-%m-%d %H:%M:%S")"' )->throw();
+        $this->runner->run( 'docker run --rm --privileged alpine hwclock -s' )->throw();
     }
 
 }
