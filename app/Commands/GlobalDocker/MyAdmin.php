@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\GlobalDocker;
 
@@ -61,7 +61,7 @@ class MyAdmin extends BaseCommand {
      * @return string
      */
     protected function getRunCommand(): string {
-        return 'docker run -d --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin/phpmyadmin';
+        return 'docker run -d --name tribe-phpmyadmin --link tribe-mysql:db --network="global_proxy" -p 8080:80 phpmyadmin';
     }
 
 }
