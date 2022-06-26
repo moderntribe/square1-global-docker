@@ -9,8 +9,16 @@ thread_cache_size=4
 table_open_cache=1024
 
 # WordPress's database includes many fields that support MEDIUMTEXT (i.e., ~16M)
-max_allowed_packet=16M
+max_allowed_packet=512M
 skip-host-cache
 skip-name-resolve
 
 sql-mode=NO_AUTO_CREATE_USER
+
+# Allow large imports
+wait_timeout=600
+net_read_timeout=90
+net_write_timeout=90
+interactive_timeout=600
+connect_timeout=90
+

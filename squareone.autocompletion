@@ -1,4 +1,4 @@
-_so()
+_tribe()
 {
     local cur script coms opts com
     COMPREPLY=()
@@ -188,4 +188,4 @@ _so()
     fi
 }
 
-complete -o default -F _so so
+complete -o default -F _tribe tribe

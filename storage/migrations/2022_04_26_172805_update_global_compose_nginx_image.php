@@ -47,7 +47,7 @@ final class UpdateGlobalComposeNginxImage extends Migration {
 
         $this->filesystem->copy( $newGlobalCompose, $file, true );
 
-        $output->writeln( '<error>★ IMPORTANT: run so global:stop-all</error>' );
+        $output->writeln( '<error>★ IMPORTANT: run tribe global:stop-all</error>' );
 
         return true;
     }

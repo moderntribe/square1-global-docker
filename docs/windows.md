@@ -79,4 +79,4 @@ You now have custom nameservers running inside the WSL VM, and you can use these
 2. Return to the project we originally created: `cd ~/projects/square-one`.
 3. Bootstrap the project to create your project's databases, WordPress user and build the frontend: `so bootstrap` and follow the onscreen instructions.
 4. The project should automatically launch in your browser at `https://square1.tribe`. 
-5. Review the [CLI usage instructions](https://github.com/moderntribe/square1-global-docker/#usage) and have fun!
+5. Review the [CLI usage instructions](https://github.com/moderntribe/tribe-local/#usage) and have fun!

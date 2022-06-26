@@ -23,7 +23,7 @@ class UpdaterTest extends TestCase {
                 'tag_name' => '2.2.1-beta',
                 'assets'   => [
                     [
-                        'browser_download_url' => 'https://github.com/moderntribe/square1-global-docker/releases/download/2.2.1-beta/so.phar',
+                        'browser_download_url' => 'https://github.com/moderntribe/tribe-local/releases/download/2.2.1-beta/tribe.phar',
                     ],
                 ],
             ], 200, [ 'Headers' ] ),
@@ -41,7 +41,7 @@ class UpdaterTest extends TestCase {
 
         $this->assertInstanceOf( Document::class, $release );
         $this->assertEquals( '2.2.1-beta', $release->version );
-        $this->assertEquals( 'https://github.com/moderntribe/square1-global-docker/releases/download/2.2.1-beta/so.phar', $release->download );
+        $this->assertEquals( 'https://github.com/moderntribe/tribe-local/releases/download/2.2.1-beta/tribe.phar', $release->download );
 
         Http::assertSentCount( 1 );
 
@@ -60,7 +60,7 @@ class UpdaterTest extends TestCase {
                 'tag_name' => '2.2.1-beta',
                 'assets'   => [
                     [
-                        'browser_download_url' => 'https://github.com/moderntribe/square1-global-docker/releases/download/2.2.1-beta/so.phar',
+                        'browser_download_url' => 'https://github.com/moderntribe/tribe-local/releases/download/2.2.1-beta/tribe.phar',
                     ],
                 ],
             ], 200, [ 'Headers' ] ),
@@ -80,7 +80,7 @@ class UpdaterTest extends TestCase {
 
         $this->assertInstanceOf( Document::class, $release );
         $this->assertEquals( '2.2.1-beta', $release->version );
-        $this->assertEquals( 'https://github.com/moderntribe/square1-global-docker/releases/download/2.2.1-beta/so.phar', $release->download );
+        $this->assertEquals( 'https://github.com/moderntribe/tribe-local/releases/download/2.2.1-beta/tribe.phar', $release->download );
 
         Http::assertSentCount( 1 );
 
@@ -110,7 +110,7 @@ class UpdaterTest extends TestCase {
             'github.com/*' => Http::response( [
                 'assets'   => [
                     [
-                        'browser_download_url' => 'https://github.com/moderntribe/square1-global-docker/releases/download/2.2.1-beta/so.phar',
+                        'browser_download_url' => 'https://github.com/moderntribe/tribe-local/releases/download/2.2.1-beta/tribe.phar',
                     ],
                 ],
             ], 200, [ 'Headers' ] ),

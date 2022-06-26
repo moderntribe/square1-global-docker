@@ -1,13 +1,13 @@
 {
-    "name": "moderntribe/square1-global-docker",
-    "description": "SquareOne Docker Local Environment.",
+    "name": "moderntribe/tribe-local",
+    "description": "Modern Tribe's Local Docker Based Development Environment.",
     "keywords": ["squareone", "square one", "modern tribe", "docker", "local environment"],
     "homepage": "https://tri.be/",
     "type": "project",
     "license": "GPL-2.0-only",
     "support": {
-        "issues": "https://github.com/moderntribe/square1-global-docker/issues",
-        "source": "https://github.com/moderntribe/square1-global-docker"
+        "issues": "https://github.com/moderntribe/tribe-local/issues",
+        "source": "https://github.com/moderntribe/tribe-local"
     },
     "authors": [
         {
@@ -62,11 +62,11 @@
     "scripts": {
         "build": [
             "composer dump-autoload --no-dev -a",
-            "./so --ansi app:build so.phar < /dev/tty",
+            "./tribe --ansi app:build tribe.phar < /dev/tty",
             "composer dump-autoload",
             "@autocomplete"
         ],
-        "autocomplete": "mv -fn ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -fn ./builds/so ./builds/so.phar",
+        "autocomplete": "mv -fn ./builds/tribe.phar ./builds/tribe && vendor/bin/symfony-autocomplete --shell=bash ./builds/tribe > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/tribe > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/tribe > squareone.autocompletion.zsh && mv -fn ./builds/tribe ./builds/tribe.phar",
         "coverage-tests": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text",
         "coverage-text": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text < /dev/tty",
         "coverage-html": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-html coverage < /dev/tty",
@@ -77,5 +77,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["so"]
+    "bin": ["tribe"]
 }

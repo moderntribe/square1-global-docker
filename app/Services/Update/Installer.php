@@ -77,7 +77,7 @@ class Installer {
     }
 
     /**
-     * Overwrite the existing so.phar with the newly updated version.
+     * Overwrite the existing tribe.phar with the newly updated version.
      *
      * @param  string  $tempFile
      * @param  string  $localFile

@@ -40,7 +40,7 @@ jobs:
         run: php vendor/bin/phpunit -c ./phpunit.xml.dist
 
       - name: Build
-        run: php so app:build --build-version=0.0
+        run: php tribe app:build --build-version=0.0
 
       - name: Build Check
-        run: php builds/so --version
+        run: php builds/tribe --version

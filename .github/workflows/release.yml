@@ -6,11 +6,11 @@ on:
 
 jobs:
   build-and-release-phar:
-    name: Build and attach so.phar to the release
+    name: Build and attach tribe.phar to the release
     runs-on: ubuntu-latest
 
     env:
-      PHAR_NAME: so.phar
+      PHAR_NAME: tribe.phar
 
     steps:
       - name: Set up PHP
@@ -32,7 +32,7 @@ jobs:
           composer dump-autoload --no-dev --classmap-authoritative
 
       - name: Build phar
-        run: php so app:build ${{ env.PHAR_NAME }} --build-version=${{ github.ref_name }}
+        run: php tribe app:build ${{ env.PHAR_NAME }} --build-version=${{ github.ref_name }}
 
       - name: Version check
         run: php builds/${{ env.PHAR_NAME }} --version

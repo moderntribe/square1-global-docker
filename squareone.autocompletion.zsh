@@ -1,6 +1,6 @@
-#compdef so
+#compdef tribe
 
-_so()
+_tribe()
 {
     local state com cur
 
@@ -183,4 +183,4 @@ _so()
     esac
 }
 
-compdef _so so
+compdef _tribe tribe

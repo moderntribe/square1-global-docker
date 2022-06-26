@@ -17,7 +17,7 @@ class ConfigCopyTest extends BaseCommandTester {
     public function test_it_downloads_squareone_yml() {
         $command = $this->app->make( ConfigCopy::class, [
             'configDir'   => storage_path( 'tests' ),
-            'downloadUrl' => 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/config/squareone.yml',
+            'downloadUrl' => 'https://raw.githubusercontent.com/moderntribe/tribe-local/master/config/squareone.yml',
         ] );
 
         $tester = $this->runCommand( $command );

@@ -5,9 +5,9 @@
 #############################################################
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
-PHAR_NAME="so.phar"
+PHAR_NAME="tribe.phar"
 CONFIG_DIR=~/.config/squareone
-BIN_NAME="so"
+BIN_NAME="tribe"
 DC_VERSION="1.29.2"
 NVM_VERSION="0.39.1"
 AUTOCOMPLETE_BASH="squareone.autocompletion"
@@ -25,7 +25,7 @@ is_dev() {
 
 if is_dev; then
     echo "***** Installing development version"
-    BIN_NAME="sodev"
+    BIN_NAME="tribedev"
     AUTOCOMPLETE_BASH="squareone.dev.autocompletion"
     AUTOCOMPLETE_ZSH="squareone_dev_completion.zsh"
     AUTOCOMPLETE_FISH="so.dev.fish"
@@ -43,11 +43,11 @@ install_homebrew() {
 
 enable_autocomplete() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.zsh' -o ~/."${AUTOCOMPLETE_ZSH}" && echo "source ~/.${AUTOCOMPLETE_ZSH}" >> ~/.zshrc
+    curl -fsSL 'https://raw.githubusercontent.com/moderntribe/tribe-local/master/squareone.autocompletion.zsh' -o ~/."${AUTOCOMPLETE_ZSH}" && echo "source ~/.${AUTOCOMPLETE_ZSH}" >> ~/.zshrc
   else
-    sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion' -o /etc/bash_completion.d/"${AUTOCOMPLETE_BASH}"
+    sudo curl -fsSL 'https://raw.githubusercontent.com/moderntribe/tribe-local/master/squareone.autocompletion' -o /etc/bash_completion.d/"${AUTOCOMPLETE_BASH}"
     if [[ -d "~/.config/fish/completions" ]] ; then
-        curl -fsSL 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/squareone.autocompletion.fish' -o ~/.config/fish/completions/"${AUTOCOMPLETE_FISH}"
+        curl -fsSL 'https://raw.githubusercontent.com/moderntribe/tribe-local/master/squareone.autocompletion.fish' -o ~/.config/fish/completions/"${AUTOCOMPLETE_FISH}"
     fi
   fi
 }
@@ -57,7 +57,7 @@ is_wsl() {
 }
 
 install_phar() {
-  PHAR_DOWNLOAD=$(curl -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
+  PHAR_DOWNLOAD=$(curl -s https://api.github.com/repos/moderntribe/tribe-local/releases/latest \
         | grep browser_download_url \
         | grep ${PHAR_NAME} \
         | cut -d '"' -f 4)
@@ -66,13 +66,13 @@ install_phar() {
     echo 'Error connecting to the GitHub API, enter a GitHub token to try again (you can create a new one here https://github.com/settings/tokens/new):';
     read -r GITHUB_TOKEN
 
-    PHAR_DOWNLOAD=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -s https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest \
+    PHAR_DOWNLOAD=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -s https://api.github.com/repos/moderntribe/tribe-local/releases/latest \
       | grep browser_download_url \
       | grep ${PHAR_NAME} \
       | cut -d '"' -f 4)
 
     if [[ -z "${PHAR_DOWNLOAD}" ]] ; then
-      echo "Whoops, we still can't connect. Try manually downloading so.phar from the releases page: https://github.com/moderntribe/square1-global-docker/releases"
+      echo "Whoops, we still can't connect. Try manually downloading tribe.phar from the releases page: https://github.com/moderntribe/tribe-local/releases"
       exit 1;
     fi
   fi
@@ -83,8 +83,8 @@ install_phar() {
 }
 
 symlink_sq1_dev() {
-    SO_PATH=$(realpath "${SCRIPTDIR}/../so")
-    SO_TARGET="/usr/local/bin/sodev"
+    SO_PATH=$(realpath "${SCRIPTDIR}/../tribe")
+    SO_TARGET="/usr/local/bin/tribedev"
 
     if [[ -e "${SO_TARGET}" ]]; then
         sudo rm -rf "${SO_TARGET}"
@@ -120,7 +120,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   fi
 
   echo "* Installing dependencies via brew..."
-  curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/brew/packages.txt -o "${CONFIG_DIR}/packages.txt"
+  curl -fsSL https://raw.githubusercontent.com/moderntribe/tribe-local/master/brew/packages.txt -o "${CONFIG_DIR}/packages.txt"
   xargs brew install < "${CONFIG_DIR}/packages.txt"
   echo "* Setting the default PHP version to 8.0..."
   brew link php@8.0 --force
@@ -139,9 +139,9 @@ if [[ -x "$(command -v apt-get)" ]]; then
     # WSL with Docker Desktop for Windows should not have docker installed
     # https://docs.docker.com/desktop/windows/wsl/#best-practices
     if is_wsl; then
-        APT_URL="https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/wsl/apt.txt"
+        APT_URL="https://raw.githubusercontent.com/moderntribe/tribe-local/master/install/wsl/apt.txt"
     else
-        APT_URL="https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/apt.txt"
+        APT_URL="https://raw.githubusercontent.com/moderntribe/tribe-local/master/install/debian/apt.txt"
 
         echo "* Preparing docker sources..."
         sudo apt-get install -y \
@@ -174,7 +174,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
 
     if ! is_wsl; then
         echo "* Installing nameservers to /etc/resolv.conf.head..."
-        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/resolv.conf.head -o /etc/resolv.conf.head
+        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/tribe-local/master/install/debian/resolv.conf.head -o /etc/resolv.conf.head
 
         echo "* Backing up /etc/NetworkManager/NetworkManager.conf and creating a version that uses openresolv..."
 
@@ -182,7 +182,7 @@ if [[ -x "$(command -v apt-get)" ]]; then
             sudo mv /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
         fi
 
-        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
+        sudo curl -fsSL https://raw.githubusercontent.com/moderntribe/tribe-local/master/install/debian/NetworkManager.conf -o /etc/NetworkManager/NetworkManager.conf
 
         echo "* Disabling systemd-resolved DNS service..."
         sudo systemctl disable systemd-resolved
@@ -206,10 +206,10 @@ if is_dev; then
     echo "* Running composer install..."
     composer install -d "${SCRIPTDIR}/../"
 
-    echo "* Symlinking ./so binary to /usr/local/bin/sodev, enter your password when requested."
+    echo "* Symlinking ./tribe binary to /usr/local/bin/tribedev, enter your password when requested."
     symlink_sq1_dev
 else
-    echo "* Downloading so.phar to /usr/local/bin/so, enter your password when requested."
+    echo "* Downloading tribe.phar to /usr/local/bin/tribe, enter your password when requested."
     install_phar
 fi
 

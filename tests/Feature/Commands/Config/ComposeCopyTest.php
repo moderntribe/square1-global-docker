@@ -17,7 +17,7 @@ class ComposeCopyTest extends BaseCommandTester {
     public function test_it_downloads_docker_compose_yml() {
         $command = $this->app->make( ComposeCopy::class, [
             'composeOverride' => storage_path( 'tests/global/docker-compose.override.yml' ),
-            'downloadUrl'     => 'https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/storage/global/docker-compose.yml',
+            'downloadUrl'     => 'https://raw.githubusercontent.com/moderntribe/tribe-local/master/storage/global/docker-compose.yml',
         ] );
 
         $tester = $this->runCommand( $command );

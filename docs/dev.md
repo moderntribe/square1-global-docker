@@ -14,15 +14,15 @@ In order to contribute to this project you must have the following installed:
 
 ### Development installation
 
-- If you have a pre `so` clone of [SquareOne](https://github.com/moderntribe/square-one), copy your existing SSL 
+- If you have a pre `tribe-local` clone of [SquareOne](https://github.com/moderntribe/square-one), copy your existing SSL 
 certificates from `dev/docker/global/certs` folder to the `~/.config/squareone/global/certs` folder.
 - Stop all your existing containers `docker stop $(docker ps -aq)`.
-- `git clone https://github.com/moderntribe/square1-global-docker`.
+- `git clone https://github.com/moderntribe/tribe-local`.
 - Run `composer install` in the cloned folder.
 - Back up your `~/mysql_data` folder in the event of any data loss.
 - Back up your `~/.config/squareone` folder.
 - Run `bash -c "(export SO_DEV=true; ./install/install.sh)"` from the root of the project.
-- type `sodev` in your terminal.
+- type `tribedev` in your terminal.
 
 ### Additional development commands
 
@@ -30,11 +30,11 @@ When not packaged as a phar, there are some additional commands available to you
 
 | Command                    | Description                                                          |
 |----------------------------|----------------------------------------------------------------------|
-| sodev app:build            | Ignore this and use `composer build` to build a phar.                |
-| sodev app:create-migration | Creates a migration class that you can then customize.               |
-| sodev app:install          | Install Laravel Zero [add-ons](https://laravel-zero.com/docs/database). |
-| sodev app:rename           | Renames the application. You shouldn't use this.                     |
-| sodev app:test             | Runs automated tests.                                                |
+| tribedev app:build            | Ignore this and use `composer build` to build a phar.                |
+| tribedev app:create-migration | Creates a migration class that you can then customize.               |
+| tribedev app:install          | Install Laravel Zero [add-ons](https://laravel-zero.com/docs/database). |
+| tribedev app:rename           | Renames the application. You shouldn't use this.                     |
+| tribedev app:test             | Runs automated tests.                                                |
 
 ### Automated tests
 
@@ -47,7 +47,7 @@ so you can see which code is missing tests.
 
 - Update the version in the [app.php](../config/app.php) file.
 - Run `composer build` to package a phar to the [builds](../builds) directory, commit any changes made to the autocompletion files and push those up.
-- [Create a new release on GitHub](https://github.com/moderntribe/square1-global-docker/releases/new) and the Release Phar GitHub action will automatically build the phar and attach it to the release.
+- [Create a new release on GitHub](https://github.com/moderntribe/tribe-local/releases/new) and the Release Phar GitHub action will automatically build the phar and attach it to the release.
 
 ### Configuration
 

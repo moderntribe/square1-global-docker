@@ -25,7 +25,7 @@ final class InstallerTest extends TestCase {
     }
 
     public function test_it_downloads_a_release() {
-        $file     = storage_path( 'tests/so.phar' );
+        $file     = storage_path( 'tests/tribe.phar' );
         $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
 
         $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
@@ -57,7 +57,7 @@ final class InstallerTest extends TestCase {
         $this->expectException( Exception::class );
         $this->expectExceptionMessage( 'Cannot create phar' );
 
-        $file     = storage_path( 'tests/so.phar' );
+        $file     = storage_path( 'tests/tribe.phar' );
         $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
 
         $this->filesystem = $this->mock( Filesystem::class );

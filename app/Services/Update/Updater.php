@@ -14,7 +14,7 @@ use LaravelZero\Framework\Commands\Command;
  */
 class Updater {
 
-    public const UPDATE_URL = 'https://api.github.com/repos/moderntribe/square1-global-docker/releases/latest';
+    public const UPDATE_URL = 'https://api.github.com/repos/moderntribe/tribe-local/releases/latest';
 
     /**
      * The release database.

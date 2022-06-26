@@ -39,7 +39,7 @@ class UpdateCheckTest extends BaseCommandTester {
 
         $this->assertSame( 0, $tester->getStatusCode() );
         $this->assertStringContainsString(
-            'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
+            'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/tribe-local/releases/tag/5000.0.0',
             $tester->getDisplay()
         );
         $this->assertStringContainsString( 'so self:update-check --force', $tester->getDisplay() );
@@ -77,7 +77,7 @@ class UpdateCheckTest extends BaseCommandTester {
         $this->assertSame( 0, $tester->getStatusCode() );
 
         $this->assertStringContainsString(
-            'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/square1-global-docker/releases/tag/5000.0.0',
+            'A new version "5000.0.0" is available! run "so self:update" to update now. See what\'s new: https://github.com/moderntribe/tribe-local/releases/tag/5000.0.0',
             $tester->getDisplay()
         );
 

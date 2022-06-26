@@ -1,14 +1,14 @@
-# SquareOne Docker
+# Tribe Local
 
-> SquareOne Docker is a command line application that provides a local docker based development environment for projects
+> Tribe Local is a command line application that provides a local docker based development environment for projects
 > based on the [SquareOne](https://github.com/moderntribe/square-one) framework. This is an internal Modern Tribe project,
 > while you may use it, it's heavily based on our internal tools and workflow and many features will not work out of the box.
 
 Status: **Stable**
 
-![CI](https://github.com/moderntribe/square1-global-docker/workflows/CI/badge.svg) [![Coverage](badges/coverage.svg)](https://github.com/moderntribe/square1-global-docker/actions?query=workflow%3ACI)
+![CI](https://github.com/moderntribe/tribe-local/workflows/CI/badge.svg) [![Coverage](badges/coverage.svg)](https://github.com/moderntribe/tribe-local/actions?query=workflow%3ACI)
 
-![so list](./docs/img/so.svg)
+![tribe list](./docs/img/tribe-local.svg)
 
 ### Requirements
 
@@ -50,7 +50,7 @@ The following ports should be available:
 
 Copy the following in your terminal:
 
-`bash -c "$(curl -fsSL https://raw.githubusercontent.com/moderntribe/square1-global-docker/master/install/install.sh)"`
+`bash -c "$(curl -fsSL https://raw.githubusercontent.com/moderntribe/tribe-local/master/install/install.sh)"`
 
 <sup>Note for macOS users: This script will install brew and all the requirements listed above.</sup>  
 <sup>Note for Debian users: This script will install and configure all the required packages.</sup>
@@ -58,8 +58,8 @@ Copy the following in your terminal:
 
 ### Usage
 
-- Run `so` to see a command list.
-- Run `so help <command>` to see all possible arguments and options for a command.
+- Run `tribe` to see a command list.
+- Run `tribe help <command>` to see all possible arguments and options for a command.
 
 ### Start a project
 
@@ -70,28 +70,28 @@ Starting a project does the following:
 1. Starts the local docker containers
 
 1. cd anywhere in your SquareOne project.
-1. Run `so start` or `so start -b` (to automatically launch the project in your default browser).
-1. Or, run `so start -p /path/to/project` from anywhere on your machine.
+1. Run `tribe start` or `tribe start -b` (to automatically launch the project in your default browser).
+1. Or, run `tribe start -p /path/to/project` from anywhere on your machine.
 
 ### Restart a project
 
 1. cd anywhere in your SquareOne project.
-1. Run `so restart` to run a docker compose restart.
-1. If you want a full project restart, run `so stop; so start`.
+1. Run `tribe restart` to run a docker compose restart.
+1. If you want a full project restart, run `tribe stop; tribe start`.
 
 ### Stop a project
 
 Stopping projects not in use will free up computer resources.
 
 1. cd anywhere in your SquareOne project.
-1. Run `so stop` to stop the local project.
+1. Run `tribe stop` to stop the local project.
 
 ### Create a new project
 
 1. cd into a directory where you'd like to create your new SquareOne project
-2. Run `so create` or `so create my-project --remote=https://github.com/moderntribe/my-project/` to automatically set
+2. Run `tribe create` or `tribe create my-project --remote=https://github.com/moderntribe/my-project/` to automatically set
    the project name/directory and git remote.
-3. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project.
+3. Optionally, you may run `tribe create --no-bootstrap` to not automatically create databases and attempt to build the project.
 
 ### Bootstrap a project
 
@@ -101,47 +101,47 @@ For existing projects where you don't have a local database yet.
 > you to create an admin user.
 
 1. cd anywhere in your SquareOne project.
-2. Run `so bootstrap` or `so bootstrap --multisite` for multisite projects and follow the onscreen instructions.
+2. Run `tribe bootstrap` or `tribe bootstrap --multisite` for multisite projects and follow the onscreen instructions.
 
 ### Share your local project temporarily on the internet with Ngrok
 
 1. cd anywhere in your SquareOne project.
-2. Run `so share` and follow the on-screen instructions.
-3. Run `so share -c <content-directory>` if your project's `wp-content` folder is renamed.
+2. Run `tribe share` and follow the on-screen instructions.
+3. Run `tribe share -c <content-directory>` if your project's `wp-content` folder is renamed.
 4. Copy the displayed https://...ngrok.io URL to share your local project with someone.
 5. Press `ctrl+c` to stop sharing.
 
 ### Gain shell access to the php-fpm container
 
 1. cd anywhere in your SquareOne project.
-1. Run `so shell` to gain a shell in the container as the `squareone` user
-1. Alternatively, run `so shell --user=root` to get a terminal as the root user (useful for older projects)
+1. Run `tribe shell` to gain a shell in the container as the `squareone` user
+1. Alternatively, run `tribe shell --user=root` to get a terminal as the root user (useful for older projects)
 
 ### Run a WP CLI command in the php-fpm container
 
 1. cd anywhere in your SquareOne project.
-1. Run `so wp -- <wp cli arguments here>`, e.g to run `wp option get active_plugins --format=json` run
-   `so wp -- option get active_plugins --format=json`.
-1. To enable xdebug to debug a CLI command, run `so wp -x -- option get active_plugins --format=json`. **Note:** ensure
-   you set a breakpoint in your IDE, otherwise the `so` CLI tool may be debugged itself.
-1. Alternatively, you can run `so shell` and then cd `/application/www` and run WP CLI commands directly in the container
-   without using `so`.
+1. Run `tribe wp -- <wp cli arguments here>`, e.g to run `wp option get active_plugins --format=json` run
+   `tribe wp -- option get active_plugins --format=json`.
+1. To enable xdebug to debug a CLI command, run `tribe wp -x -- option get active_plugins --format=json`. **Note:** ensure
+   you set a breakpoint in your IDE, otherwise the `tribe` CLI tool may be debugged itself.
+1. Alternatively, you can run `tribe shell` and then cd `/application/www` and run WP CLI commands directly in the container
+   without using `tribe`.
 
 ### Run a composer command in the php-fpm container
 
 1. cd anywhere in your SquareOne project.
-1. Run `so composer -- <arguments>`, e.g. `so composer -- install`.
+1. Run `tribe composer -- <arguments>`, e.g. `tribe composer -- install`.
 
 ### Run automated tests
 
 Note: Test run in the `php-tests` container, however older projects may not have this.
 
 1. cd anywhere in your SquareOne project.
-1. Unit tests: `so test -- run unit`.
-1. Integration tests: `so test -- run integration`.
-1. Acceptance tests: `so test -- run acceptance`.
-1. Run tests in a different container: `so test --container=php-fpm -- run integration`.
-1. Run tests with xdebug: `so test -x -- run integration`
+1. Unit tests: `tribe test -- run unit`.
+1. Integration tests: `tribe test -- run integration`.
+1. Acceptance tests: `tribe test -- run acceptance`.
+1. Run tests in a different container: `tribe test --container=php-fpm -- run integration`.
+1. Run tests with xdebug: `tribe test -x -- run integration`
 
 ### Enable/disable xdebug
 
@@ -149,9 +149,9 @@ Note: Test run in the `php-tests` container, however older projects may not have
 off` each time after starting or restarting projects.
 
 1. cd anywhere in your SquareOne project.
-1. show the current status: `so xdebug`
-1. disable xdebug: `so xdebug off`
-1. enable xdebug: `so xdebug on`
+1. show the current status: `tribe xdebug`
+1. disable xdebug: `tribe xdebug off`
+1. enable xdebug: `tribe xdebug on`
 
 ### Migrate a production database to your local
 
@@ -161,7 +161,7 @@ If you've exported a project database for a project, we'll attempt to automatica
 
 1. Import your new database as is.
 1. cd anywhere in your SquareOne project.
-1. Run `so migrate-domain`
+1. Run `tribe migrate-domain`
 
 ### View docker debugging logs
 
@@ -170,39 +170,39 @@ Global logs will display logs from the Nginx proxy, MariaDB, dnsmasq, Mailhog, a
 Local logs will show any logs from the project's `dev/docker/docker-compose.yml` configuration, normally
 Nginx, php-fpm, memcached or redis.
 
-1. View global container logs: `so global:logs`.
-1. View a local project's logs: cd in the project and run `so logs`.
+1. View global container logs: `tribe global:logs`.
+1. View a local project's logs: cd in the project and run `tribe logs`.
 1. Press `ctrl/command + c` to terminate the stream of logs.
 
 ### Manually generate a SSL certificate
 
 You may be running a project using a non-standard domain, in which case you'll need to manually generate an SSL certificate.
 
-1. Run `so global:cert <domain>`, e.g. `so global:cert mycustomdomain.tribe`
+1. Run `tribe global:cert <domain>`, e.g. `tribe global:cert mycustomdomain.tribe`
 
 ### Launch phpMyAdmin
 
-1. Run `so global:myadmin` and phpMyAdmin will be launched in your default browser.
+1. Run `tribe global:myadmin` and phpMyAdmin will be launched in your default browser.
 1. Log in with `root` and `password` to gain access to all of your MariaDB databases.
 
 ### View all running docker containers
 
-1. Run `so global:status`
+1. Run `tribe global:status`
 
 ### Restart global containers
 
-1. Run `so global:restart`
+1. Run `tribe global:restart`
 
 ### Stop all running docker containers
 
-1. To stop just the global containers run `so global:stop`.
-2. To stop **all** running docker containers on your system, not just created from SquareOne, run `so global:stop-all`.
+1. To stop just the global containers run `tribe global:stop`.
+2. To stop **all** running docker containers on your system, not just created from SquareOne, run `tribe global:stop-all`.
 
 ### Custom Commands
 
-Projects often contain unique services and features. `so` allows developers to create custom commands on a per-project basis, extending `so`'s core commands that can run on the host computer or inside one of the project's docker service containers.
+Projects often contain unique services and features. `tribe` allows developers to create custom commands on a per-project basis, extending `tribe`'s core commands that can run on the host computer or inside one of the project's docker service containers.
 
-> All custom commands are prefixed with "project:", if a project has custom commands, cd into the project folder and run `so` and they will appear in the command list.
+> All custom commands are prefixed with "project:", if a project has custom commands, cd into the project folder and run `tribe` and they will appear in the command list.
 
 #### Usage
 
@@ -234,7 +234,7 @@ commands:
 
 #### Running a Sequence of Commands
 
-You can create a single `so` custom command to run a sequence of commands. If you specify the service, all commands will be run in that service, but if you leave it out, you can set the service as the yaml key on the command level.
+You can create a single `tribe` custom command to run a sequence of commands. If you specify the service, all commands will be run in that service, but if you leave it out, you can set the service as the yaml key on the command level.
 
 ```yaml
 commands:
@@ -263,7 +263,7 @@ commands:
         description: Re-index ElasticPress
         cmd: 'wp elasticpress index --setup'
 ```
-Run `so project:index` in the project folder.
+Run `tribe project:index` in the project folder.
 
 **Create Pass Through Commands**
 
@@ -293,15 +293,15 @@ commands:
             - 'kill -USR2 1'
             - 'echo PHP Reloaded!'
 ```
-Run `so project:reload` in the project folder.
+Run `tribe project:reload` in the project folder.
 
-### Updating "so"
+### Updating Tribe Local
 
 This tool checks for updates automatically, however this is cached for some time.
 
-1. Check for an update (cached): `so self:update-check`.
-2. Check for an uncached update: `so self:update-check --force`.
-3. Update `so` to the latest version with: `so self:update`.
+1. Check for an update (cached): `tribe self:update-check`.
+2. Check for an uncached update: `tribe self:update-check --force`.
+3. Update `tribe` to the latest version with: `tribe self:update`.
 
 ### Add additional Top Level Domains (TLDs)
 
