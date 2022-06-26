@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Unit\Services\Update;
 
@@ -26,9 +26,9 @@ final class InstallerTest extends TestCase {
 
     public function test_it_downloads_a_release() {
         $file     = storage_path( 'tests/tribe.phar' );
-        $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
+        $tempFile = storage_path( 'tests/tmp/tribe_rand.phar' );
 
-        $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
+        $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'tribe_', '.phar' )->once()->andReturn( $tempFile );
         $this->filesystem->shouldReceive( 'copy' )->once();
         $this->filesystem->shouldReceive( 'chmod' )->with( $tempFile, 0755 )->once();
         $this->filesystem->shouldReceive( 'rename' )->with( $tempFile, $file, true )->once();
@@ -58,10 +58,10 @@ final class InstallerTest extends TestCase {
         $this->expectExceptionMessage( 'Cannot create phar' );
 
         $file     = storage_path( 'tests/tribe.phar' );
-        $tempFile = storage_path( 'tests/tmp/so_rand.phar' );
+        $tempFile = storage_path( 'tests/tmp/tribe_rand.phar' );
 
         $this->filesystem = $this->mock( Filesystem::class );
-        $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'so_', '.phar' )->once()->andReturn( $tempFile );
+        $this->filesystem->shouldReceive( 'tempnam' )->with( '/tmp', 'tribe_', '.phar' )->once()->andReturn( $tempFile );
         $this->filesystem->shouldReceive( 'copy' )->once();
         $this->filesystem->shouldReceive( 'chmod' )->with( $tempFile, 0755 )->once();
         $this->filesystem->shouldReceive( 'remove' )->with( [ 0 => $tempFile ] )->once();

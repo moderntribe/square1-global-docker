@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Services\Update;
 
@@ -62,7 +62,7 @@ class Installer {
      * @throws \Exception
      */
     public function download( Document $release, string $localFile, Command $command ): void {
-        $tempFile = $this->filesystem->tempnam( '/tmp', 'so_', '.phar' );
+        $tempFile = $this->filesystem->tempnam( '/tmp', 'tribe_', '.phar' );
 
         $this->filesystem->copy( $release->download, $tempFile );
 

@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands\Self;
 
@@ -61,15 +61,21 @@ class SelfUpdate extends Command {
      * @param  \App\Services\Update\Updater  $updater
      * @param  \App\Services\Phar            $phar
      *
-     * @return void
+     * @return int|void
      * @throws \Exception
      */
-    public function handle( Updater $updater, Phar $phar ): void {
+    public function handle( Updater $updater, Phar $phar ) {
         if ( empty( $phar->isPhar() ) ) {
             throw new RuntimeException( $this->name . ' only works when running the phar version of ' . $this->appName );
         }
 
         $release = $updater->getLatestReleaseFromGitHub();
+
+        if ( ! $release ) {
+            $this->error( 'No releases found! Aborting update.' );
+
+            return self::FAILURE;
+        }
 
         $this->info( sprintf( 'Updating %s to %s...', $this->appName, $release->version ) );
 
