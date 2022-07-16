@@ -25,7 +25,7 @@ final class CreateTest extends BaseCommandTester {
         $this->runner         = $this->mock( CommandRunner::class );
     }
 
-    public function test_it_creates_a_project() {
+    public function test_it_creates_a_project(): void {
         $this->projectCreator->shouldReceive( 'setProjectId' )
                              ->once()
                              ->with( 'test-project' )
