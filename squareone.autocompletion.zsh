@@ -46,7 +46,7 @@ _so()
             ;;
 
             create)
-            opts+=("--remote:Sets a new git remote, e.g. https://github.com/moderntribe/\$project/" "--no-bootstrap:Do not attempt to automatically configure the project")
+            opts+=("--remote:Sets a new git remote, e.g. https://github.com/moderntribe/\$project/" "--no-bootstrap:Do not attempt to automatically configure the project" "--branch:Create the project by using a specific branch/commit from github.com/moderntribe/square-one")
             ;;
 
             docker)
