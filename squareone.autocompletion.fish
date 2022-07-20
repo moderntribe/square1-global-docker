@@ -74,6 +74,7 @@ complete -c so -A -n '__fish_seen_subcommand_from completion' -l debug -d 'Tail 
 # create
 complete -c so -A -n '__fish_seen_subcommand_from create' -l remote -d 'Sets a new git remote, e.g. https://github.com/moderntribe/$project/'
 complete -c so -A -n '__fish_seen_subcommand_from create' -l no-bootstrap -d 'Do not attempt to automatically configure the project'
+complete -c so -A -n '__fish_seen_subcommand_from create' -l branch -d 'Create the project by using a specific branch/commit from github.com/moderntribe/square-one'
 
 # docker
 

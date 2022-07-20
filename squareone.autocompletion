@@ -42,7 +42,7 @@ _so()
             ;;
 
             create)
-            opts="${opts} --remote --no-bootstrap"
+            opts="${opts} --remote --no-bootstrap --branch"
             ;;
 
             docker)

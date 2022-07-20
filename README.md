@@ -92,6 +92,7 @@ Stopping projects not in use will free up computer resources.
 2. Run `so create` or `so create my-project --remote=https://github.com/moderntribe/my-project/` to automatically set
    the project name/directory and git remote.
 3. Optionally, you may run `so create --no-bootstrap` to not automatically create databases and attempt to build the project.
+4. You can also specify a branch you know that exists in the `https://github.com/moderntribe/square-one` repo to create your new project from e.g. `so create --branch=server/production my-project`.
 
 ### Bootstrap a project
 

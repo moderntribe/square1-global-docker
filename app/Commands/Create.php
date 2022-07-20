@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Commands;
 
@@ -26,7 +26,8 @@ class Create extends BaseCommand {
      */
     protected $signature = 'create {directory?     : Directory and project name where the files should be created}
                                    {--remote=      : Sets a new git remote, e.g. https://github.com/moderntribe/$project/}
-                                   {--no-bootstrap : Do not attempt to automatically configure the project}';
+                                   {--no-bootstrap : Do not attempt to automatically configure the project}
+                                   {--branch=      : Create the project by using a specific branch/commit from github.com/moderntribe/square-one}';
 
     /**
      * The description of the command.
@@ -66,17 +67,30 @@ class Create extends BaseCommand {
         $this->task( sprintf( '<comment>Cloning %s into %s</comment>', self::REPO, $directory ),
             call_user_func( [ $this, 'cloneRepo' ], $runner, $directory ) );
 
+        $branch = $this->option( 'branch' );
+
+        if ( $branch ) {
+            $this->task( sprintf( '<comment>Checking out %s</comment>', $branch ),
+                call_user_func( [ $this, 'checkoutBranch' ], $runner, $directory, $branch ) );
+        }
+
+        $this->task( '<comment>Setting default branch to develop</comment>',
+            call_user_func( [ $this, 'renameDefaultBranch' ], $runner, $directory ) );
+
         $remote = $this->option( 'remote' );
 
         if ( empty( $remote ) ) {
             $remote = $this->ask( sprintf(
-                'Enter the new github repo, e.g. https://github.com/moderntribe/%s. Leave blank to keep the square-one remote',
+                'Enter the new github repo, e.g. https://github.com/moderntribe/%s. Leave blank to remove all remotes.',
                 $directory
             ) );
 
             if ( ! empty( $remote ) ) {
                 $this->task( sprintf( '<comment>Setting new remote origin to: %s</comment>', $remote ),
                     call_user_func( [ $this, 'setGitRemote' ], $runner, $directory, $remote ) );
+            } else {
+                $this->task( '<comment>Removing default remotes</comment>',
+                    call_user_func( [ $this, 'removeGitRemotes' ], $runner, $directory ) );
             }
         }
 
@@ -104,6 +118,36 @@ class Create extends BaseCommand {
     }
 
     /**
+     * Checks out a specific branch or commit.
+     *
+     * @param  \App\Contracts\Runner  $runner     The command runner.
+     * @param  string                 $directory  The directory the project was cloned to.
+     * @param  string                 $branch     The branch or commit to checkout.
+     */
+    public function checkoutBranch( Runner $runner, string $directory, string $branch ): void {
+        $runner->with( [
+            'directory' => $directory,
+            'branch'    => $branch,
+        ] )->enableTty()
+               ->run( 'git -C {{ $directory }} checkout {{ $branch }}' )
+               ->throw();
+    }
+
+    /**
+     * Renames the default branch.
+     *
+     * @param  \App\Contracts\Runner  $runner     The command runner.
+     * @param  string                 $directory  The directory the project was cloned to.
+     */
+    public function renameDefaultBranch( Runner $runner, string $directory ): void {
+        $runner->with( [
+            'directory' => $directory,
+        ] )->enableTty()
+               ->run( 'git -C {{ $directory }} branch -m develop' )
+               ->throw();
+    }
+
+    /**
      * Set the git remote URL.
      *
      * @param  \App\Contracts\Runner  $runner     The command runner.
@@ -116,6 +160,20 @@ class Create extends BaseCommand {
             'remote'    => $remote,
         ] )->enableTty()
                ->run( 'git -C {{ $directory }} remote set-url origin {{ $remote }}' )
+               ->throw();
+    }
+
+    /**
+     * Removes the default SquareOne remotes.
+     *
+     * @param  \App\Contracts\Runner  $runner     The command runner.
+     * @param  string                 $directory  The directory to clone the project to.
+     */
+    public function removeGitRemotes( Runner $runner, string $directory ): void {
+        $runner->with( [
+            'directory' => $directory,
+        ] )->enableTty()
+               ->run( 'git -C {{ $directory }} remote rm origin' )
                ->throw();
     }
 
