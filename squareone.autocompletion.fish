@@ -1,6 +1,6 @@
 function __fish_so_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i _complete bootstrap completion composer create docker docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish
+        if contains -- $i _complete bootstrap completion composer create docker docker-compose export-test-db help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish
             return 1
         end
     end
@@ -25,6 +25,7 @@ complete -c so -f -n '__fish_so_no_subcommand' -a composer -d 'Run a composer co
 complete -c so -f -n '__fish_so_no_subcommand' -a create -d 'Create a new SquareOne project based off of the square-one framework'
 complete -c so -f -n '__fish_so_no_subcommand' -a docker -d 'Pass through for the docker binary'
 complete -c so -f -n '__fish_so_no_subcommand' -a docker-compose -d 'Pass through for docker-compose binary'
+complete -c so -f -n '__fish_so_no_subcommand' -a export-test-db -d 'Export an updated test database after an WordPress upgrade'
 complete -c so -f -n '__fish_so_no_subcommand' -a help -d 'Display help for a command'
 complete -c so -f -n '__fish_so_no_subcommand' -a list -d 'List commands'
 complete -c so -f -n '__fish_so_no_subcommand' -a logs -d 'Displays local SquareOne project docker logs'
@@ -79,6 +80,10 @@ complete -c so -A -n '__fish_seen_subcommand_from create' -l branch -d 'Create t
 # docker
 
 # docker-compose
+
+# export-test-db
+complete -c so -A -n '__fish_seen_subcommand_from export-test-db' -l output-path -d 'Where to export the database in the docker container'
+complete -c so -A -n '__fish_seen_subcommand_from export-test-db' -l container -d 'The docker container to use'
 
 # help
 complete -c so -A -n '__fish_seen_subcommand_from help' -l format -d 'The output format (txt, xml, json, or md)'

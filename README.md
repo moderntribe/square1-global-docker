@@ -144,6 +144,20 @@ Note: Test run in the `php-tests` container, however older projects may not have
 1. Run tests in a different container: `so test --container=php-fpm -- run integration`.
 1. Run tests with xdebug: `so test -x -- run integration`
 
+### Export a test database
+
+When upgrading WordPress versions in your project, often a database migration must occur and Acceptance
+Tests will fail for this reason. After upgrading WordPress in your project, it's a good
+idea to create a new test database dump and commit it to your repo.
+
+> Note: Make sure you've already run `so bootstrap` to make sure the test databases already
+> exist.
+
+1. cd anywhere into your started SquareOne project. 
+2. Run `so export-test-db` and it will export to `/application/www/dev/tests/tests/_data/dump.sql` in the docker container, or `dev/tests/tests/_data/dump.sql` on your host machine.
+3. Customize the output path/file name in the docker container for custom projects: `so export-test-db --output-path=/application/www/test.sql`
+4. Run in a different docker container for custom projects: `so export-test-db --container=php-custom-container`
+
 ### Enable/disable xdebug
 
 > Note: Disabling xdebug when you don't need it can improve loading performance, especially on macOS. This setting is **not persistent**. The default in the php-fpm container is `on`. You'll need to run `so xdebug
