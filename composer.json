@@ -67,11 +67,11 @@
             "@autocomplete"
         ],
         "autocomplete": "mv -fn ./builds/so.phar ./builds/so && vendor/bin/symfony-autocomplete --shell=bash ./builds/so > squareone.autocompletion && vendor/bin/symfony-autocomplete --shell=fish ./builds/so > squareone.autocompletion.fish && vendor/bin/symfony-autocomplete --shell=zsh ./builds/so > squareone.autocompletion.zsh && mv -fn ./builds/so ./builds/so.phar",
-        "coverage-tests": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text",
-        "coverage-text": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text < /dev/tty",
-        "coverage-html": "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-html coverage < /dev/tty",
+        "coverage-tests": "@php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text",
+        "coverage-text": "@php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-text < /dev/tty",
+        "coverage-html": "@php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-html coverage < /dev/tty",
         "badge": [
-            "php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-clover=coverage.xml < /dev/tty",
+            "@php -dpcov.enabled=1 vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-clover=coverage.xml < /dev/tty",
             "vendor/bin/php-coverage-badger ./coverage.xml badges/coverage.svg"
         ]
     },
