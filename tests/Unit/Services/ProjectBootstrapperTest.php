@@ -319,7 +319,9 @@ class ProjectBootstrapperTest extends TestCase {
     public function test_it_does_not_create_local_config_json() {
         PHPMockery::mock( 'App\Services', 'array_filter' )->andReturn( [] );
 
-        $this->bootstrapper->createLocalConfigJson( $this->projectRoot, 'squareone.tribe' );
+        $instance = $this->bootstrapper->createLocalConfigJson( $this->projectRoot, 'squareone.tribe' );
+
+        $this->assertInstanceOf( ProjectBootstrapper::class, $instance );
     }
 
 
