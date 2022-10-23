@@ -28,6 +28,7 @@ use App\Services\Certificate\Trust\Strategies\MacOs;
 use App\Services\Config\Env;
 use App\Services\Config\Github;
 use App\Services\Config\PhpStormMeta;
+use App\Services\ConfigLocator;
 use App\Services\Docker\Dns\Factory;
 use App\Services\Docker\Dns\Handler;
 use App\Services\Docker\Dns\OsSupport\BaseSupport;
@@ -44,6 +45,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
+use Throwable;
 
 /**
  * Class AppServiceProvider
@@ -271,14 +273,22 @@ class AppServiceProvider extends ServiceProvider {
         } else {
             $paths = [
                 config_path(),
-                ( new HomeDir() )->get() . '/.config/squareone',
-                getcwd(),
+                (new HomeDir())->get() . '/.config/squareone',
             ];
         }
 
-        $fileLocator = new FileLocator( $paths );
+        // Find core configuration files.
+        $found = ( new FileLocator( $paths ) )->locate( 'squareone.yml', null, false );
 
-        return $fileLocator->locate( 'squareone.yml', null, false );
+        // Find this project's squareone.yml, looking in the current directory and traversing up.
+        $project_config = (new ConfigLocator())->find( getcwd() );
+
+        // Merge in the local project's config.
+        if ( $project_config ) {
+            $found = array_merge( $found, [ $project_config ] );
+        }
+
+        return $found;
     }
 
     /**
