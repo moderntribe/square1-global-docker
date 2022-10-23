@@ -53,6 +53,10 @@ _so()
             opts="${opts} "
             ;;
 
+            export-test-db)
+            opts="${opts} --output-path --container"
+            ;;
+
             help)
             opts="${opts} --format --raw"
             ;;
@@ -179,7 +183,7 @@ _so()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="_complete bootstrap completion composer create docker docker-compose help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
+        coms="_complete bootstrap completion composer create docker docker-compose export-test-db help list logs migrate-domain open restart share shell start stop test wp xdebug config:compose-copy config:copy global:cert global:logs global:myadmin global:portainer global:restart global:start global:status global:stop global:stop-all schedule:finish schedule:run self:update self:update-check vendor:publish"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
