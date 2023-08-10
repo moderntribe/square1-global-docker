@@ -33,7 +33,7 @@ class SystemClock {
      * This fixes a docker host/vm/container time drift bug on macOS.
      */
     public function sync(): void {
-        $this->runner->run( 'docker run --rm --privileged alpine hwclock -s' )->throw();
+        $this->runner->run( 'docker run --rm --privileged alpine hwclock -s' );
     }
 
 }
