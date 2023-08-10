@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@v3
         with:
           # Currently, phars built with 8.1 still work on 7.3+
           php-version: '8.1'
@@ -27,9 +27,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install optimized composer dependencies
-        run: |
-          composer install --no-progress --no-suggest --classmap-authoritative
-          composer dump-autoload --no-dev --classmap-authoritative
+        uses: ramsey/composer-install@v2
+        with:
+          composer-options: "--classmap-authoritative"
+
+      - name: Generate dev-free composer autoloader
+        run: composer dump-autoload --no-dev --classmap-authoritative
 
       - name: Build phar
         run: php so app:build ${{ env.PHAR_NAME }} --build-version=${{ github.ref_name }}

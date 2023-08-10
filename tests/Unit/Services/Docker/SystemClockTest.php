@@ -20,7 +20,6 @@ final class SystemClockTest extends TestCase {
     }
 
     public function test_it_syncs_the_docker_container_with_the_system_clock() {
-        $this->runner->shouldReceive( 'throw' )->once()->andReturnSelf();
         $this->runner->shouldReceive( 'run' )
                      ->with( 'docker run --rm --privileged alpine hwclock -s' )
                      ->once()

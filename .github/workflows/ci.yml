@@ -8,22 +8,15 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-latest]
         php: ['7.3', '7.4', '8.0', '8.1']
-        dependency-version: [prefer-stable]
 
     name: CI - PHP ${{ matrix.php }}
 
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.composer/cache/files
-          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+        uses: actions/checkout@v3
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -33,9 +26,11 @@ jobs:
           coverage: pcov
 
       - name: Install Composer dependencies
-        run: composer update --prefer-stable --no-interaction --prefer-dist --no-suggest
+        uses: ramsey/composer-install@v2
+        with:
+          composer-options: "--prefer-dist"
 
-      # Github workflows/actions have no tty, the script command captures the output as a work around
+      # GitHub workflows/actions have no tty, the script command captures the output as a work around
       - name: PHPUnit Testing
         run: php vendor/bin/phpunit -c ./phpunit.xml.dist
 
