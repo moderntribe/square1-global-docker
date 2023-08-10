@@ -28,7 +28,7 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v2
         with:
-          composer-options: "--prefer-stable --prefer-dist"
+          composer-options: "--prefer-dist"
 
       # GitHub workflows/actions have no tty, the script command captures the output as a work around
       - name: PHPUnit Testing
